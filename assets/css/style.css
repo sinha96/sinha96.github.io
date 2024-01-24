@@ -18,7 +18,7 @@ body {
 body::before {
   content: "";
   position: fixed;
-  background: #040404 url("http://people.eecs.berkeley.edu/~xyyue/Xiangyu_files/squeezeseg.gif") top right no-repeat;
+  background: #040404 url("https://aclm.in/wp-content/uploads/2021/09/bar_chart_animation-1.gif") top right no-repeat;
   background-size: cover;
   left: 0;
   right: 0;
