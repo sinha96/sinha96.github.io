@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Priyanshu Shekhar Sinha — Resume</title>
+  <meta name="description" content="Resume of Priyanshu Shekhar Sinha — Technical Lead, GenAI at Elastiq AI. Google Cloud Professional Machine Learning Engineer. 7+ years building enterprise AI." />
+  <meta name="author" content="Priyanshu Shekhar Sinha" />
+  <meta name="keywords" content="Priyanshu Shekhar Sinha, Technical Lead, GenAI, AI/ML Engineer, Enterprise RAG, GCP Professional ML Engineer, OpenSearch, LLaMA, Bangalore" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink:        #0a0908;
+      --ink-2:      #131110;
+      --paper:      #efeae0;
+      --paper-mute: rgba(239, 234, 224, 0.62);
+      --paper-faint:rgba(239, 234, 224, 0.22);
+      --rule:       rgba(239, 234, 224, 0.14);
+      --rule-2:     rgba(239, 234, 224, 0.26);
+      --accent:     #d4ff3c;
+      --serif:      'Instrument Serif', 'Times New Roman', serif;
+      --mono:       'IBM Plex Mono', 'Courier New', monospace;
+      --sans:       'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--sans);
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+    }
+
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 10mm 13mm 9mm;
+      background: var(--ink);
+      position: relative;
+    }
+
+    /* Atmospheric glow on each page */
+    .sheet::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(640px 360px at 0% 0%, rgba(212,255,60,0.05), transparent 60%),
+        radial-gradient(640px 380px at 100% 100%, rgba(212,255,60,0.025), transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .sheet > * { position: relative; z-index: 1; }
+
+    /* === HEADER === */
+    .head {
+      padding-bottom: 4mm;
+      border-bottom: 1px solid var(--rule-2);
+    }
+    .head-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+      font-size: 7.5pt;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      margin-bottom: 2.5mm;
+    }
+    .head-top .pulse {
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 6px rgba(212,255,60,0.6);
+    }
+    .head-top .live { color: var(--accent); letter-spacing: 0.18em; }
+
+    .name {
+      font-family: var(--serif);
+      font-size: 32pt;
+      line-height: 0.94;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+    }
+    .name em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .role {
+      font-family: var(--serif);
+      font-size: 11pt;
+      font-style: italic;
+      color: var(--paper);
+      margin-top: 2mm;
+      letter-spacing: -0.005em;
+    }
+    .role b {
+      font-style: normal;
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 8.5pt;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: 500;
+      margin-right: 8px;
+    }
+
+    .contact {
+      margin-top: 2.4mm;
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.04em;
+      color: var(--paper);
+      line-height: 1.5;
+    }
+    .contact a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted var(--paper-faint);
+    }
+    .contact .sep {
+      color: var(--paper-mute);
+      margin: 0 8px;
+    }
+
+    /* === SECTION === */
+    .section {
+      padding-top: 3.5mm;
+      page-break-inside: auto;
+    }
+    .section + .section { padding-top: 3mm; }
+
+    .h2 {
+      font-family: var(--mono);
+      font-size: 8pt;
+      font-weight: 500;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2mm;
+      padding-bottom: 1mm;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .h2::before {
+      content: '';
+      width: 14px; height: 1px;
+      background: var(--accent);
+    }
+
+    /* === SUMMARY === */
+    .summary p {
+      font-family: var(--serif);
+      font-size: 10.5pt;
+      line-height: 1.38;
+      color: var(--paper);
+      max-width: 175mm;
+    }
+    .summary em {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    /* === EXPERIENCE === */
+    .role-item {
+      padding-bottom: 2.2mm;
+      margin-bottom: 2.2mm;
+      border-bottom: 1px dashed var(--rule);
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .role-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .role-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.6mm;
+      flex-wrap: wrap;
+    }
+    .role-title {
+      font-family: var(--serif);
+      font-size: 12pt;
+      line-height: 1.08;
+      font-weight: 400;
+      letter-spacing: -0.012em;
+      color: var(--paper);
+    }
+    .role-title em {
+      color: var(--accent);
+      font-style: italic;
+    }
+    .role-dates {
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.08em;
+      color: var(--paper-mute);
+      white-space: nowrap;
+    }
+    .role-dates b {
+      color: var(--paper);
+      font-weight: 500;
+    }
+    .role-org {
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.04em;
+      color: var(--paper);
+      margin-bottom: 1mm;
+    }
+    .role-org .sep { color: var(--paper-mute); margin: 0 6px; }
+    .role-blurb {
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 9pt;
+      line-height: 1.32;
+      color: var(--paper-mute);
+      margin-bottom: 1.2mm;
+      max-width: 175mm;
+    }
+    .role-list {
+      list-style: none;
+      display: grid;
+      gap: 0.9mm;
+    }
+    .role-list li {
+      padding-left: 4.5mm;
+      position: relative;
+      font-size: 8.7pt;
+      line-height: 1.36;
+      color: var(--paper);
+    }
+    .role-list li::before {
+      content: '\2022';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .role-list strong {
+      color: var(--paper);
+      font-weight: 500;
+      background: linear-gradient(180deg, transparent 80%, rgba(212,255,60,0.18) 80%);
+      padding: 0 2px;
+    }
+
+    /* === SKILLS === */
+    .skills-list {
+      display: grid;
+      grid-template-columns: 30mm 1fr;
+      gap: 0.6mm 5mm;
+      align-items: baseline;
+      font-size: 8.5pt;
+      line-height: 1.4;
+    }
+    .skills-list dt {
+      font-family: var(--mono);
+      font-size: 7pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      font-weight: 500;
+    }
+    .skills-list dd {
+      font-family: var(--mono);
+      font-size: 8pt;
+      color: var(--paper);
+      line-height: 1.4;
+    }
+    .skills-list dd strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* === EDUCATION & CERTS === */
+    .ec-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2mm 6mm;
+    }
+    .ec-item {
+      page-break-inside: avoid;
+      margin-bottom: 1.5mm;
+    }
+    .ec-item:last-child { margin-bottom: 0; }
+    .ec-item h3 {
+      font-family: var(--serif);
+      font-size: 10pt;
+      line-height: 1.12;
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--paper);
+    }
+    .ec-item .meta {
+      font-family: var(--mono);
+      font-size: 7pt;
+      letter-spacing: 0.05em;
+      color: var(--paper-mute);
+      margin-top: 0.4mm;
+    }
+    .ec-item.is-featured {
+      padding-left: 8px;
+      border-left: 2px solid var(--accent);
+    }
+
+    /* === AWARDS === */
+    .awards {
+      display: grid;
+      gap: 1mm;
+      font-size: 8.7pt;
+      line-height: 1.38;
+    }
+    .awards li {
+      list-style: none;
+      padding-left: 4.5mm;
+      position: relative;
+      page-break-inside: avoid;
+    }
+    .awards li::before {
+      content: '\2022';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+    .awards li b {
+      color: var(--paper);
+      font-weight: 500;
+    }
+    .awards li .src {
+      color: var(--paper-mute);
+      font-family: var(--mono);
+      font-size: 8pt;
+      letter-spacing: 0.04em;
+    }
+
+    /* === FOOTER === */
+    .foot {
+      margin-top: 6mm;
+      padding-top: 3mm;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--mono);
+      font-size: 7pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+
+    /* Print and screen refinements */
+    @media print {
+      body { padding: 0; }
+      .sheet { box-shadow: none; }
+    }
+    @media screen {
+      body { background: #1a1a1a; padding: 24px; }
+      .sheet {
+        box-shadow: 0 30px 80px rgba(0,0,0,0.55), 0 4px 14px rgba(0,0,0,0.3);
+        border-radius: 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="sheet" role="document">
+
+    <header class="head">
+      <div class="head-top">
+        <span class="pulse" aria-hidden="true"></span>
+        <span class="live">Available</span>
+        <span>Resume · 2026</span>
+      </div>
+      <h1 class="name">Priyanshu <em>Shekhar</em> Sinha</h1>
+      <p class="role"><b>Technical Lead, GenAI</b>AI/ML Engineer architecting <em>enterprise RAG</em> at Elastiq AI.</p>
+      <p class="contact">
+        Bangalore, India
+        <span class="sep">·</span>
+        <a href="mailto:priyanshu1996@hotmail.com">priyanshu1996@hotmail.com</a>
+        <span class="sep">·</span>
+        +91 7349575896
+        <span class="sep">·</span>
+        <a href="https://www.linkedin.com/in/pripy/">linkedin.com/in/pripy</a>
+        <span class="sep">·</span>
+        <a href="https://github.com/sinha96">github.com/sinha96</a>
+        <span class="sep">·</span>
+        <a href="https://sinha96.github.io">sinha96.github.io</a>
+      </p>
+    </header>
+
+    <section class="section summary">
+      <h2 class="h2">Summary</h2>
+      <p>AI/ML Engineer with <em>seven plus years</em> shipping production-grade systems. Currently leading the design and development of an enterprise RAG platform at Elastiq AI — multi-source ingestion, hybrid retrieval, cross-encoder re-ranking, and document-level access control synchronized across cloud providers. <em>Google Cloud Professional Machine Learning Engineer.</em></p>
+    </section>
+
+    <section class="section">
+      <h2 class="h2">Experience</h2>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Technical Lead — <em>GenAI</em></h3>
+          <div class="role-dates"><b>Jan 2025</b> — Present</div>
+        </div>
+        <div class="role-org">Elastiq AI <span class="sep">·</span> Bangalore, India</div>
+        <p class="role-blurb">Lead the design and development of an enterprise RAG platform spanning ingestion, retrieval, ranking, and access control across cloud providers.</p>
+        <ul class="role-list">
+          <li>Architecting <strong>scalable distributed-database</strong> solutions via Citus DB research and implementation for enterprise-scale workloads.</li>
+          <li>Mentoring cross-functional team on robust <strong>data pipelines</strong>, complex LLM fine-tuning challenges, and enterprise deployment strategies.</li>
+          <li>Collaborating with senior leadership on <strong>strategic product development</strong> and onboarded the <strong>first enterprise client</strong> for the Text2SQL solution.</li>
+          <li>Evaluating emerging protocols like <strong>MCP</strong> for enterprise connectors.</li>
+        </ul>
+      </article>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Senior Software Engineer</h3>
+          <div class="role-dates"><b>Sep 2024</b> — Jan 2025</div>
+        </div>
+        <div class="role-org">Elastiq AI <span class="sep">·</span> Bangalore, India</div>
+        <p class="role-blurb">Foundational AI engineering on Discover — Elastiq's flagship product — covering fine-tuning, retrieval, and agent design.</p>
+        <ul class="role-list">
+          <li>Fine-tuned <strong>LLaMA 3.1 70B</strong> via advanced QLoRA and LoRA techniques, reaching <strong>85% target accuracy</strong>.</li>
+          <li>Built the foundational <strong>Text2SQL framework</strong> from scratch and shipped AI agents for natural-language to SQL plus unstructured file processing.</li>
+          <li>Integrated multiple <strong>Graph DB</strong> backends offering Classic RAG, Cypher-based RAG, and GraphRAG — extending Discover with structural retrieval.</li>
+          <li>Engineered custom datasets and <strong>context-aware chunking</strong> algorithms for unstructured-document RAG performance.</li>
+        </ul>
+      </article>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Senior Data Scientist</h3>
+          <div class="role-dates"><b>May 2023</b> — Aug 2024</div>
+        </div>
+        <div class="role-org">Acuity Knowledge Partners <span class="sep">·</span> Bangalore, India</div>
+        <p class="role-blurb">Senior Data Scientist at a research, analytics, and technology partner to the financial services sector — asset managers, investment banks, private equity, hedge funds, and consulting firms.</p>
+        <ul class="role-list">
+          <li>Developed a <strong>versatile analysis dashboard</strong> for an investment firm enabling KPI monitoring and analysis experiments — <strong>87% reduction</strong> in client analysis time.</li>
+          <li>Built a web dashboard integrated with an <strong>ESG data engine</strong> for a top-tier investment firm, shaping their investment-strategy decisions.</li>
+          <li>Shipped an <strong>end-to-end RAG system</strong> for parsing financial reports.</li>
+        </ul>
+      </article>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Associate, Data Scientist</h3>
+          <div class="role-dates"><b>Dec 2021</b> — Apr 2023</div>
+        </div>
+        <div class="role-org">TheMathCompany <span class="sep">·</span> Bangalore, India</div>
+        <ul class="role-list">
+          <li>Led a <strong>5-person team</strong> shipping a flexible <strong>A/B Testing Framework</strong> for a leading pharmaceutical client to measure promotion success against revenue lift.</li>
+          <li>Co-led a <strong>7-person team</strong> on a sales-anomaly flag pipeline accounting for seasonality — drove customer outreach delivering <strong>+$125K revenue</strong> in Q1.</li>
+          <li>Built an <strong>LSTM model</strong> forecasting customer return-to-purchase windows for supply and demand balancing — <strong>R² 0.9012</strong>.</li>
+        </ul>
+      </article>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Data Analyst</h3>
+          <div class="role-dates"><b>May 2021</b> — Dec 2021</div>
+        </div>
+        <div class="role-org">Recruitment Smart Technologies <span class="sep">·</span> Ahmedabad, India</div>
+        <ul class="role-list">
+          <li>Reduced new-client integration from <strong>10 days to 3 hours</strong> (97% improvement). Operational reports from <strong>5 days to 30 minutes</strong>; opportunity reports from <strong>1 day to 30 minutes</strong>.</li>
+          <li>Reduced advanced-analytics report generation from <strong>7 days to 15 minutes</strong> (99% improvement). Automated Power BI dashboard refreshes.</li>
+          <li>Awarded <em>Star Performer of the Month.</em></li>
+        </ul>
+      </article>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Data Scientist</h3>
+          <div class="role-dates"><b>Aug 2019</b> — Apr 2021</div>
+        </div>
+        <div class="role-org">Sumyag Data Sciences <span class="sep">·</span> Bangalore, India</div>
+        <ul class="role-list">
+          <li>Designed a multi-phase pipeline enriching extracted document data points — generated <strong>500+ features</strong> via NLP, data wrangling, and text mining.</li>
+          <li>Co-developed a <strong>matrix-multiplication ensemble</strong> on the NumPy stack across <strong>10+ unique sources</strong> for entity classification, plus custom Bayesian models for word embeddings.</li>
+          <li>Shipped end-to-end claims-document pipelines for automobile and healthcare enterprise clients; built a geometric model for tabular-entity extraction using asymmetric graphs.</li>
+        </ul>
+      </article>
+
+      <article class="role-item">
+        <div class="role-head">
+          <h3 class="role-title">Data Science Mentor (Freelance)</h3>
+          <div class="role-dates"><b>Dec 2020</b> — May 2023</div>
+        </div>
+        <div class="role-org">Independent <span class="sep">·</span> Topmate</div>
+        <ul class="role-list">
+          <li>Mentored college students and working professionals transitioning into data science — career strategy, project review, and mock interviews for analytics and ML roles.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="section">
+      <h2 class="h2">Skills</h2>
+      <dl class="skills-list">
+        <dt>Languages</dt>
+        <dd>Python, SQL, Cypher</dd>
+
+        <dt>LLM and GenAI</dt>
+        <dd><strong>LLaMA 3.1 70B</strong>, QLoRA, LoRA, SFT, RLHF, Classic RAG, GraphRAG, Cypher-RAG, Text2SQL, MCP, LangChain, Transformers, Ollama</dd>
+
+        <dt>Search and Retrieval</dt>
+        <dd><strong>OpenSearch</strong>, BM25, kNN, Hybrid Search, Cross-encoder Re-ranking, ChromaDB, Embeddings, ACL Sync</dd>
+
+        <dt>Multi-modal</dt>
+        <dd>Text, PDF, Audio, Video, Speaker Diarization, OCR</dd>
+
+        <dt>Machine Learning</dt>
+        <dd>PyTorch, TensorFlow, scikit-learn, MLFlow, Pandas, Polars, NumPy, PySpark, NLP, Deep Learning, MLOps</dd>
+
+        <dt>Cloud</dt>
+        <dd><strong>Google Cloud Platform</strong>, AWS (S3, EKS, ECS, SageMaker, SQS, SES, EC2), GCS, Azure Blob</dd>
+
+        <dt>Databases</dt>
+        <dd>PostgreSQL, Citus DB, Snowflake, Databricks, Graph DB, ChromaDB</dd>
+
+        <dt>Tooling</dt>
+        <dd>Docker, Apache Airflow, Streamlit, ChainLit, Flask, Plotly, Power BI, Postman, Git, GitHub, GitLab</dd>
+
+        <dt>Soft Skills</dt>
+        <dd>Communication, Project Management, Team Leadership, Mentorship</dd>
+      </dl>
+    </section>
+
+    <section class="section">
+      <h2 class="h2">Education</h2>
+      <div class="ec-grid">
+        <div class="ec-item">
+          <h3>Post Graduate Program — Data Science Engineering</h3>
+          <div class="meta">Great Lakes Institute of Management · 2019</div>
+        </div>
+        <div class="ec-item">
+          <h3>Bachelor of Engineering — Electrical and Electronics</h3>
+          <div class="meta">Sir M. Visvesvaraya Institute of Technology · 2014–2018</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="h2">Certifications</h2>
+      <div class="ec-grid">
+        <div class="ec-item is-featured">
+          <h3>Google Cloud — Professional Machine Learning Engineer</h3>
+          <div class="meta">Google Cloud · Active</div>
+        </div>
+        <div class="ec-item">
+          <h3>Natural Language Processing Specialization</h3>
+          <div class="meta">DeepLearning.AI · Coursera · 2021</div>
+        </div>
+        <div class="ec-item">
+          <h3>Deep Learning Specialization</h3>
+          <div class="meta">DeepLearning.AI · Coursera · 2018</div>
+        </div>
+        <div class="ec-item">
+          <h3>Python — Data Structures</h3>
+          <div class="meta">University of Michigan · Coursera · 2018</div>
+        </div>
+        <div class="ec-item">
+          <h3>Spark and Python for Big Data with PySpark</h3>
+          <div class="meta">Coursera</div>
+        </div>
+        <div class="ec-item">
+          <h3>Programming for Everybody</h3>
+          <div class="meta">University of Michigan · Coursera</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="h2">Awards and Recognition</h2>
+      <ul class="awards">
+        <li><b>Star Employee of the Month</b> <span class="src">— Elastiq AI · March 2026</span></li>
+        <li><b>Star Performer of the Month</b> <span class="src">— Recruitment Smart Technologies · 2021</span></li>
+        <li><b>Arctic Code Vault Contributor</b> <span class="src">— GitHub Open Source Archive Program</span></li>
+        <li><b>Pull Shark</b> <span class="src">— GitHub Achievements</span></li>
+      </ul>
+    </section>
+
+  </main>
+</body>
+</html>
