@@ -1,6 +1,6 @@
 ---
 title: "Domain-aware knowledge graph extraction — making LLMs understand what they're extracting"
-date: 2026-05-09
+date: 2026-05-08
 tags: [graphrag, knowledge-graph, entity-extraction, rag, nlp]
 read_time: 8
 excerpt: "Standard graph extraction pipelines ask LLMs to extract entities and relationships from documents. The problem: without domain context, the LLM collapses critically different concepts into generic types. Here's how forcing chain-of-thought domain analysis before type generation produces dramatically better graphs."
