@@ -52,7 +52,7 @@
     <a href="/#contact">Contact</a>
   </nav>
 
-  <main class="page">
+  <main class="page {% if page.layout == 'post' %}page-post{% endif %}">
     {{ content }}
 
     <footer class="foot">

@@ -2,55 +2,124 @@
 layout: default
 ---
 
-<article>
-  <header class="post-head">
-    <div class="post-eyebrow">
-      <a href="{{ '/newsletter/' | relative_url }}">← Latent</a>
-      <span><span class="col">●</span> {{ page.date | date: '%Y · %m · %d' }}</span>
-      {% if page.read_time %}<span>{{ page.read_time }} min read</span>{% endif %}
+<div class="post-shell">
+
+  <article class="post-main">
+    <header class="post-head">
+      <div class="post-eyebrow">
+        <a href="{{ '/newsletter/' | relative_url }}">← Latent</a>
+        <span><span class="col">●</span> {{ page.date | date: '%Y · %m · %d' }}</span>
+        {% if page.read_time %}<span>{{ page.read_time }} min read</span>{% endif %}
+      </div>
+      <h1 class="post-title">{{ page.title }}</h1>
+      {% if page.subtitle %}
+        <p class="mast-sub" style="margin-top:1.4rem;">{{ page.subtitle }}</p>
+      {% endif %}
+      <div class="post-byline">
+        <span><b>By</b> <a href="/" style="color:var(--paper); border-bottom:1px dotted var(--paper-faint);">{{ site.author.name }}</a></span>
+        {% if page.tags.size > 0 %}
+          <span><b>Tags</b>
+            {% for tag in page.tags %}{{ tag }}{% unless forloop.last %} · {% endunless %}{% endfor %}
+          </span>
+        {% endif %}
+      </div>
+    </header>
+
+    <div class="post-body">
+      {{ content }}
     </div>
-    <h1 class="post-title">{{ page.title }}</h1>
-    {% if page.subtitle %}
-      <p class="mast-sub" style="margin-top:1.4rem;">{{ page.subtitle }}</p>
+
+    <footer class="post-foot">
+      <div class="post-pager">
+        {% if page.previous %}
+          <a href="{{ page.previous.url | relative_url }}" class="prev">
+            <span class="lbl">← Previous</span>
+            <strong>{{ page.previous.title }}</strong>
+          </a>
+        {% else %}
+          <div class="prev" style="opacity:0.4;">
+            <span class="lbl">← Previous</span>
+            <strong>You're at the start.</strong>
+          </div>
+        {% endif %}
+        {% if page.next %}
+          <a href="{{ page.next.url | relative_url }}" class="next">
+            <span class="lbl">Next →</span>
+            <strong>{{ page.next.title }}</strong>
+          </a>
+        {% else %}
+          <div class="next" style="opacity:0.4; text-align:right;">
+            <span class="lbl">Next →</span>
+            <strong>Latest entry.</strong>
+          </div>
+        {% endif %}
+      </div>
+    </footer>
+  </article>
+
+  <aside class="post-side" aria-label="Post info">
+    <div class="side-block">
+      <span class="side-label">Published</span>
+      <strong>{{ page.date | date: '%d %B %Y' }}</strong>
+    </div>
+
+    {% if page.read_time %}
+    <div class="side-block">
+      <span class="side-label">Reading</span>
+      <strong>{{ page.read_time }} minute{% if page.read_time != 1 %}s{% endif %}</strong>
+    </div>
     {% endif %}
-    <div class="post-byline">
-      <span><b>By</b> <a href="/" style="color:var(--paper); border-bottom:1px dotted var(--paper-faint);">{{ site.author.name }}</a></span>
-      {% if page.tags.size > 0 %}
-        <span><b>Tags</b>
-          {% for tag in page.tags %}{{ tag }}{% unless forloop.last %} · {% endunless %}{% endfor %}
-        </span>
-      {% endif %}
-    </div>
-  </header>
 
-  <div class="post-body">
-    {{ content }}
-  </div>
-
-  <footer class="post-foot">
-    <div class="post-pager">
-      {% if page.previous %}
-        <a href="{{ page.previous.url | relative_url }}" class="prev">
-          <span class="lbl">← Previous</span>
-          <strong>{{ page.previous.title }}</strong>
-        </a>
-      {% else %}
-        <div class="prev" style="opacity:0.4;">
-          <span class="lbl">← Previous</span>
-          <strong>You're at the start.</strong>
-        </div>
-      {% endif %}
-      {% if page.next %}
-        <a href="{{ page.next.url | relative_url }}" class="next">
-          <span class="lbl">Next →</span>
-          <strong>{{ page.next.title }}</strong>
-        </a>
-      {% else %}
-        <div class="next" style="opacity:0.4; text-align:right;">
-          <span class="lbl">Next →</span>
-          <strong>Latest entry.</strong>
-        </div>
-      {% endif %}
+    {% if page.tags.size > 0 %}
+    <div class="side-block">
+      <span class="side-label">Tags</span>
+      <div class="side-tags">
+        {% for tag in page.tags %}<span>{{ tag }}</span>{% endfor %}
+      </div>
     </div>
-  </footer>
-</article>
+    {% endif %}
+
+    <div class="side-block">
+      <span class="side-label">Share</span>
+      <button class="side-share" type="button" data-share="{{ site.url }}{{ page.url }}">⎘ Copy link</button>
+    </div>
+
+    <div class="side-block">
+      <span class="side-label">More from Latent</span>
+      <ul class="side-recent">
+        {% assign others = site.posts | where_exp: "p", "p.url != page.url" | slice: 0, 5 %}
+        {% for p in others %}
+          <li>
+            <a href="{{ p.url | relative_url }}">
+              {{ p.title }}
+              <div class="date-mini">{{ p.date | date: '%Y · %m · %d' }}</div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="side-block">
+      <span class="side-label">Subscribe</span>
+      <a href="{{ '/newsletter/feed.xml' | relative_url }}" style="color:var(--paper); border-bottom:1px dotted var(--paper-faint);">RSS feed ↗</a>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  (function () {
+    var btn = document.querySelector('.side-share');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var url = btn.getAttribute('data-share');
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function () {
+          var prev = btn.textContent;
+          btn.textContent = '✓ Copied';
+          setTimeout(function () { btn.textContent = prev; }, 1400);
+        });
+      }
+    });
+  })();
+</script>
