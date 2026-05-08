@@ -1,0 +1,55 @@
+---
+layout: default
+---
+
+<section class="mast">
+  <div class="mast-eyebrow">
+    <span><span class="col">①</span> Folio · 2026</span>
+    <span><span class="col">②</span> Bangalore, IN</span>
+    <span><span class="col">③</span> By <a href="/">Priyanshu Shekhar Sinha</a></span>
+  </div>
+  <h1 class="mast-title">{{ site.title }}<em>.</em></h1>
+  <p class="mast-sub">{{ site.description }}</p>
+  <div class="mast-meta">
+    <span>{{ site.posts | size }} {% if site.posts.size == 1 %}entry{% else %}entries{% endif %}</span>
+    <span>·</span>
+    <span><a href="{{ '/newsletter/feed.xml' | relative_url }}">Subscribe via RSS</a></span>
+    <span>·</span>
+    <span><a href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></span>
+  </div>
+</section>
+
+{% if site.posts.size == 0 %}
+  <div class="empty">
+    <span class="dot"></span>
+    No entries yet — first post incoming.
+  </div>
+{% else %}
+  <ul class="posts-list">
+    {% for post in site.posts %}
+      <li>
+        <a href="{{ post.url | relative_url }}" class="post-link">
+          <article class="post-row">
+            <div class="post-date">
+              <b>{{ post.date | date: '%Y · %m · %d' }}</b>
+              {% if post.read_time %}<br/>{{ post.read_time }} min read{% endif %}
+            </div>
+            <div>
+              <h2>{{ post.title }}</h2>
+              {% if post.excerpt %}
+                <p class="post-excerpt">{{ post.excerpt | strip_html | truncate: 220 }}</p>
+              {% endif %}
+              {% if post.tags.size > 0 %}
+                <div class="post-tags">
+                  {% for tag in post.tags %}
+                    <span class="post-tag">{{ tag }}</span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </article>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

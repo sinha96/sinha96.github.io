@@ -1,0 +1,49 @@
+title: "Latent"
+subtitle: "Field notes from the GenAI frontier"
+description: >-
+  A continuous newsletter on enterprise AI, RAG architecture, agentic systems,
+  and the changing GenAI landscape — by Priyanshu Shekhar Sinha.
+author:
+  name: "Priyanshu Shekhar Sinha"
+  email: "priyanshu1996@hotmail.com"
+  url: "https://sinha96.github.io"
+url: "https://sinha96.github.io"
+baseurl: ""
+
+permalink: /newsletter/:year/:month/:slug/
+
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    css_class: 'hl'
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+feed:
+  path: /newsletter/feed.xml
+
+# Files Jekyll should not copy to the build output.
+exclude:
+  - README.md
+  - resume.html
+  - resume.pdf
+  - me_logo.jpg
+  - .idea/
+  - .gitignore
+  - "*.bak"
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
+
+# Default front-matter for posts so each post inherits the post layout
+# without having to repeat `layout: post` in every file.
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
