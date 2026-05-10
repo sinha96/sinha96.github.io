@@ -29,8 +29,8 @@ feed:
 # Files Jekyll should not copy to the build output.
 exclude:
   - README.md
-  - resume.html
-  - resume.pdf
+  #- resume.html
+  #- resume.pdf
   - me_logo.jpg
   - .idea/
   - .gitignore
