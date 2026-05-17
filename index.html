@@ -2081,8 +2081,22 @@
       gap: 8px;
       margin-bottom: 1.5rem;
     }
-    @media (max-width: 1000px) { .ch-nav { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 540px) { .ch-nav { grid-template-columns: 1fr; } }
+    @media (max-width: 1200px) { .ch-nav { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 900px)  { .ch-nav { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px)  { .ch-nav { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px)  { .ch-nav { grid-template-columns: 1fr; } }
+    .ch-group-h {
+      grid-column: 1 / -1;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      padding: 6px 0 0;
+      border-top: 1px dashed var(--rule);
+      margin-top: 6px;
+    }
+    .ch-group-h:first-child { border-top: 0; margin-top: 0; padding-top: 0; }
     .ch-pill {
       display: flex;
       flex-direction: column;
@@ -2525,6 +2539,418 @@
     }
     .moe-flops .row span:last-child { color: var(--accent-2); }
     .moe-bottom { grid-template-columns: 1fr; }
+
+    /* ===== KV Cache chapter ===== */
+    .kv-controls, .spec-controls, .re-controls, .cost-controls, .ag-controls {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 1.2rem;
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--rule);
+      background: var(--ink-2);
+      margin-bottom: 1.2rem;
+    }
+    @media (max-width: 900px) {
+      .kv-controls, .spec-controls, .re-controls, .cost-controls, .ag-controls { grid-template-columns: 1fr; }
+    }
+    .kv-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 1.2rem;
+    }
+    @media (max-width: 1000px) { .kv-grid { grid-template-columns: 1fr; } }
+    .kv-mem-wrap svg, .spec-trace-wrap svg, .spec-quant-wrap svg, .cost-stack-wrap svg {
+      width: 100%; height: auto;
+    }
+    .kv-stats, .ft-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kv-stats .ft-stat { background: var(--ink-3); }
+    .kv-tput {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--paper);
+    }
+    .kv-tput .big {
+      font-family: var(--serif);
+      font-size: 26px;
+      color: var(--accent);
+      letter-spacing: -0.02em;
+    }
+    .kv-tput .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px dotted var(--rule);
+    }
+    .kv-tput .row span:last-child { color: var(--accent-2); }
+    .kv-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: var(--paper);
+    }
+    .kv-list li {
+      padding: 8px 12px;
+      border-left: 2px solid var(--accent);
+      background: var(--ink-3);
+    }
+    .kv-list li b { color: var(--accent); font-weight: 500; }
+    .kv-list li em { color: var(--accent-2); font-style: normal; }
+    .kv-math {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--paper);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .kv-math .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+    }
+    .kv-math .row b { color: var(--accent); font-weight: 500; }
+
+    /* ===== Spec / Quant chapter ===== */
+    .spec-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.2rem;
+    }
+    @media (max-width: 1000px) { .spec-grid { grid-template-columns: 1fr; } }
+    .spec-trace-meta, .spec-quant-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper);
+    }
+    .spec-trace-meta .item, .spec-quant-stats .item {
+      padding: 8px 10px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .spec-trace-meta .item .l, .spec-quant-stats .item .l {
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      color: var(--paper-mute);
+      text-transform: uppercase;
+    }
+    .spec-trace-meta .item .v, .spec-quant-stats .item .v {
+      font-family: var(--serif);
+      font-size: 16px;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+    .spec-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    @media (max-width: 700px) { .spec-summary { grid-template-columns: 1fr 1fr; } }
+    .spec-summary .item {
+      padding: 12px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .spec-summary .item .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; color: var(--paper-mute); text-transform: uppercase; }
+    .spec-summary .item .v { font-family: var(--serif); font-size: 22px; color: var(--accent); letter-spacing: -0.02em; }
+    .spec-summary .item .s { font-family: var(--mono); font-size: 10px; color: var(--paper-mute); }
+
+    /* ===== RAG eval chapter ===== */
+    .re-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+    @media (max-width: 1000px) { .re-grid { grid-template-columns: 1fr; } }
+    .re-block { display: flex; flex-direction: column; gap: 6px; }
+    .re-h {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .re-h-sub { color: var(--accent); letter-spacing: 0.08em; text-transform: none; }
+    .re-q, .re-gold, .re-answer {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      line-height: 1.65;
+      color: var(--paper);
+      padding: 10px 12px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+    }
+    .re-q { border-color: var(--accent); }
+    .re-gold { border-color: rgba(212, 255, 60, 0.4); }
+    .re-gt { font-family: var(--mono); font-size: 11.5px; color: var(--accent-2); }
+    .re-gt span {
+      display: inline-block;
+      padding: 3px 8px;
+      background: rgba(255, 91, 34, 0.08);
+      border: 1px solid rgba(255, 91, 34, 0.5);
+      margin: 0 4px 4px 0;
+    }
+    .re-retrieved { display: flex; flex-direction: column; gap: 6px; }
+    .re-doc {
+      padding: 8px 10px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--paper-mute);
+      display: grid;
+      grid-template-columns: 64px 40px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+    .re-doc.relevant { border-color: var(--accent); color: var(--paper); }
+    .re-doc.irrelevant { border-color: rgba(255, 91, 34, 0.4); }
+    .re-doc .id { color: var(--accent-2); }
+    .re-doc .rank { color: var(--accent); text-align: center; }
+    .re-answer .ground { color: var(--accent); background: rgba(212, 255, 60, 0.07); padding: 1px 4px; border-bottom: 1px solid var(--accent); }
+    .re-answer .halu { color: var(--accent-2); background: rgba(255, 91, 34, 0.07); padding: 1px 4px; border-bottom: 1px dashed var(--accent-2); }
+    .re-metrics { display: flex; flex-direction: column; gap: 10px; }
+    .re-metric {
+      display: grid;
+      grid-template-columns: 130px 1fr 60px;
+      gap: 12px;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--paper);
+    }
+    .re-metric .val { color: var(--accent); text-align: right; }
+    .re-metric.bad .val { color: var(--accent-2); }
+
+    /* ===== Cost chapter ===== */
+    .cost-mits {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .cost-mits label {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      cursor: pointer;
+    }
+    .cost-mits input[type=checkbox] {
+      accent-color: var(--accent);
+      width: 14px; height: 14px;
+    }
+    .cost-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 1.2rem;
+    }
+    @media (max-width: 1000px) { .cost-grid { grid-template-columns: 1fr; } }
+    .cost-stack-wrap svg .seg { cursor: pointer; }
+    .cost-tot {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+    }
+    .cost-tot .item {
+      padding: 10px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .cost-tot .l { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.18em; color: var(--paper-mute); text-transform: uppercase; }
+    .cost-tot .v { font-family: var(--serif); font-size: 22px; color: var(--accent); letter-spacing: -0.02em; }
+    .cost-tot .v.big { font-size: 28px; color: var(--accent-2); }
+    .cost-leaks { display: flex; flex-direction: column; gap: 8px; }
+    .cost-leak {
+      padding: 10px 12px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+      border-left: 3px solid var(--accent-2);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.55;
+      color: var(--paper);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .cost-leak.fixed { border-left-color: var(--accent); opacity: 0.55; }
+    .cost-leak .leak-money {
+      font-family: var(--serif);
+      font-size: 16px;
+      color: var(--accent-2);
+      letter-spacing: -0.01em;
+    }
+    .cost-leak.fixed .leak-money { color: var(--accent); text-decoration: line-through; }
+    .cost-stories {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      line-height: 1.6;
+      color: var(--paper);
+    }
+    .cost-story {
+      padding: 10px 12px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+    }
+    .cost-story b { color: var(--accent); font-weight: 500; }
+    .cost-story .redmoney { color: var(--accent-2); font-weight: 500; }
+
+    /* ===== Agent chapter ===== */
+    .ag-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 1.2rem;
+    }
+    @media (max-width: 1000px) { .ag-grid { grid-template-columns: 1fr; } }
+    .ag-step-ctl { flex-direction: row !important; gap: 6px !important; align-items: flex-end; }
+    .ag-step-ctl .lai-btn { padding: 8px 12px; }
+    .ag-trace { display: flex; flex-direction: column; gap: 6px; max-height: 480px; overflow-y: auto; }
+    .ag-step {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--paper);
+      align-items: center;
+      transition: all 200ms;
+      opacity: 0.3;
+    }
+    .ag-step.visible { opacity: 1; }
+    .ag-step .n {
+      font-size: 9.5px;
+      color: var(--paper-mute);
+      letter-spacing: 0.12em;
+    }
+    .ag-step .call { line-height: 1.5; }
+    .ag-step .call code {
+      color: var(--accent);
+      background: transparent;
+    }
+    .ag-step .tag {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 3px 7px;
+      background: var(--ink);
+      color: var(--paper-mute);
+      border: 1px solid var(--rule);
+    }
+    .ag-step.ok .tag { color: var(--accent); border-color: var(--accent); }
+    .ag-step.fail { border-left: 3px solid var(--accent-2); }
+    .ag-step.fail .tag { color: var(--accent-2); border-color: var(--accent-2); }
+    .ag-step.loop {
+      border-left: 3px solid var(--accent-2);
+      background: rgba(255, 91, 34, 0.05);
+    }
+    .ag-step.loop .tag { color: var(--accent-2); border-color: var(--accent-2); background: rgba(255, 91, 34, 0.1); }
+    .ag-step.halt {
+      border: 1px solid var(--accent-2);
+      background: rgba(255, 91, 34, 0.08);
+    }
+    .ag-step.halt .tag { background: var(--accent-2); color: var(--ink); border-color: var(--accent-2); }
+
+    .ag-budgets { display: flex; flex-direction: column; gap: 10px; }
+    .ag-budget {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper);
+    }
+    .ag-budget .top { display: flex; justify-content: space-between; }
+    .ag-budget .top .val { color: var(--accent); }
+    .ag-budget .top .val.bad { color: var(--accent-2); }
+    .ag-budget .bar {
+      height: 6px;
+      background: var(--ink-3);
+      position: relative;
+      overflow: hidden;
+    }
+    .ag-budget .bar .fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      background: var(--accent);
+      transition: width 300ms ease, background 200ms;
+    }
+    .ag-budget.bad .bar .fill { background: var(--accent-2); }
+
+    .ag-status { display: flex; flex-direction: column; gap: 6px; }
+    .ag-status-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--paper);
+      padding: 8px 10px;
+      background: var(--ink-3);
+      border: 1px solid var(--rule);
+    }
+    .ag-status-row .st {
+      font-size: 9.5px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .ag-status-row.ok .st { color: var(--accent); }
+    .ag-status-row.fired { border-color: var(--accent-2); }
+    .ag-status-row.fired .st { color: var(--accent-2); }
+
+    /* ===== Play button (animate sliders) ===== */
+    .lai-play {
+      background: var(--accent);
+      color: var(--ink);
+      border: 1px solid var(--accent);
+      padding: 3px 9px;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      cursor: pointer;
+      margin-left: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 150ms;
+      vertical-align: middle;
+      text-transform: uppercase;
+    }
+    .lai-play:hover { background: transparent; color: var(--accent); }
+    .lai-play.playing { background: var(--accent-2); color: var(--ink); border-color: var(--accent-2); }
+    .lai-play.playing:hover { background: transparent; color: var(--accent-2); }
   </style>
 </head>
 <body>
@@ -4015,6 +4441,7 @@
     </div>
 
     <nav class="ch-nav" data-reveal id="ch-nav" aria-label="Chapters">
+      <div class="ch-group-h">Foundations</div>
       <button class="ch-pill is-active" data-ch="transformer">
         <span class="ch-pill-n">01</span>
         <span class="ch-pill-t">Transformer</span>
@@ -4039,6 +4466,33 @@
         <span class="ch-pill-n">05</span>
         <span class="ch-pill-t">Mixture of Experts</span>
         <span class="ch-pill-s">sparse routing · efficiency</span>
+      </button>
+      <div class="ch-group-h">Production / Serving</div>
+      <button class="ch-pill" data-ch="kv">
+        <span class="ch-pill-n">06</span>
+        <span class="ch-pill-t">KV Cache at Scale</span>
+        <span class="ch-pill-s">paged attention · prefix reuse</span>
+      </button>
+      <button class="ch-pill" data-ch="spec">
+        <span class="ch-pill-n">07</span>
+        <span class="ch-pill-t">Spec Decode vs Quant</span>
+        <span class="ch-pill-s">drafts · INT8/INT4 · throughput</span>
+      </button>
+      <div class="ch-group-h">Operations &amp; Trust</div>
+      <button class="ch-pill" data-ch="rageval">
+        <span class="ch-pill-n">08</span>
+        <span class="ch-pill-t">RAG Evaluation</span>
+        <span class="ch-pill-s">faithfulness · context recall</span>
+      </button>
+      <button class="ch-pill" data-ch="cost">
+        <span class="ch-pill-n">09</span>
+        <span class="ch-pill-t">Cost &amp; Token Leaks</span>
+        <span class="ch-pill-s">$/req · hidden leaks · caps</span>
+      </button>
+      <button class="ch-pill" data-ch="agent">
+        <span class="ch-pill-n">10</span>
+        <span class="ch-pill-t">Agent Guardrails</span>
+        <span class="ch-pill-s">loops · budgets · validators</span>
       </button>
     </nav>
 
@@ -4255,9 +4709,9 @@
             <svg id="emb-train-svg" viewBox="0 0 440 260" preserveAspectRatio="xMidYMid meet"></svg>
           </div>
           <div class="emb-train-ctl">
-            <p class="muted-mono">Drag the slider — watch the encoder learn:</p>
+            <p class="muted-mono">Drag the slider — or hit play — watch the encoder learn:</p>
             <input type="range" min="0" max="100" value="0" class="lai-slider" id="emb-train-slider" />
-            <div class="emb-train-step" id="emb-train-step">step 0 / 100</div>
+            <div class="emb-train-step"><span id="emb-train-step">step 0 / 1000</span> <button class="lai-play" id="emb-train-play" type="button">▶ play</button></div>
             <div class="emb-train-text">
               <p><strong>Anchor:</strong> "a small striped feline"</p>
               <p><strong>Positive (pull closer):</strong> "tabby kitten"</p>
@@ -4310,7 +4764,7 @@
         <input type="range" min="1" max="32" value="8" class="lai-slider" id="ft-rank" />
       </div>
       <div class="tx-ctl">
-        <label class="tx-ctl-l">Training progress · <span id="ft-step-val">0%</span></label>
+        <label class="tx-ctl-l">Training progress · <span id="ft-step-val">0%</span> <button class="lai-play" id="ft-play" type="button">▶ play</button></label>
         <input type="range" min="0" max="100" value="0" class="lai-slider" id="ft-step" />
       </div>
     </div>
@@ -4558,6 +5012,453 @@
       </div>
     </div>
     </div><!-- /chapter moe -->
+
+    <!-- ====== CHAPTER 06 · KV CACHE AT SCALE ====== -->
+    <div class="ch" data-ch="kv">
+    <div class="ch-intro" data-reveal>
+      <h3 class="ch-title">06 · KV cache at <em>scale</em>.</h3>
+      <p class="ch-lede">Every generated token re-uses the keys &amp; values of every prior token. Naive caching: one GPU serves <em>two</em> users. <strong>PagedAttention</strong> (vLLM) treats KV memory like virtual memory — 16-token blocks, allocated on demand, shared across requests with the same prefix. The result: 5–10× throughput on the same hardware.</p>
+    </div>
+
+    <div class="kv-controls" data-reveal>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Strategy</label>
+        <div class="tx-head-row" id="kv-strats"></div>
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Concurrent users · <span id="kv-u-val">8</span> <button class="lai-play" id="kv-play" type="button">▶ ramp</button></label>
+        <input type="range" min="1" max="32" value="8" class="lai-slider" id="kv-users" />
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Avg context (tokens) · <span id="kv-c-val">2048</span></label>
+        <input type="range" min="128" max="8192" step="128" value="2048" class="lai-slider" id="kv-ctx" />
+      </div>
+    </div>
+
+    <div class="kv-grid" data-reveal>
+      <div class="tx-card kv-mem-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">A</span>
+          <div>
+            <h4 class="tx-card-t">GPU memory · 80 GB A100</h4>
+            <p class="tx-card-s">Each cell = one 16-token <em>page</em>. Color = request owner. Grey = free. Striped = wasted (fragmentation / over-allocation).</p>
+          </div>
+        </div>
+        <div class="kv-mem-wrap">
+          <svg id="kv-svg" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+
+      <div class="tx-side">
+        <div class="tx-card">
+          <div class="tx-card-head">
+            <span class="tx-card-num">B</span>
+            <div>
+              <h4 class="tx-card-t">Memory budget</h4>
+              <p class="tx-card-s">Live · per-strategy.</p>
+            </div>
+          </div>
+          <div class="kv-stats" id="kv-stats"></div>
+        </div>
+
+        <div class="tx-card">
+          <div class="tx-card-head">
+            <span class="tx-card-num">C</span>
+            <div>
+              <h4 class="tx-card-t">Throughput</h4>
+              <p class="tx-card-s">Tokens/sec the GPU can serve.</p>
+            </div>
+          </div>
+          <div class="kv-tput" id="kv-tput"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch-bottom" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">D</span>
+          <div>
+            <h4 class="tx-card-t">Survival tactics at scale</h4>
+            <p class="tx-card-s">What real serving stacks do once they hit the wall.</p>
+          </div>
+        </div>
+        <ul class="kv-list">
+          <li><b>Paged KV (vLLM, TGI)</b> — 16-token blocks, no over-allocation, &lt;4% fragmentation vs. 60-80% naive.</li>
+          <li><b>Prefix caching</b> — share system-prompt KV across all users on a node. A 4k system prompt × 1000 users = saved once.</li>
+          <li><b>Continuous batching</b> — new requests slot into a running batch on token boundaries instead of waiting for the slowest to finish.</li>
+          <li><b>KV offload &amp; quantization</b> — INT8 KV halves memory; offload cold prefixes to CPU/NVMe; recompute on miss.</li>
+          <li><b>Speculative re-use</b> — assistant tool calls often share prefixes (system + tools schema) — cache aggressively, expire on schema change.</li>
+        </ul>
+      </div>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">E</span>
+          <div>
+            <h4 class="tx-card-t">Quick math</h4>
+            <p class="tx-card-s">Per-token KV bytes for a 70B model.</p>
+          </div>
+        </div>
+        <div class="kv-math" id="kv-math"></div>
+        <p class="muted-mono">Formula: <code>2 (K,V) × n_layers × n_heads × d_head × bytes</code>. For Llama-3 70B (80 layers · 8 kv-heads · 128 dim · FP16): ~320 KB/token. A 32k context = 10 MB just in KV. 100 users at 32k = 1 TB.</p>
+      </div>
+    </div>
+    </div><!-- /chapter kv -->
+
+    <!-- ====== CHAPTER 07 · SPEC DECODE vs QUANT ====== -->
+    <div class="ch" data-ch="spec">
+    <div class="ch-intro" data-reveal>
+      <h3 class="ch-title">07 · Speculative decoding <em>vs</em> quantization.</h3>
+      <p class="ch-lede">Two unrelated ways to make a slow model fast. <strong>Spec decode</strong>: a tiny "draft" model proposes K tokens, the big model verifies them in <em>parallel</em> (one forward pass for K tokens). <strong>Quantization</strong>: shrink weights from 16-bit to 8/4-bit — model gets smaller and arithmetic gets faster, with controlled quality loss. They compose.</p>
+    </div>
+
+    <div class="spec-controls" data-reveal>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Draft model speed (× faster than target) · <span id="sp-d-val">7×</span></label>
+        <input type="range" min="2" max="15" value="7" class="lai-slider" id="sp-draft" />
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Speculation length K · <span id="sp-k-val">5</span> <button class="lai-play" id="sp-roll" type="button">↻ resample</button></label>
+        <input type="range" min="1" max="10" value="5" class="lai-slider" id="sp-k" />
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Quantization · <span id="sp-q-val">FP16</span></label>
+        <input type="range" min="0" max="3" value="0" class="lai-slider" id="sp-q" />
+      </div>
+    </div>
+
+    <div class="spec-grid" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">A</span>
+          <div>
+            <h4 class="tx-card-t">Speculative decoding · token trace</h4>
+            <p class="tx-card-s">Draft proposes K tokens · target verifies in one pass · accepted tokens are kept, rejected ones cause a rollback.</p>
+          </div>
+        </div>
+        <div class="spec-trace-wrap">
+          <svg id="spec-trace-svg" viewBox="0 0 740 320" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="spec-trace-meta" id="spec-trace-meta"></div>
+      </div>
+
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">B</span>
+          <div>
+            <h4 class="tx-card-t">Weight distribution · quantization</h4>
+            <p class="tx-card-s">Same layer · same weights · fewer distinct values. INT4 has only 16 levels; the model snaps to the nearest one.</p>
+          </div>
+        </div>
+        <div class="spec-quant-wrap">
+          <svg id="spec-quant-svg" viewBox="0 0 440 260" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="spec-quant-stats" id="spec-quant-stats"></div>
+      </div>
+    </div>
+
+    <div class="ch-bottom" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">C</span>
+          <div>
+            <h4 class="tx-card-t">Throughput vs. quality</h4>
+            <p class="tx-card-s">Both techniques stacked. Live.</p>
+          </div>
+        </div>
+        <div class="spec-summary" id="spec-summary"></div>
+      </div>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">D</span>
+          <div>
+            <h4 class="tx-card-t">When to use which</h4>
+            <p class="tx-card-s">Decision shortcuts.</p>
+          </div>
+        </div>
+        <ul class="kv-list">
+          <li><b>Spec decode</b> — best for <em>predictable</em> outputs (code, structured JSON, common chat). Wasted draft tokens kill the gain on creative text.</li>
+          <li><b>INT8</b> — almost free quality drop (≤1% on most evals). Default for production serving.</li>
+          <li><b>INT4 / GPTQ / AWQ</b> — 2× memory savings, ~2-4% eval drop. Worth it when you need to fit a 70B on a single GPU.</li>
+          <li><b>Compose</b> — INT4 + spec decode → 4-7× faster end-to-end on the same hardware, with quality within ~3% of FP16.</li>
+        </ul>
+      </div>
+    </div>
+    </div><!-- /chapter spec -->
+
+    <!-- ====== CHAPTER 08 · RAG EVALUATION ====== -->
+    <div class="ch" data-ch="rageval">
+    <div class="ch-intro" data-reveal>
+      <h3 class="ch-title">08 · Did the RAG <em>actually work?</em></h3>
+      <p class="ch-lede">RAG looks fine until you measure it. Four canonical metrics catch the failures: <strong>context recall</strong> (did we retrieve the right docs?), <strong>context precision</strong> (was the order right?), <strong>faithfulness</strong> (did the answer stay grounded?), and <strong>answer relevance</strong> (does the answer match the question?). Compare three configs side-by-side.</p>
+    </div>
+
+    <div class="re-controls" data-reveal>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Test case</label>
+        <select class="lai-input" id="re-case"></select>
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Compare config</label>
+        <div class="tx-head-row" id="re-cfgs"></div>
+      </div>
+    </div>
+
+    <div class="re-grid" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">A</span>
+          <div>
+            <h4 class="tx-card-t">Question &amp; ground truth</h4>
+            <p class="tx-card-s">Test question, the docs that should have been retrieved, and the gold answer.</p>
+          </div>
+        </div>
+        <div class="re-block">
+          <div class="re-h">Q</div>
+          <div class="re-q" id="re-q">—</div>
+        </div>
+        <div class="re-block">
+          <div class="re-h">Should-retrieve <span class="re-h-sub">(ground truth IDs)</span></div>
+          <div class="re-gt" id="re-gt">—</div>
+        </div>
+        <div class="re-block">
+          <div class="re-h">Gold answer</div>
+          <div class="re-gold" id="re-gold">—</div>
+        </div>
+      </div>
+
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">B</span>
+          <div>
+            <h4 class="tx-card-t">What the system did</h4>
+            <p class="tx-card-s">Retrieved chunks + generated answer. Sentences are tagged by which chunk they're grounded in (or <em>hallucinated</em>).</p>
+          </div>
+        </div>
+        <div class="re-block">
+          <div class="re-h">Retrieved <span class="re-h-sub" id="re-cfg-name">baseline</span></div>
+          <div class="re-retrieved" id="re-retrieved">—</div>
+        </div>
+        <div class="re-block">
+          <div class="re-h">Answer</div>
+          <div class="re-answer" id="re-answer">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch-bottom" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">C</span>
+          <div>
+            <h4 class="tx-card-t">Metrics · this run</h4>
+            <p class="tx-card-s">Higher = better · 0.0 to 1.0 · RAGAS-style.</p>
+          </div>
+        </div>
+        <div class="re-metrics" id="re-metrics"></div>
+        <p class="muted-mono" id="re-verdict">—</p>
+      </div>
+
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">D</span>
+          <div>
+            <h4 class="tx-card-t">Config comparison</h4>
+            <p class="tx-card-s">Same question · three retrieval setups.</p>
+          </div>
+        </div>
+        <table class="emb-table" id="re-compare-tbl">
+          <thead><tr><th>Config</th><th>Recall</th><th>Precision</th><th>Faith.</th><th>Rel.</th></tr></thead>
+          <tbody id="re-compare-body"></tbody>
+        </table>
+        <p class="muted-mono">Build a small golden set (50-200 Q/A pairs), run it on every retriever change, watch each metric independently. A higher faithfulness with lower relevance often means you over-grounded into the wrong chunks.</p>
+      </div>
+    </div>
+    </div><!-- /chapter rageval -->
+
+    <!-- ====== CHAPTER 09 · COST & TOKEN LEAKS ====== -->
+    <div class="ch" data-ch="cost">
+    <div class="ch-intro" data-reveal>
+      <h3 class="ch-title">09 · Where the <em>money goes</em>.</h3>
+      <p class="ch-lede">A polished LLM product can burn $10k/day before anyone notices. The leaks aren't dramatic — they're boring: a 4k system prompt re-sent 200k times a day, conversation history that never gets trimmed, RAG context with 30 chunks where 4 would do, retry loops on schema errors. Audit your token bill like cloud spend.</p>
+    </div>
+
+    <div class="cost-controls" data-reveal>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Daily requests · <span id="co-r-val">200,000</span></label>
+        <input type="range" min="1000" max="2000000" step="1000" value="200000" class="lai-slider" id="co-req" />
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Model</label>
+        <select class="lai-input" id="co-model"></select>
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Mitigations applied</label>
+        <div id="co-mits" class="cost-mits"></div>
+      </div>
+    </div>
+
+    <div class="cost-grid" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">A</span>
+          <div>
+            <h4 class="tx-card-t">Where each token goes · per request</h4>
+            <p class="tx-card-s">Stacked bar — system prompt, tool schema, conversation history, RAG context, user message, response. Hover for $/day attribution.</p>
+          </div>
+        </div>
+        <div class="cost-stack-wrap">
+          <svg id="cost-stack-svg" viewBox="0 0 740 220" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="cost-tot" id="cost-tot"></div>
+      </div>
+
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">B</span>
+          <div>
+            <h4 class="tx-card-t">Top leaks · ranked</h4>
+            <p class="tx-card-s">Auto-flagged patterns sorted by $ wasted.</p>
+          </div>
+        </div>
+        <div class="cost-leaks" id="cost-leaks"></div>
+      </div>
+    </div>
+
+    <div class="ch-bottom" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">C</span>
+          <div>
+            <h4 class="tx-card-t">The leak checklist</h4>
+            <p class="tx-card-s">Print this. Pin it.</p>
+          </div>
+        </div>
+        <ul class="kv-list">
+          <li><b>Cache system prompts</b> — Anthropic / OpenAI prompt caching cuts repeated tokens 90%. Free 10× ROI.</li>
+          <li><b>Trim history</b> — keep last K turns, summarize the rest. Cap to a hard token budget per conversation.</li>
+          <li><b>Right-size RAG</b> — 4-8 well-ranked chunks beat 30 mediocre ones. Re-ranker is cheaper than long context.</li>
+          <li><b>Stop streaming on schema fail</b> — early-stop when structured output is malformed; don't burn 4k tokens on bad JSON.</li>
+          <li><b>Per-endpoint $ caps</b> — alert when an endpoint's $/req drifts &gt;30%. Catches prompt-bloat regressions.</li>
+          <li><b>Log every call's token breakdown</b> — input by source (system / history / RAG / user) + output. Without this you can't find leaks.</li>
+        </ul>
+      </div>
+
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">D</span>
+          <div>
+            <h4 class="tx-card-t">Real-world hidden leaks</h4>
+            <p class="tx-card-s">War stories.</p>
+          </div>
+        </div>
+        <div class="cost-stories">
+          <div class="cost-story"><b>The retry loop.</b> Structured-output failure triggers an automatic retry with the bad response appended for "context." 4 retries × ~2k tokens each = 8k wasted per failure. At 0.5% failure rate × 1M req/day = <span class="redmoney">$1,200/day</span> on a $0.003/1k model.</div>
+          <div class="cost-story"><b>The runaway agent.</b> An agent calls a search tool, gets 200KB of HTML back, stuffs it into context, calls again. Each turn doubles. One bug = 6 figures.</div>
+          <div class="cost-story"><b>The dev who left logging on.</b> Production accidentally calling <code>verbose=True</code> appends the full reasoning trace to every response. 3× output tokens. <span class="redmoney">$8k/mo</span> until someone checked.</div>
+          <div class="cost-story"><b>The shared system prompt.</b> One service builds the prompt fresh each call, defeating the upstream cache. 70% cache hit → 0%. <span class="redmoney">$22k surprise.</span></div>
+        </div>
+      </div>
+    </div>
+    </div><!-- /chapter cost -->
+
+    <!-- ====== CHAPTER 10 · AGENT GUARDRAILS ====== -->
+    <div class="ch" data-ch="agent">
+    <div class="ch-intro" data-reveal>
+      <h3 class="ch-title">10 · Agents — <em>and the loops they fall into</em>.</h3>
+      <p class="ch-lede">Agents are LLMs that call tools and decide what to do next. Without guardrails they will: loop on the same tool, ignore failure modes, exhaust budgets, and confidently take destructive actions. Step through a trace below — watch the loop detector, budget meter, and validators kick in.</p>
+    </div>
+
+    <div class="ag-controls" data-reveal>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Scenario</label>
+        <select class="lai-input" id="ag-scen"></select>
+      </div>
+      <div class="tx-ctl">
+        <label class="tx-ctl-l">Guardrails</label>
+        <div id="ag-grs" class="cost-mits"></div>
+      </div>
+      <div class="tx-ctl ag-step-ctl">
+        <button class="lai-btn" id="ag-prev">◂ prev</button>
+        <button class="lai-btn primary" id="ag-next">step ▸</button>
+        <button class="lai-btn" id="ag-auto">▶ auto-run</button>
+        <button class="lai-btn" id="ag-reset">↻ reset</button>
+      </div>
+    </div>
+
+    <div class="ag-grid" data-reveal>
+      <div class="tx-card ag-trace-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">A</span>
+          <div>
+            <h4 class="tx-card-t">Execution trace</h4>
+            <p class="tx-card-s">Each row = one tool call. Loops, schema fails, and budget breaches highlight automatically.</p>
+          </div>
+        </div>
+        <div class="ag-trace" id="ag-trace"></div>
+      </div>
+
+      <div class="tx-side">
+        <div class="tx-card">
+          <div class="tx-card-head">
+            <span class="tx-card-num">B</span>
+            <div>
+              <h4 class="tx-card-t">Budgets</h4>
+              <p class="tx-card-s">Hard limits. Halt on breach.</p>
+            </div>
+          </div>
+          <div class="ag-budgets" id="ag-budgets"></div>
+        </div>
+
+        <div class="tx-card">
+          <div class="tx-card-head">
+            <span class="tx-card-num">C</span>
+            <div>
+              <h4 class="tx-card-t">Guardrail status</h4>
+              <p class="tx-card-s">Which checks fired so far.</p>
+            </div>
+          </div>
+          <div class="ag-status" id="ag-status"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch-bottom" data-reveal>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">D</span>
+          <div>
+            <h4 class="tx-card-t">Loop detection — the actual patterns</h4>
+            <p class="tx-card-s">What "stuck" looks like in production.</p>
+          </div>
+        </div>
+        <ul class="kv-list">
+          <li><b>Same-call repeat</b> — identical <code>tool(args)</code> twice in a row. Trivially stuck. Halt immediately.</li>
+          <li><b>2-cycle</b> — alternating A → B → A → B with no progress (e.g., re-search after re-search). Detect via hash of last N actions.</li>
+          <li><b>Argument drift</b> — same tool, slightly tweaked args. Often a retry loop in disguise. Halt after N similar calls (Levenshtein on args &lt; 5%).</li>
+          <li><b>State stagnation</b> — observation entropy collapses. The agent is no longer learning from results.</li>
+          <li><b>Token / time / cost budget</b> — never trust the model to self-regulate. Hard caps at the framework level.</li>
+        </ul>
+      </div>
+      <div class="tx-card">
+        <div class="tx-card-head">
+          <span class="tx-card-num">E</span>
+          <div>
+            <h4 class="tx-card-t">Guardrail stack — defense in depth</h4>
+            <p class="tx-card-s">No single check is enough.</p>
+          </div>
+        </div>
+        <ul class="kv-list">
+          <li><b>Input filter</b> — PII / prompt-injection / unsafe-content classifier <em>before</em> the model.</li>
+          <li><b>Schema validation</b> — JSON schema / regex / type check on every tool argument. Reject &amp; resample.</li>
+          <li><b>Allowlist tools</b> — minimum viable set per task. No <code>shell.exec</code> unless the task genuinely needs it.</li>
+          <li><b>Output filter</b> — content moderation + structured-output validator on every response.</li>
+          <li><b>Human-in-loop</b> — irreversible actions (delete, send, pay) require an explicit confirm step.</li>
+          <li><b>Audit log</b> — every tool call, args, result, and decision. Replay any failure.</li>
+        </ul>
+      </div>
+    </div>
+    </div><!-- /chapter agent -->
 
   </section>
 
@@ -5173,6 +6074,68 @@
         document.getElementById('learn-ai').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }));
     })();
+
+    /* ===== Generic play-button helper (animates a slider over time) ===== */
+    function laiAttachPlay(btnId, sliderId, opts){
+      const btn = document.getElementById(btnId);
+      const slider = document.getElementById(sliderId);
+      if(!btn || !slider) return;
+      const duration = (opts && opts.duration) || 4500;
+      const onLabel = (opts && opts.onLabel) || '■ stop';
+      const offLabel = (opts && opts.offLabel) || '▶ play';
+      let raf = null;
+      function stop(){
+        if(raf){ cancelAnimationFrame(raf); raf = null; }
+        btn.classList.remove('playing');
+        btn.textContent = offLabel;
+      }
+      function start(){
+        btn.classList.add('playing');
+        btn.textContent = onLabel;
+        const min = +slider.min;
+        const max = +slider.max;
+        const step = +slider.step || 1;
+        let startVal = +slider.value;
+        if(startVal >= max){ slider.value = min; startVal = min; slider.dispatchEvent(new Event('input', {bubbles:true})); }
+        const startT = performance.now();
+        const startFrom = +slider.value;
+        function tick(t){
+          const elapsed = t - startT;
+          const p = Math.min(1, elapsed / duration);
+          let v = startFrom + (max - startFrom) * p;
+          v = Math.round(v / step) * step;
+          if(+slider.value !== v){
+            slider.value = v;
+            slider.dispatchEvent(new Event('input', {bubbles:true}));
+          }
+          if(p < 1) raf = requestAnimationFrame(tick);
+          else stop();
+        }
+        raf = requestAnimationFrame(tick);
+      }
+      btn.addEventListener('click', () => { if(raf) stop(); else start(); });
+    }
+    // Run-once trigger (no slider) — calls a callback when clicked, button just visual
+    function laiAttachTrigger(btnId, cb){
+      const btn = document.getElementById(btnId);
+      if(!btn) return;
+      btn.addEventListener('click', () => {
+        btn.classList.add('playing');
+        cb();
+        setTimeout(() => btn.classList.remove('playing'), 280);
+      });
+    }
+    // Attach on next tick so the chapter JS has wired up its slider listeners first
+    setTimeout(() => {
+      laiAttachPlay('ft-play',         'ft-step',           { duration: 5000 });
+      laiAttachPlay('emb-train-play',  'emb-train-slider',  { duration: 4000 });
+      laiAttachPlay('kv-play',         'kv-users',          { duration: 5000, onLabel: '■ stop', offLabel: '▶ ramp' });
+      // spec resample — re-fire the K slider's input to regenerate the random trace
+      laiAttachTrigger('sp-roll', () => {
+        const k = document.getElementById('sp-k');
+        if(k) k.dispatchEvent(new Event('input', {bubbles:true}));
+      });
+    }, 0);
 
     /* ===== Color helper (shared) ===== */
     function laiColor(t){
@@ -5987,6 +6950,939 @@
         `;
       }
 
+      render();
+    })();
+
+    /* ===== CHAPTER 06 · KV cache at scale ===== */
+    (function(){
+      const svg = document.getElementById('kv-svg');
+      if(!svg) return;
+
+      const strategies = [
+        { id:'naive',  label:'Naive',         desc:'Pre-allocate max context per request.' },
+        { id:'paged',  label:'PagedAttn',     desc:'16-token blocks · only-as-needed.' },
+        { id:'prefix', label:'+ Prefix cache', desc:'Paged + shared system prompt across users.' }
+      ];
+      const state = { strat: 'paged', users: 8, ctx: 2048 };
+      const stRoot = document.getElementById('kv-strats');
+      strategies.forEach(s => {
+        const b = document.createElement('button');
+        b.className = 'tx-head' + (s.id===state.strat ? ' active' : '');
+        b.textContent = s.label;
+        b.addEventListener('click', () => {
+          state.strat = s.id;
+          document.querySelectorAll('#kv-strats .tx-head').forEach(x => x.classList.toggle('active', x===b));
+          render();
+        });
+        stRoot.appendChild(b);
+      });
+      document.getElementById('kv-users').addEventListener('input', e => {
+        state.users = +e.target.value;
+        document.getElementById('kv-u-val').textContent = state.users;
+        render();
+      });
+      document.getElementById('kv-ctx').addEventListener('input', e => {
+        state.ctx = +e.target.value;
+        document.getElementById('kv-c-val').textContent = state.ctx.toLocaleString();
+        render();
+      });
+
+      // GPU = 80 GB. KV per token = 320 KB at FP16 for 70B (8 KV heads).
+      const BYTES_PER_TOKEN = 320 * 1024;
+      const GPU_BYTES = 80 * 1024 * 1024 * 1024;
+      const PAGE_TOKENS = 16;
+      const MODEL_WEIGHTS = 70 * 2 * 1024*1024*1024; // 140 GB? no... 70B at FP16 = 140 GB. doesn't fit on 1 A100. simulate with 35GB INT4 alt
+      const MODEL_RESERVE = 38 * 1024*1024*1024; // weights + activations
+      const KV_BUDGET = GPU_BYTES - MODEL_RESERVE; // ~42 GB
+
+      function compute(){
+        const u = state.users, c = state.ctx;
+        // tokens-per-user actually used
+        const usedTokens = u * c;
+        // naive: allocates max context per slot (assume 8192 max)
+        let allocated, frag, sharedPrefix=0;
+        if(state.strat === 'naive'){
+          allocated = u * 8192 * BYTES_PER_TOKEN;
+          frag = allocated - usedTokens * BYTES_PER_TOKEN;
+        } else if(state.strat === 'paged'){
+          // allocate ceil(c/16) blocks per user
+          const blocks = Math.ceil(c / PAGE_TOKENS);
+          allocated = u * blocks * PAGE_TOKENS * BYTES_PER_TOKEN;
+          frag = allocated - usedTokens * BYTES_PER_TOKEN; // small
+        } else {
+          // prefix: share first 512 tokens (system prompt) across all users
+          const SHARED = 512;
+          const unique = Math.max(0, c - SHARED);
+          const blocks = Math.ceil(unique / PAGE_TOKENS);
+          const sharedBlocks = Math.ceil(SHARED / PAGE_TOKENS);
+          allocated = sharedBlocks * PAGE_TOKENS * BYTES_PER_TOKEN + u * blocks * PAGE_TOKENS * BYTES_PER_TOKEN;
+          frag = allocated - (usedTokens) * BYTES_PER_TOKEN + sharedBlocks * PAGE_TOKENS * BYTES_PER_TOKEN * (u-1); // we already accounted shared, but "saved" = (u-1)*shared
+          sharedPrefix = sharedBlocks * PAGE_TOKENS * BYTES_PER_TOKEN;
+        }
+        const over = allocated > KV_BUDGET;
+        return { allocated, frag, sharedPrefix, over };
+      }
+
+      function render(){
+        const W = 800, H = 420;
+        // grid of pages, 50 cols × 18 rows = 900 cells
+        const cols = 50, rows = 18;
+        const cellW = (W - 40) / cols;
+        const cellH = (H - 80) / rows;
+        const pad = { l: 20, t: 60 };
+        const totalCells = cols * rows;
+        // each cell = one 16-token page = 16 * 320KB = 5 MB. KV budget 42 GB → 8600 cells. So this is a sample view.
+        // We'll show what fraction is used.
+        const { allocated, frag, sharedPrefix } = compute();
+        const cellsUsedFrac = Math.min(1, allocated / KV_BUDGET);
+        const sharedFrac = sharedPrefix / KV_BUDGET;
+        // assign cells per user
+        const usersList = Array.from({length: state.users}, (_, i) => i);
+        const userColors = usersList.map((_, i) => {
+          const hue = (i * 47) % 360;
+          return `hsl(${hue}, 60%, 55%)`;
+        });
+        // pages per user
+        let perUserCells, sharedCells, totalUsed;
+        if(state.strat === 'naive'){
+          const wasted = 8192 - state.ctx;
+          perUserCells = Math.round(cellsUsedFrac * totalCells / state.users);
+          sharedCells = 0;
+          totalUsed = perUserCells * state.users;
+        } else if(state.strat === 'paged'){
+          const blocks = Math.ceil(state.ctx / PAGE_TOKENS);
+          // scale to viz
+          const scale = (allocated / KV_BUDGET) * totalCells / Math.max(1, state.users * blocks);
+          perUserCells = Math.max(1, Math.round(blocks * scale));
+          sharedCells = 0;
+          totalUsed = perUserCells * state.users;
+        } else {
+          sharedCells = Math.max(1, Math.round(sharedFrac * totalCells));
+          const unique = Math.max(0, state.ctx - 512);
+          const uniqBlocks = Math.ceil(unique / PAGE_TOKENS);
+          const scale = ((allocated - sharedPrefix) / KV_BUDGET) * totalCells / Math.max(1, state.users * uniqBlocks);
+          perUserCells = Math.max(0, Math.round(uniqBlocks * scale));
+          totalUsed = sharedCells + perUserCells * state.users;
+        }
+        // build cell assignments
+        const cells = new Array(totalCells).fill(null); // null=free, {kind, ui}
+        let idx = 0;
+        for(let s = 0; s < sharedCells && idx < totalCells; s++, idx++) cells[idx] = { kind: 'shared' };
+        for(let u = 0; u < state.users; u++){
+          for(let p = 0; p < perUserCells && idx < totalCells; p++, idx++) cells[idx] = { kind: 'user', ui: u };
+          if(state.strat === 'naive'){
+            // add wasted cells per user (over-allocation)
+            const wastedRatio = (8192 - state.ctx) / 8192;
+            const wastedCells = Math.round(perUserCells * wastedRatio / state.ctx * 8192) - perUserCells;
+            for(let w = 0; w < wastedCells && idx < totalCells; w++, idx++) cells[idx] = { kind: 'waste', ui: u };
+          }
+        }
+        const usedCount = idx;
+
+        let h = `<rect width="${W}" height="${H}" fill="#0f0e0c"/>`;
+        // header
+        h += `<text x="20" y="28" font-family="JetBrains Mono,monospace" font-size="11" fill="#efeae0" opacity="0.6">${strategies.find(s=>s.id===state.strat).desc}</text>`;
+        h += `<text x="${W-20}" y="28" font-family="JetBrains Mono,monospace" font-size="11" fill="#d4ff3c" text-anchor="end">${(allocated/(1024*1024*1024)).toFixed(1)} GB / ${(KV_BUDGET/(1024*1024*1024)).toFixed(0)} GB KV budget</text>`;
+        // cells
+        for(let r = 0; r < rows; r++){
+          for(let c = 0; c < cols; c++){
+            const i = r*cols + c;
+            const x = pad.l + c*cellW;
+            const y = pad.t + r*cellH;
+            const cell = cells[i];
+            let fill = '#1c1a17';
+            let extra = '';
+            if(!cell){
+              fill = '#13110f';
+            } else if(cell.kind === 'shared'){
+              fill = '#d4ff3c';
+            } else if(cell.kind === 'user'){
+              fill = userColors[cell.ui];
+            } else if(cell.kind === 'waste'){
+              fill = '#1c1a17';
+              extra = `<line x1="${x}" y1="${y+cellH}" x2="${x+cellW}" y2="${y}" stroke="#ff5b22" stroke-width="0.6" opacity="0.55"/>`;
+            }
+            h += `<rect x="${x+0.5}" y="${y+0.5}" width="${cellW-1}" height="${cellH-1}" fill="${fill}" opacity="${cell?0.9:0.45}"/>${extra}`;
+          }
+        }
+        // legend
+        h += `<g transform="translate(20, ${H-18})" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.65">`;
+        h += `<rect x="0" y="-8" width="10" height="10" fill="#d4ff3c"/><text x="14" y="1">shared prefix</text>`;
+        h += `<rect x="110" y="-8" width="10" height="10" fill="hsl(47, 60%, 55%)"/><text x="124" y="1">per-user KV</text>`;
+        h += `<rect x="220" y="-8" width="10" height="10" fill="#1c1a17" stroke="#ff5b22" stroke-width="0.5"/><line x1="220" y1="2" x2="230" y2="-8" stroke="#ff5b22" stroke-width="0.6"/><text x="234" y="1">wasted (fragmentation)</text>`;
+        h += `<rect x="400" y="-8" width="10" height="10" fill="#13110f" opacity="0.45"/><text x="414" y="1">free</text>`;
+        h += `</g>`;
+        svg.innerHTML = h;
+
+        // stats card
+        const used = allocated/(1024*1024*1024);
+        const budget = KV_BUDGET/(1024*1024*1024);
+        const fragGB = frag/(1024*1024*1024);
+        const fragPct = (frag/allocated*100);
+        const statsRoot = document.getElementById('kv-stats');
+        statsRoot.innerHTML = `
+          <div class="ft-stat"><span class="ft-stat-l">Allocated</span><span class="ft-stat-v">${used.toFixed(1)} GB</span><span class="ft-stat-s">/ ${budget.toFixed(0)} GB</span></div>
+          <div class="ft-stat"><span class="ft-stat-l">Fragmentation</span><span class="ft-stat-v">${Math.max(0,fragPct).toFixed(0)}%</span><span class="ft-stat-s">${Math.max(0,fragGB).toFixed(1)} GB lost</span></div>
+        `;
+        // throughput
+        const overcommit = used > budget;
+        const baseTps = 1200; // tok/s
+        const efficiency = state.strat === 'naive' ? 0.2 : state.strat === 'paged' ? 0.85 : 0.95;
+        const tps = overcommit ? 0 : Math.round(baseTps * efficiency * Math.min(state.users, 12));
+        const tputRoot = document.getElementById('kv-tput');
+        tputRoot.innerHTML = `
+          <div class="big">${overcommit ? 'OOM' : tps.toLocaleString() + ' t/s'}</div>
+          <div class="row"><span>Concurrent users</span><span>${state.users}</span></div>
+          <div class="row"><span>Avg ctx</span><span>${state.ctx.toLocaleString()} tok</span></div>
+          <div class="row"><span>Cache efficiency</span><span>${(efficiency*100).toFixed(0)}%</span></div>
+          <div class="row"><span>Status</span><span>${overcommit ? '⚠ over budget' : '✓ healthy'}</span></div>
+        `;
+
+        // KV math card
+        const total = state.users * state.ctx * BYTES_PER_TOKEN;
+        document.getElementById('kv-math').innerHTML = `
+          <div class="row"><span>Per-token KV (FP16)</span><b>320 KB</b></div>
+          <div class="row"><span>Per user · ${state.ctx.toLocaleString()} tok</span><b>${(state.ctx*BYTES_PER_TOKEN/(1024*1024)).toFixed(1)} MB</b></div>
+          <div class="row"><span>× ${state.users} users</span><b>${(total/(1024*1024*1024)).toFixed(2)} GB</b></div>
+          <div class="row"><span>w/ INT8 KV</span><b>${(total/2/(1024*1024*1024)).toFixed(2)} GB</b></div>
+        `;
+      }
+      render();
+    })();
+
+    /* ===== CHAPTER 07 · Spec decode vs quant ===== */
+    (function(){
+      const traceSvg = document.getElementById('spec-trace-svg');
+      if(!traceSvg) return;
+      const state = { draft: 7, K: 5, qLevel: 0 };
+      const QUANT = ['FP16', 'INT8', 'INT4 (GPTQ)', 'INT4 (AWQ)'];
+      const QUANT_QUAL = [100, 99.2, 96.8, 97.5]; // % retained
+      const QUANT_SPEED = [1.0, 1.6, 2.4, 2.2];
+      const QUANT_VRAM  = [140, 70, 35, 35];
+      const QUANT_LEVELS = [65536, 256, 16, 16];
+
+      document.getElementById('sp-draft').addEventListener('input', e => {
+        state.draft = +e.target.value;
+        document.getElementById('sp-d-val').textContent = state.draft + '×';
+        render();
+      });
+      document.getElementById('sp-k').addEventListener('input', e => {
+        state.K = +e.target.value;
+        document.getElementById('sp-k-val').textContent = state.K;
+        render();
+      });
+      document.getElementById('sp-q').addEventListener('input', e => {
+        state.qLevel = +e.target.value;
+        document.getElementById('sp-q-val').textContent = QUANT[state.qLevel];
+        render();
+      });
+
+      // generate token sequence with acceptance pattern
+      function genTrace(){
+        const sequence = [];
+        let pos = 0;
+        // run until ~20 final tokens
+        let final = 0;
+        // acceptance rate depends on draft model quality (closer to target = higher)
+        const acceptRate = 0.55 + 0.04 * (15 - state.draft); // smaller draft = higher accept
+        for(let pass = 0; pass < 10 && final < 22; pass++){
+          const proposed = [];
+          for(let k = 0; k < state.K; k++){
+            const accepted = Math.random() < acceptRate;
+            proposed.push({ accepted, pos: pos + k });
+          }
+          // find first reject — everything after is discarded
+          let firstReject = proposed.findIndex(p => !p.accepted);
+          if(firstReject === -1) firstReject = state.K;
+          sequence.push({ pass, proposed, firstReject });
+          // accept up to firstReject, then 1 fallback token from target
+          pos += firstReject + 1;
+          final += firstReject + 1;
+        }
+        return sequence;
+      }
+
+      function renderTrace(){
+        const seq = genTrace();
+        const W = 740, H = 320;
+        const padL = 80, padT = 44;
+        const rowH = 26;
+        const cellW = 50;
+        let h = `<rect width="${W}" height="${H}" fill="#0f0e0c"/>`;
+        h += `<text x="20" y="18" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.45" letter-spacing="0.12em">DRAFT TOKEN POSITION →</text>`;
+        let totalAccepted = 0, totalProposed = 0;
+        seq.forEach((row, ri) => {
+          if(ri >= 10) return;
+          const y = padT + ri * rowH;
+          h += `<text x="20" y="${y+16}" font-family="JetBrains Mono,monospace" font-size="10" fill="#efeae0" opacity="0.5">cycle ${ri+1}</text>`;
+          row.proposed.forEach((tok, ki) => {
+            const x = padL + ki * cellW;
+            const accepted = ki < row.firstReject;
+            totalProposed++;
+            if(accepted) totalAccepted++;
+            const fill = accepted ? '#d4ff3c' : (ki === row.firstReject ? '#ff5b22' : '#1c1a17');
+            const tc = accepted ? '#0a0908' : (ki === row.firstReject ? '#0a0908' : '#efeae0');
+            const op = ki <= row.firstReject ? 1 : 0.25;
+            h += `<rect x="${x}" y="${y+3}" width="${cellW-3}" height="${rowH-6}" fill="${fill}" opacity="${op}"/>`;
+            const label = accepted ? '✓' : (ki === row.firstReject ? '✗' : '·');
+            h += `<text x="${x + (cellW-3)/2}" y="${y+18}" font-family="JetBrains Mono,monospace" font-size="10" text-anchor="middle" fill="${tc}" opacity="${op}">${label}</text>`;
+          });
+          // fallback (target-generated) token
+          if(row.firstReject < state.K){
+            const x = padL + state.K * cellW + 14;
+            h += `<rect x="${x}" y="${y+3}" width="${cellW-3}" height="${rowH-6}" fill="#efeae0" opacity="0.5"/>`;
+            h += `<text x="${x + (cellW-3)/2}" y="${y+18}" font-family="JetBrains Mono,monospace" font-size="9" text-anchor="middle" fill="#0a0908">tgt</text>`;
+          }
+        });
+        // header labels
+        for(let k = 0; k < state.K; k++){
+          h += `<text x="${padL + k*cellW + cellW/2 - 1}" y="${padT-6}" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.5" text-anchor="middle">D${k+1}</text>`;
+        }
+        if(state.K < 8){
+          h += `<text x="${padL + state.K * cellW + 14 + 24}" y="${padT-6}" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.5" text-anchor="middle">T</text>`;
+        }
+        traceSvg.innerHTML = h;
+        const accRate = totalAccepted/totalProposed;
+        const tokensPerCycle = totalAccepted/seq.length + (seq.filter(s => s.firstReject < state.K).length / seq.length);
+        document.getElementById('spec-trace-meta').innerHTML = `
+          <div class="item"><span class="l">Acceptance</span><span class="v">${(accRate*100).toFixed(0)}%</span></div>
+          <div class="item"><span class="l">Tokens / cycle</span><span class="v">${tokensPerCycle.toFixed(2)}</span></div>
+          <div class="item"><span class="l">Speed-up</span><span class="v">${tokensPerCycle.toFixed(1)}×</span></div>
+        `;
+        return tokensPerCycle;
+      }
+
+      function renderQuant(){
+        const W = 440, H = 260;
+        const padL = 40, padR = 16, padT = 24, padB = 30;
+        const plotW = W - padL - padR;
+        const plotH = H - padT - padB;
+        const bins = 60;
+        const data = [];
+        // generate normal-ish weight distribution
+        for(let i = 0; i < bins; i++){
+          const x = (i / bins) * 2 - 1; // -1..1
+          let y = Math.exp(-x*x * 6) * 100 + Math.exp(-(x-0.3)*(x-0.3)*40)*15;
+          data.push(y);
+        }
+        // for quantized, snap to nearest level
+        const levels = QUANT_LEVELS[state.qLevel];
+        let quantized;
+        if(state.qLevel === 0){
+          quantized = data.slice();
+        } else {
+          // bin the bin-centers into `levels` buckets
+          const minB = -1, maxB = 1;
+          quantized = data.map((y, i) => {
+            const x = (i / bins) * 2 - 1;
+            const snapped = Math.round((x - minB) / (maxB - minB) * (levels-1)) / (levels-1) * (maxB - minB) + minB;
+            const snapBin = Math.floor((snapped - minB) / (maxB - minB) * bins);
+            return snapBin;
+          });
+          // accumulate into bins
+          const acc = new Array(bins).fill(0);
+          quantized.forEach((b, i) => { if(b>=0 && b<bins) acc[b] += data[i]; });
+          quantized = acc;
+        }
+        const maxY = Math.max(...data, ...quantized);
+        let h = `<rect width="${W}" height="${H}" fill="#0f0e0c"/>`;
+        // grid
+        for(let g = 0; g <= 4; g++){
+          const y = padT + (g/4) * plotH;
+          h += `<line x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" stroke="#efeae0" stroke-opacity="0.07"/>`;
+        }
+        // bars (original) - light
+        const bw = plotW / bins;
+        if(state.qLevel > 0){
+          data.forEach((y, i) => {
+            const bh = (y/maxY)*plotH;
+            h += `<rect x="${padL + i*bw}" y="${padT + plotH - bh}" width="${bw-1}" height="${bh}" fill="#efeae0" opacity="0.18"/>`;
+          });
+        }
+        // bars (quantized) - lime
+        quantized.forEach((y, i) => {
+          if(y <= 0) return;
+          const bh = (y/maxY)*plotH;
+          h += `<rect x="${padL + i*bw}" y="${padT + plotH - bh}" width="${bw-1}" height="${bh}" fill="${state.qLevel===0?'#efeae0':'#d4ff3c'}" opacity="${state.qLevel===0?0.85:0.95}"/>`;
+        });
+        // axes
+        h += `<text x="${padL}" y="${H-12}" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.5">−1</text>`;
+        h += `<text x="${(padL+W-padR)/2}" y="${H-12}" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.5" text-anchor="middle">weight value</text>`;
+        h += `<text x="${W-padR}" y="${H-12}" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.5" text-anchor="end">+1</text>`;
+        h += `<text x="${padL}" y="${padT-8}" font-family="JetBrains Mono,monospace" font-size="10" fill="#d4ff3c">${QUANT[state.qLevel]} · ${levels.toLocaleString()} distinct values</text>`;
+        document.getElementById('spec-quant-svg').innerHTML = h;
+        document.getElementById('spec-quant-stats').innerHTML = `
+          <div class="item"><span class="l">VRAM (70B)</span><span class="v">${QUANT_VRAM[state.qLevel]} GB</span></div>
+          <div class="item"><span class="l">Quality retain</span><span class="v">${QUANT_QUAL[state.qLevel]}%</span></div>
+          <div class="item"><span class="l">Arithmetic</span><span class="v">${QUANT_SPEED[state.qLevel].toFixed(1)}×</span></div>
+        `;
+      }
+
+      function renderSummary(specGain){
+        const quantSpeed = QUANT_SPEED[state.qLevel];
+        const totalSpeed = specGain * quantSpeed;
+        const quality = QUANT_QUAL[state.qLevel];
+        const vram = QUANT_VRAM[state.qLevel];
+        document.getElementById('spec-summary').innerHTML = `
+          <div class="item"><span class="l">Spec decode</span><span class="v">${specGain.toFixed(1)}×</span><span class="s">tokens / forward pass</span></div>
+          <div class="item"><span class="l">Quantization</span><span class="v">${quantSpeed.toFixed(1)}×</span><span class="s">${QUANT[state.qLevel]} arithmetic</span></div>
+          <div class="item"><span class="l">Combined</span><span class="v">${totalSpeed.toFixed(1)}×</span><span class="s">end-to-end</span></div>
+          <div class="item"><span class="l">Quality / VRAM</span><span class="v">${quality}%</span><span class="s">${vram} GB · 70B</span></div>
+        `;
+      }
+
+      function render(){
+        const specGain = renderTrace();
+        renderQuant();
+        renderSummary(specGain);
+      }
+      render();
+    })();
+
+    /* ===== CHAPTER 08 · RAG evaluation ===== */
+    (function(){
+      const caseSel = document.getElementById('re-case');
+      if(!caseSel) return;
+
+      const cases = [
+        {
+          q: 'How did Q3 retail revenue perform vs guidance?',
+          gtIds: ['doc-014','doc-049'],
+          gold: 'Q3 retail revenue grew 12% YoY to $1.42B [doc-014], leading to FY guidance being raised to $5.8–6.0B [doc-049].',
+          docs: [
+            { id:'doc-014', text:'Q3 retail revenue grew 12% YoY to $1.42B, with apparel leading at +18%.', relevant:true },
+            { id:'doc-049', text:'FY guidance was raised to $5.8–6.0B following the Q3 beat.', relevant:true },
+            { id:'doc-027', text:'Inventory levels rose 9% in Q3.', relevant:false },
+            { id:'doc-091', text:'Same-store sales rose 7.4% YoY led by digital +18%.', relevant:false },
+            { id:'doc-074', text:'European expansion into Germany and France scheduled for Q1.', relevant:false }
+          ],
+          configs: {
+            baseline: { order:[0,2,3,4,1], answer:[
+              { text:'Q3 retail revenue grew 12% YoY to $1.42B', ground:'doc-014' },
+              { text:', and inventory was reported to be elevated', ground:'halu' },
+              { text:'. FY guidance was raised to $5.8-6.0B', ground:'doc-049' }
+            ]},
+            hybrid: { order:[0,1,2,3,4], answer:[
+              { text:'Q3 retail revenue grew 12% YoY to $1.42B', ground:'doc-014' },
+              { text:'. FY guidance was raised to $5.8–6.0B following the Q3 beat', ground:'doc-049' },
+              { text:'.', ground:null }
+            ]},
+            rerank: { order:[0,1,3,2,4], answer:[
+              { text:'Q3 retail revenue grew 12% YoY to $1.42B [doc-014]', ground:'doc-014' },
+              { text:', leading to FY guidance being raised to $5.8–6.0B [doc-049]', ground:'doc-049' },
+              { text:'.', ground:null }
+            ]}
+          }
+        },
+        {
+          q: 'Who is the new CFO and when did she join?',
+          gtIds: ['doc-061'],
+          gold: 'Maria Chen joined as CFO in August [doc-061], coming from a Fortune 500 retailer.',
+          docs: [
+            { id:'doc-061', text:'New CFO Maria Chen joined in August; prior CFO at a Fortune 500 retailer.', relevant:true },
+            { id:'doc-112', text:'Employee headcount unchanged at 4,200; engineering up 15%.', relevant:false },
+            { id:'doc-074', text:'European expansion into Germany and France scheduled for Q1 next year.', relevant:false },
+            { id:'doc-014', text:'Q3 retail revenue grew 12% YoY to $1.42B.', relevant:false }
+          ],
+          configs: {
+            baseline: { order:[1,2,3,0], answer:[
+              { text:'The CFO position has been updated', ground:'halu' },
+              { text:'. Headcount is at 4,200', ground:'doc-112' },
+              { text:', and European expansion is planned for Q1', ground:'doc-074' },
+              { text:'.', ground:null }
+            ]},
+            hybrid: { order:[0,1,2,3], answer:[
+              { text:'Maria Chen joined as CFO in August', ground:'doc-061' },
+              { text:'.', ground:null }
+            ]},
+            rerank: { order:[0,2,1,3], answer:[
+              { text:'Maria Chen joined as CFO in August [doc-061]', ground:'doc-061' },
+              { text:', previously CFO at a Fortune 500 retailer', ground:'doc-061' },
+              { text:'.', ground:null }
+            ]}
+          }
+        }
+      ];
+      cases.forEach((c, i) => {
+        const o = document.createElement('option'); o.value = i; o.textContent = c.q;
+        caseSel.appendChild(o);
+      });
+
+      const cfgs = [
+        { id:'baseline', label:'Baseline (top-k cosine)' },
+        { id:'hybrid',   label:'+ Hybrid (BM25 + dense)' },
+        { id:'rerank',   label:'+ Cross-encoder rerank' }
+      ];
+      const state = { caseIdx: 0, cfg: 'rerank' };
+      const cfgRow = document.getElementById('re-cfgs');
+      cfgs.forEach(c => {
+        const b = document.createElement('button');
+        b.className = 'tx-head' + (c.id === state.cfg ? ' active' : '');
+        b.textContent = c.label;
+        b.addEventListener('click', () => {
+          state.cfg = c.id;
+          document.querySelectorAll('#re-cfgs .tx-head').forEach(x => x.classList.toggle('active', x===b));
+          render();
+        });
+        cfgRow.appendChild(b);
+      });
+      caseSel.addEventListener('change', e => { state.caseIdx = +e.target.value; render(); });
+
+      function computeMetrics(cs, cfg){
+        const order = cs.configs[cfg].order;
+        const ans = cs.configs[cfg].answer;
+        const retrievedIds = order.map(i => cs.docs[i].id);
+        // recall: gt that appears in retrieved (top-k)
+        const recall = cs.gtIds.filter(id => retrievedIds.includes(id)).length / cs.gtIds.length;
+        // precision: of retrieved docs marked relevant, weighted by rank
+        const k = order.length;
+        let prec = 0;
+        order.forEach((docIdx, rank) => {
+          if(cs.docs[docIdx].relevant) prec += 1/(rank+1);
+        });
+        const norm = cs.gtIds.reduce((s, _, i) => s + 1/(i+1), 0);
+        prec = Math.min(1, prec / norm);
+        // faithfulness: sentences grounded in retrieved chunks
+        const grounded = ans.filter(s => s.ground && s.ground !== 'halu').length;
+        const totalSent = ans.filter(s => s.ground !== null).length;
+        const faith = totalSent === 0 ? 0 : grounded / totalSent;
+        // relevance: heuristic — answer touches all gt ids and no halus
+        const mentionsAllGt = cs.gtIds.every(id => ans.some(s => s.ground === id));
+        const noHalu = !ans.some(s => s.ground === 'halu');
+        const rel = (mentionsAllGt ? 0.6 : 0.2) + (noHalu ? 0.4 : 0);
+        return { recall, precision: prec, faithfulness: faith, relevance: rel };
+      }
+
+      function render(){
+        const cs = cases[state.caseIdx];
+        document.getElementById('re-q').textContent = cs.q;
+        document.getElementById('re-gold').textContent = cs.gold;
+        document.getElementById('re-gt').innerHTML = cs.gtIds.map(id => `<span>${id}</span>`).join(' ');
+        document.getElementById('re-cfg-name').textContent = cfgs.find(c => c.id === state.cfg).label;
+
+        const order = cs.configs[state.cfg].order;
+        const ans = cs.configs[state.cfg].answer;
+        const retr = document.getElementById('re-retrieved');
+        retr.innerHTML = '';
+        order.forEach((docIdx, rank) => {
+          const d = cs.docs[docIdx];
+          const el = document.createElement('div');
+          el.className = 're-doc ' + (d.relevant ? 'relevant' : 'irrelevant');
+          el.innerHTML = `<span class="id">${d.id}</span><span class="rank">#${rank+1}</span><span class="text">${d.text}</span>`;
+          retr.appendChild(el);
+        });
+        document.getElementById('re-answer').innerHTML = ans.map(s => {
+          if(s.ground === 'halu') return `<span class="halu">${s.text}</span>`;
+          if(s.ground) return `<span class="ground" title="grounded in ${s.ground}">${s.text}</span>`;
+          return s.text;
+        }).join('');
+
+        const m = computeMetrics(cs, state.cfg);
+        const metricList = [
+          { key:'recall',      label:'Context recall',    v:m.recall,       desc:'fraction of ground-truth docs that were retrieved' },
+          { key:'precision',   label:'Context precision', v:m.precision,    desc:'how well-ranked the relevant docs were' },
+          { key:'faithfulness',label:'Faithfulness',      v:m.faithfulness, desc:'fraction of answer claims grounded in retrieved context' },
+          { key:'relevance',   label:'Answer relevance',  v:m.relevance,    desc:'how directly the answer addresses the question' }
+        ];
+        const root = document.getElementById('re-metrics');
+        root.innerHTML = metricList.map(mt => `
+          <div class="re-metric ${mt.v < 0.6 ? 'bad' : ''}">
+            <span>${mt.label}</span>
+            <div class="lai-bar"><div class="lai-bar-fill ${mt.v < 0.6 ? 'alt' : ''}" style="width:${(mt.v*100).toFixed(0)}%"></div></div>
+            <span class="val">${mt.v.toFixed(2)}</span>
+          </div>
+        `).join('');
+        const lowest = metricList.reduce((min, x) => x.v < min.v ? x : min, metricList[0]);
+        let verdict;
+        if(lowest.v >= 0.85) verdict = '✓ Healthy — all four metrics pass; ship it.';
+        else if(lowest.key === 'recall') verdict = `Weakest: recall (${lowest.v.toFixed(2)}). Missing relevant docs — try hybrid (BM25+dense) or higher k.`;
+        else if(lowest.key === 'precision') verdict = `Weakest: precision (${lowest.v.toFixed(2)}). Wrong order — add a cross-encoder re-ranker.`;
+        else if(lowest.key === 'faithfulness') verdict = `Weakest: faithfulness (${lowest.v.toFixed(2)}). Model is hallucinating — tighten the prompt, force citations, lower temperature.`;
+        else verdict = `Weakest: answer relevance (${lowest.v.toFixed(2)}). Retrieved fine but answer drifts — re-prompt with the question pinned.`;
+        document.getElementById('re-verdict').textContent = verdict;
+
+        // comparison table
+        const body = document.getElementById('re-compare-body');
+        body.innerHTML = '';
+        cfgs.forEach(c => {
+          const m2 = computeMetrics(cs, c.id);
+          const r = document.createElement('tr');
+          r.innerHTML = `<td>${c.label}</td><td>${m2.recall.toFixed(2)}</td><td>${m2.precision.toFixed(2)}</td><td>${m2.faithfulness.toFixed(2)}</td><td>${m2.relevance.toFixed(2)}</td>`;
+          if(c.id === state.cfg) r.style.background = 'rgba(212, 255, 60, 0.06)';
+          body.appendChild(r);
+        });
+      }
+      render();
+    })();
+
+    /* ===== CHAPTER 09 · Cost & token leaks ===== */
+    (function(){
+      const reqSlider = document.getElementById('co-req');
+      if(!reqSlider) return;
+
+      const models = [
+        { id:'claude-haiku',  label:'Claude Haiku 4.5',   inP:0.0010, outP:0.0050 },
+        { id:'claude-sonnet', label:'Claude Sonnet 4.6',  inP:0.0030, outP:0.0150 },
+        { id:'claude-opus',   label:'Claude Opus 4.7',    inP:0.0150, outP:0.0750 },
+        { id:'gpt4o-mini',    label:'GPT-4o-mini',        inP:0.0002, outP:0.0006 },
+        { id:'gpt4o',         label:'GPT-4o',             inP:0.0025, outP:0.0100 }
+      ];
+      const modelSel = document.getElementById('co-model');
+      models.forEach((m, i) => {
+        const o = document.createElement('option'); o.value = i; o.textContent = `${m.label} · $${m.inP*1000}/1k in / $${m.outP*1000}/1k out`;
+        modelSel.appendChild(o);
+      });
+      modelSel.value = '1';
+
+      // mitigations
+      const mits = [
+        { id:'cache',  label:'Prompt caching (90% off repeated system prompt)' },
+        { id:'trim',   label:'Trim history (last 4 turns + summary)' },
+        { id:'rag4',   label:'RAG: 4 chunks w/ reranker (vs 24 raw)' },
+        { id:'schema', label:'Early-stop on schema fail' }
+      ];
+      const mitsRoot = document.getElementById('co-mits');
+      mits.forEach(m => {
+        const lbl = document.createElement('label');
+        lbl.innerHTML = `<input type="checkbox" data-mit="${m.id}"> ${m.label}`;
+        mitsRoot.appendChild(lbl);
+      });
+
+      const state = { req: 200000, modelIdx: 1, mits: {} };
+      reqSlider.addEventListener('input', e => {
+        state.req = +e.target.value;
+        document.getElementById('co-r-val').textContent = state.req.toLocaleString();
+        render();
+      });
+      modelSel.addEventListener('change', e => { state.modelIdx = +e.target.value; render(); });
+      mitsRoot.addEventListener('change', e => {
+        if(e.target.matches('input[type=checkbox]')){
+          state.mits[e.target.dataset.mit] = e.target.checked;
+          render();
+        }
+      });
+
+      // base token breakdown per request (input tokens)
+      function tokenBreakdown(){
+        const base = {
+          'System prompt': 1800,
+          'Tool schemas': 1200,
+          'Conversation history': 2400,
+          'RAG context': 6000,
+          'User message': 220,
+          'Response': 480
+        };
+        const colors = {
+          'System prompt': '#ff5b22',
+          'Tool schemas': '#ffb45b',
+          'Conversation history': '#ff9c5b',
+          'RAG context': '#d4ff3c',
+          'User message': '#5bf0ff',
+          'Response': '#c9a0ff'
+        };
+        const eff = { ...base };
+        if(state.mits.cache) eff['System prompt'] = base['System prompt'] * 0.1; // 90% cached
+        if(state.mits.trim) eff['Conversation history'] = base['Conversation history'] * 0.3;
+        if(state.mits.rag4) eff['RAG context'] = base['RAG context'] * (4/24);
+        if(state.mits.schema){
+          // saved retry overhead: roughly 20% on output
+          eff['Response'] = base['Response'] * 0.85;
+        }
+        return { eff, base, colors };
+      }
+
+      function render(){
+        const m = models[state.modelIdx];
+        const { eff, base, colors } = tokenBreakdown();
+        const order = ['System prompt','Tool schemas','Conversation history','RAG context','User message','Response'];
+        const inputCats = order.slice(0,5);
+        const outputCats = ['Response'];
+        const inSum  = inputCats.reduce((s, k) => s + eff[k], 0);
+        const outSum = outputCats.reduce((s, k) => s + eff[k], 0);
+        const baseInSum  = inputCats.reduce((s, k) => s + base[k], 0);
+        const baseOutSum = outputCats.reduce((s, k) => s + base[k], 0);
+        const totalToks  = inSum + outSum;
+        const baseTotal  = baseInSum + baseOutSum;
+        const dayReq = state.req;
+        const dollarPerReq = (inSum * m.inP + outSum * m.outP) / 1000;
+        const baseDollarPerReq = (baseInSum * m.inP + baseOutSum * m.outP) / 1000;
+        const dailyCost = dollarPerReq * dayReq;
+        const baseDailyCost = baseDollarPerReq * dayReq;
+        const saved = baseDailyCost - dailyCost;
+
+        // stacked bar (input side)
+        const W = 740, H = 220;
+        const padL = 24, padR = 24, padT = 32, padB = 60;
+        const barH = 30;
+        const totalW = W - padL - padR;
+        let x = padL;
+        let h = `<rect width="${W}" height="${H}" fill="#0f0e0c"/>`;
+        h += `<text x="${padL}" y="20" font-family="JetBrains Mono,monospace" font-size="10" fill="#efeae0" opacity="0.55">${totalToks.toLocaleString()} tokens/request · ${Math.round(totalToks/baseTotal*100)}% of baseline (${baseTotal.toLocaleString()})</text>`;
+        order.forEach(k => {
+          const w = (eff[k] / totalToks) * totalW;
+          h += `<rect class="seg" x="${x}" y="${padT}" width="${w}" height="${barH}" fill="${colors[k]}" opacity="0.9"/>`;
+          if(w > 50){
+            h += `<text x="${x+6}" y="${padT+barH/2+4}" font-family="JetBrains Mono,monospace" font-size="10" fill="#0a0908">${k}</text>`;
+          }
+          x += w;
+        });
+        // dollar per cat below
+        const yLab = padT + barH + 22;
+        x = padL;
+        order.forEach(k => {
+          const w = (eff[k] / totalToks) * totalW;
+          const isOut = k === 'Response';
+          const dollar = eff[k] * (isOut ? m.outP : m.inP) / 1000 * dayReq;
+          if(w > 40){
+            h += `<text x="${x+4}" y="${yLab}" font-family="JetBrains Mono,monospace" font-size="9" fill="${colors[k]}">${eff[k].toLocaleString()} tok</text>`;
+            h += `<text x="${x+4}" y="${yLab+13}" font-family="JetBrains Mono,monospace" font-size="9" fill="#efeae0" opacity="0.6">$${dollar.toFixed(0)}/day</text>`;
+          }
+          x += w;
+        });
+        document.getElementById('cost-stack-svg').innerHTML = h;
+
+        // totals card
+        document.getElementById('cost-tot').innerHTML = `
+          <div class="item"><span class="l">$ / request</span><span class="v">$${(dollarPerReq*1000).toFixed(2)}/1k</span></div>
+          <div class="item"><span class="l">$ / day</span><span class="v big">$${dailyCost.toLocaleString(undefined, {maximumFractionDigits:0})}</span></div>
+          <div class="item"><span class="l">$ / month</span><span class="v">$${(dailyCost*30).toLocaleString(undefined, {maximumFractionDigits:0})}</span></div>
+        `;
+
+        // leaks ranked
+        const leakDefs = [
+          { id:'cache',  title:'System prompt re-sent uncached',         calc: () => (base['System prompt'] - eff['System prompt']) * m.inP / 1000 * dayReq },
+          { id:'trim',   title:'Unbounded conversation history',          calc: () => (base['Conversation history'] - eff['Conversation history']) * m.inP / 1000 * dayReq },
+          { id:'rag4',   title:'Over-large RAG context (24 chunks → 4)',  calc: () => (base['RAG context'] - eff['RAG context']) * m.inP / 1000 * dayReq },
+          { id:'schema', title:'Schema-fail retry burning output tokens', calc: () => (base['Response'] - eff['Response']) * m.outP / 1000 * dayReq }
+        ];
+        const leaks = leakDefs.map(d => ({
+          id: d.id,
+          title: d.title,
+          fixed: !!state.mits[d.id],
+          // if not fixed, $ wasted = what you'd save by applying it
+          potential: (() => {
+            // tmp apply
+            const orig = state.mits[d.id];
+            state.mits[d.id] = true;
+            const { eff: eff2 } = tokenBreakdown();
+            state.mits[d.id] = orig;
+            const in2  = inputCats.reduce((s, k) => s + eff2[k], 0);
+            const out2 = outputCats.reduce((s, k) => s + eff2[k], 0);
+            const d2 = (in2*m.inP + out2*m.outP)/1000 * dayReq;
+            return Math.max(0, dailyCost - d2);
+          })()
+        })).sort((a,b) => b.potential - a.potential);
+        const leaksRoot = document.getElementById('cost-leaks');
+        leaksRoot.innerHTML = '';
+        leaks.forEach(l => {
+          const el = document.createElement('div');
+          el.className = 'cost-leak' + (l.fixed ? ' fixed' : '');
+          el.innerHTML = `<span>${l.fixed ? '✓' : '⚠'} ${l.title}</span><span class="leak-money">${l.fixed ? 'fixed · ' : ''}$${l.potential.toLocaleString(undefined, {maximumFractionDigits:0})}/day</span>`;
+          leaksRoot.appendChild(el);
+        });
+      }
+      render();
+    })();
+
+    /* ===== CHAPTER 10 · Agent guardrails ===== */
+    (function(){
+      const scenSel = document.getElementById('ag-scen');
+      if(!scenSel) return;
+
+      const scenarios = [
+        {
+          label: 'Search-research agent · stuck in retry loop',
+          steps: [
+            { tool:'web_search',       args:'query="Q3 retail earnings"',           ok:true,  result:'12 results' },
+            { tool:'fetch_page',       args:'url=acme.com/ir/q3',                    ok:true,  result:'248 KB HTML' },
+            { tool:'extract_summary',  args:'text=<248KB>',                          ok:false, result:'JSON schema invalid' },
+            { tool:'extract_summary',  args:'text=<248KB>',                          ok:false, result:'JSON schema invalid', flag:'loop' },
+            { tool:'extract_summary',  args:'text=<248KB>',                          ok:false, result:'JSON schema invalid', flag:'loop' },
+            { tool:'extract_summary',  args:'text=<248KB>, retry=true',              ok:false, result:'JSON schema invalid', flag:'loop' },
+            { tool:'web_search',       args:'query="Q3 retail earnings 2025"',       ok:true,  result:'14 results' },
+            { tool:'web_search',       args:'query="Q3 retail earnings report"',     ok:true,  result:'11 results', flag:'drift' },
+            { tool:'web_search',       args:'query="acme Q3 2025 earnings"',         ok:true,  result:'9 results',  flag:'drift' }
+          ]
+        },
+        {
+          label: 'SQL agent · query → answer (healthy)',
+          steps: [
+            { tool:'list_tables',      args:'',                                       ok:true,  result:'14 tables' },
+            { tool:'describe_table',   args:'name="sales"',                           ok:true,  result:'7 columns' },
+            { tool:'run_sql',          args:'SELECT SUM(rev) FROM sales WHERE q="Q3"',ok:true,  result:'$1.42B' },
+            { tool:'format_answer',    args:'value=$1.42B, src=sales',                ok:true,  result:'rendered' }
+          ]
+        },
+        {
+          label: 'File-edit agent · unbounded budget',
+          steps: [
+            { tool:'list_files',       args:'path="."',                               ok:true, result:'128 files' },
+            { tool:'read_file',        args:'path="src/index.ts"',                    ok:true, result:'4.2k tokens' },
+            { tool:'edit_file',        args:'path="src/index.ts", patch=...',         ok:true, result:'applied' },
+            { tool:'run_tests',        args:'',                                       ok:false,result:'3 failures' },
+            { tool:'read_file',        args:'path="src/index.ts"',                    ok:true, result:'4.4k tokens' },
+            { tool:'edit_file',        args:'path="src/index.ts", patch=...',         ok:true, result:'applied' },
+            { tool:'run_tests',        args:'',                                       ok:false,result:'3 failures', flag:'cycle' },
+            { tool:'read_file',        args:'path="src/index.ts"',                    ok:true, result:'4.5k tokens', flag:'cycle' },
+            { tool:'edit_file',        args:'path="src/index.ts", patch=...',         ok:true, result:'applied',     flag:'cycle' },
+            { tool:'run_tests',        args:'',                                       ok:false,result:'3 failures',  flag:'cycle' }
+          ]
+        }
+      ];
+      scenarios.forEach((s, i) => {
+        const o = document.createElement('option'); o.value = i; o.textContent = s.label;
+        scenSel.appendChild(o);
+      });
+
+      const guardrails = [
+        { id:'loop',     label:'Loop detector (3 repeats halt)' },
+        { id:'budget',   label:'Hard budget caps (tokens · time · calls)' },
+        { id:'schema',   label:'Schema validator on every tool call' },
+        { id:'allow',    label:'Tool allowlist' },
+        { id:'human',    label:'Human-in-loop on destructive actions' }
+      ];
+      const grRoot = document.getElementById('ag-grs');
+      guardrails.forEach((g, i) => {
+        const lbl = document.createElement('label');
+        lbl.innerHTML = `<input type="checkbox" data-gr="${g.id}" ${g.id==='budget' || g.id==='schema' ? 'checked' : ''}> ${g.label}`;
+        grRoot.appendChild(lbl);
+      });
+
+      const state = { scen: 0, step: -1, autoTimer: null, guards: { budget:true, schema:true } };
+      scenSel.addEventListener('change', e => { state.scen = +e.target.value; reset(); });
+      grRoot.addEventListener('change', e => {
+        if(e.target.matches('input[type=checkbox]')){
+          state.guards[e.target.dataset.gr] = e.target.checked;
+          render();
+        }
+      });
+
+      function reset(){
+        state.step = -1;
+        if(state.autoTimer){ clearInterval(state.autoTimer); state.autoTimer = null; }
+        render();
+      }
+      document.getElementById('ag-next').addEventListener('click', () => {
+        const max = scenarios[state.scen].steps.length;
+        const halted = computeHalt() <= state.step;
+        if(state.step < max - 1 && !halted) state.step++;
+        render();
+      });
+      document.getElementById('ag-prev').addEventListener('click', () => {
+        if(state.step >= 0) state.step--;
+        render();
+      });
+      document.getElementById('ag-auto').addEventListener('click', () => {
+        if(state.autoTimer){ clearInterval(state.autoTimer); state.autoTimer = null; render(); return; }
+        state.autoTimer = setInterval(() => {
+          const max = scenarios[state.scen].steps.length;
+          const halted = computeHalt() <= state.step;
+          if(state.step < max - 1 && !halted){
+            state.step++;
+            render();
+          } else {
+            clearInterval(state.autoTimer);
+            state.autoTimer = null;
+            render();
+          }
+        }, 700);
+      });
+      document.getElementById('ag-reset').addEventListener('click', reset);
+
+      function computeHalt(){
+        // returns step index AT which agent halts (-1 = not halted yet)
+        const steps = scenarios[state.scen].steps;
+        if(!state.guards.loop && !state.guards.budget) return Infinity;
+        let consecutiveRepeats = 0;
+        const sigs = [];
+        for(let i = 0; i < steps.length; i++){
+          const s = steps[i];
+          const sig = s.tool + '|' + s.args;
+          if(state.guards.loop){
+            if(i > 0 && sigs[i-1] === sig){ consecutiveRepeats++; if(consecutiveRepeats >= 2) return i; }
+            else consecutiveRepeats = 0;
+            // 2-cycle: same tool 4 times in last 6
+            if(i >= 5){
+              const last = sigs.slice(i-5).concat(sig);
+              const sameTool = last.filter(x => x.split('|')[0] === sig.split('|')[0]).length;
+              if(sameTool >= 4) return i;
+            }
+          }
+          sigs.push(sig);
+          // budget: 8 tool calls max
+          if(state.guards.budget && i >= 7) return i;
+        }
+        return Infinity;
+      }
+
+      function render(){
+        const sc = scenarios[state.scen];
+        const haltAt = computeHalt();
+        const max = sc.steps.length;
+        const visible = state.step + 1;
+        const root = document.getElementById('ag-trace');
+        root.innerHTML = '';
+        let halted = false;
+        let firedGuards = new Set();
+        for(let i = 0; i < max; i++){
+          const s = sc.steps[i];
+          const isVisible = i <= state.step;
+          const isHalt = (i === haltAt) && isVisible;
+          if(isHalt) halted = true;
+          let cls = 'ag-step';
+          if(isVisible) cls += ' visible';
+          if(!s.ok) cls += ' fail';
+          if(s.flag) { cls += ' loop'; if(isVisible) firedGuards.add(s.flag); }
+          if(isHalt) cls += ' halt';
+          let tag;
+          if(isHalt) tag = 'HALTED';
+          else if(s.flag === 'loop') tag = 'LOOP';
+          else if(s.flag === 'drift') tag = 'ARG DRIFT';
+          else if(s.flag === 'cycle') tag = 'CYCLE';
+          else if(!s.ok) tag = 'FAIL';
+          else tag = 'OK';
+          const row = document.createElement('div');
+          row.className = cls;
+          row.innerHTML = `<span class="n">${String(i+1).padStart(2,'0')}</span><span class="call"><code>${s.tool}</code>(${s.args || '∅'}) → <span style="color:var(--paper-mute)">${s.result}</span></span><span class="tag">${tag}</span>`;
+          root.appendChild(row);
+          if(halted) break;
+        }
+
+        // budgets
+        const callCap = 8;
+        const tokCap = 50000;
+        const tokUsed = Math.min(tokCap, visible * 4200);
+        const timeCap = 60;
+        const timeUsed = Math.min(timeCap, visible * 4.5);
+        const cb = document.getElementById('ag-budgets');
+        const haltedByBudget = halted && state.guards.budget && haltAt >= 7;
+        function bar(label, used, cap, unit){
+          const pct = Math.min(100, used/cap*100);
+          const bad = pct >= 80;
+          return `<div class="ag-budget ${bad?'bad':''}">
+            <div class="top"><span>${label}</span><span class="val ${bad?'bad':''}">${used.toLocaleString()}${unit} / ${cap.toLocaleString()}${unit}</span></div>
+            <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
+          </div>`;
+        }
+        cb.innerHTML = bar('Tool calls', Math.min(visible, callCap), callCap, '') + bar('Tokens', tokUsed, tokCap, '') + bar('Wall time', Math.round(timeUsed), timeCap, 's');
+
+        // guardrail status
+        const st = document.getElementById('ag-status');
+        st.innerHTML = '';
+        guardrails.forEach(g => {
+          const on = !!state.guards[g.id];
+          let stTxt, cls;
+          if(!on){ stTxt='OFF'; cls=''; }
+          else if(g.id === 'loop' && (firedGuards.has('loop') || firedGuards.has('cycle') || firedGuards.has('drift'))){ stTxt = 'FIRED'; cls='fired'; }
+          else if(g.id === 'budget' && haltedByBudget){ stTxt = 'FIRED'; cls='fired'; }
+          else if(g.id === 'schema' && sc.steps.slice(0, visible).some(x => !x.ok && x.result.includes('schema'))){ stTxt = 'FIRED'; cls='fired'; }
+          else { stTxt = 'OK'; cls='ok'; }
+          const row = document.createElement('div');
+          row.className = 'ag-status-row ' + cls;
+          row.innerHTML = `<span>${g.label}</span><span class="st">${stTxt}</span>`;
+          st.appendChild(row);
+        });
+      }
       render();
     })();
 
