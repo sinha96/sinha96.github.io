@@ -2143,6 +2143,78 @@
       color: var(--paper-mute);
     }
 
+    /* Sticky compact chapter switcher (appears after main nav scrolls out) */
+    .ch-sticky {
+      position: fixed;
+      top: 42px; left: 0; right: 0;
+      z-index: 78;
+      background: rgba(10, 9, 8, 0.88);
+      backdrop-filter: blur(14px) saturate(140%);
+      -webkit-backdrop-filter: blur(14px) saturate(140%);
+      border-bottom: 1px solid var(--rule);
+      transform: translateY(calc(-100% - 42px));
+      transition: transform 220ms ease;
+      pointer-events: none;
+    }
+    .ch-sticky.is-visible { transform: translateY(0); pointer-events: auto; }
+    .ch-sticky-inner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: var(--maxw, 1400px);
+      margin: 0 auto;
+      padding: 8px clamp(1rem, 3vw, 2rem);
+    }
+    .ch-sticky-label {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+      flex: 0 0 auto;
+      padding-right: 8px;
+      border-right: 1px solid var(--rule);
+    }
+    .ch-sticky-scroll {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+      flex: 1 1 auto;
+      scrollbar-width: none;
+    }
+    .ch-sticky-scroll::-webkit-scrollbar { display: none; }
+    .ch-mini {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: baseline;
+      gap: 6px;
+      padding: 6px 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: var(--mono);
+      transition: all 140ms;
+      white-space: nowrap;
+    }
+    .ch-mini:hover { border-color: var(--rule); color: var(--paper); }
+    .ch-mini-n {
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      color: var(--paper-mute);
+    }
+    .ch-mini-t {
+      font-family: var(--serif);
+      font-size: 12.5px;
+      color: var(--paper);
+      letter-spacing: -0.01em;
+    }
+    .ch-mini.is-active {
+      border-color: var(--accent);
+      background: rgba(212, 255, 60, 0.08);
+    }
+    .ch-mini.is-active .ch-mini-n,
+    .ch-mini.is-active .ch-mini-t { color: var(--accent); }
+
     /* Chapter container */
     .ch { display: none; }
     .ch.is-active { display: block; }
@@ -4496,6 +4568,25 @@
       </button>
     </nav>
 
+    <!-- Compact sticky chapter switcher (appears when main nav is out of view) -->
+    <div class="ch-sticky" id="ch-sticky" aria-hidden="true">
+      <div class="ch-sticky-inner">
+        <span class="ch-sticky-label">Learn AI · ch</span>
+        <div class="ch-sticky-scroll" id="ch-sticky-scroll">
+          <button class="ch-mini is-active" data-ch="transformer"><span class="ch-mini-n">01</span><span class="ch-mini-t">Transformer</span></button>
+          <button class="ch-mini" data-ch="embed"><span class="ch-mini-n">02</span><span class="ch-mini-t">Embeddings</span></button>
+          <button class="ch-mini" data-ch="ft"><span class="ch-mini-n">03</span><span class="ch-mini-t">Fine-tuning</span></button>
+          <button class="ch-mini" data-ch="rag"><span class="ch-mini-n">04</span><span class="ch-mini-t">RAG</span></button>
+          <button class="ch-mini" data-ch="moe"><span class="ch-mini-n">05</span><span class="ch-mini-t">MoE</span></button>
+          <button class="ch-mini" data-ch="kv"><span class="ch-mini-n">06</span><span class="ch-mini-t">KV Cache</span></button>
+          <button class="ch-mini" data-ch="spec"><span class="ch-mini-n">07</span><span class="ch-mini-t">Spec / Quant</span></button>
+          <button class="ch-mini" data-ch="rageval"><span class="ch-mini-n">08</span><span class="ch-mini-t">RAG Eval</span></button>
+          <button class="ch-mini" data-ch="cost"><span class="ch-mini-n">09</span><span class="ch-mini-t">Cost &amp; Leaks</span></button>
+          <button class="ch-mini" data-ch="agent"><span class="ch-mini-n">10</span><span class="ch-mini-t">Agents</span></button>
+        </div>
+      </div>
+    </div>
+
     <!-- ====== CHAPTER 01 · TRANSFORMER ====== -->
     <div class="ch is-active" data-ch="transformer">
     <div class="ch-intro" data-reveal>
@@ -6065,14 +6156,53 @@
 
     /* ===== Chapter nav switching ===== */
     (function(){
-      const pills = document.querySelectorAll('.ch-pill');
-      const chs   = document.querySelectorAll('.ch');
-      pills.forEach(p => p.addEventListener('click', () => {
-        const id = p.getAttribute('data-ch');
-        pills.forEach(x => x.classList.toggle('is-active', x === p));
+      const pills   = document.querySelectorAll('.ch-pill');
+      const minis   = document.querySelectorAll('.ch-mini');
+      const chs     = document.querySelectorAll('.ch');
+      const mainNav = document.getElementById('ch-nav');
+      const sticky  = document.getElementById('ch-sticky');
+      const section = document.getElementById('learn-ai');
+
+      function activate(id, opts){
+        pills.forEach(x => x.classList.toggle('is-active', x.getAttribute('data-ch') === id));
+        minis.forEach(x => x.classList.toggle('is-active', x.getAttribute('data-ch') === id));
         chs.forEach(c => c.classList.toggle('is-active', c.getAttribute('data-ch') === id));
-        document.getElementById('learn-ai').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if(opts && opts.scrollTop){
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // keep the active mini in view inside the horizontal scroller
+        const activeMini = document.querySelector('.ch-mini.is-active');
+        if(activeMini && activeMini.scrollIntoView){
+          activeMini.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
+
+      pills.forEach(p => p.addEventListener('click', () => {
+        activate(p.getAttribute('data-ch'), { scrollTop: true });
       }));
+      // Mini pills (sticky bar): switch without yanking the user back to the top
+      minis.forEach(m => m.addEventListener('click', () => {
+        activate(m.getAttribute('data-ch'), { scrollTop: false });
+      }));
+
+      // Toggle sticky bar: show when main nav is out of view AND the section is still on screen.
+      let mainNavInView = true;
+      let sectionInView = false;
+      function syncSticky(){
+        const visible = sectionInView && !mainNavInView;
+        sticky.classList.toggle('is-visible', visible);
+        sticky.setAttribute('aria-hidden', visible ? 'false' : 'true');
+      }
+      if('IntersectionObserver' in window){
+        new IntersectionObserver(es => {
+          mainNavInView = es[0].isIntersecting;
+          syncSticky();
+        }, { threshold: 0 }).observe(mainNav);
+        new IntersectionObserver(es => {
+          sectionInView = es[0].isIntersecting;
+          syncSticky();
+        }, { threshold: 0 }).observe(section);
+      }
     })();
 
     /* ===== Generic play-button helper (animates a slider over time) ===== */
