@@ -25,7 +25,7 @@ layout: default
     No entries yet — first post incoming.
   </div>
 {% else %}
-  <ul class="posts-list">
+  <ul class="posts-list" id="posts-list" data-page-size="6">
     {% for post in site.posts %}
       <li>
         <a href="{{ post.url | relative_url }}" class="post-link">
@@ -52,4 +52,60 @@ layout: default
       </li>
     {% endfor %}
   </ul>
+
+  <nav class="pagination" id="pagination" aria-label="Posts pagination" hidden></nav>
+
+  <script>
+    (function(){
+      const list = document.getElementById('posts-list');
+      const nav  = document.getElementById('pagination');
+      if(!list || !nav) return;
+      const items = Array.from(list.children);
+      const pageSize = parseInt(list.dataset.pageSize, 10) || 6;
+      const totalPages = Math.ceil(items.length / pageSize);
+      if(totalPages <= 1) return;
+      nav.hidden = false;
+
+      function readPage(){
+        const m = location.hash.match(/page=(\d+)/);
+        const p = m ? parseInt(m[1], 10) : 1;
+        return Math.min(Math.max(p, 1), totalPages);
+      }
+
+      function render(page){
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        items.forEach((li, i) => { li.style.display = (i >= start && i < end) ? '' : 'none'; });
+
+        const pages = new Set([1, totalPages, page, page - 1, page + 1]);
+        const visible = [...pages].filter(p => p >= 1 && p <= totalPages).sort((a, b) => a - b);
+
+        const parts = [];
+        parts.push('<button class="pagination-btn" data-page="' + (page - 1) + '"' + (page === 1 ? ' disabled' : '') + ' aria-label="Previous page">←</button>');
+        let prev = 0;
+        for(const p of visible){
+          if(p - prev > 1) parts.push('<span class="pagination-ellipsis">…</span>');
+          parts.push('<button class="pagination-btn ' + (p === page ? 'is-active' : '') + '" data-page="' + p + '" aria-current="' + (p === page ? 'page' : 'false') + '" aria-label="Page ' + p + '">' + p + '</button>');
+          prev = p;
+        }
+        parts.push('<button class="pagination-btn" data-page="' + (page + 1) + '"' + (page === totalPages ? ' disabled' : '') + ' aria-label="Next page">→</button>');
+        parts.push('<span class="pagination-info">Page ' + page + ' / ' + totalPages + '</span>');
+        nav.innerHTML = parts.join('');
+      }
+
+      nav.addEventListener('click', function(e){
+        const btn = e.target.closest('.pagination-btn');
+        if(!btn || btn.disabled) return;
+        const p = parseInt(btn.dataset.page, 10);
+        if(!Number.isFinite(p)) return;
+        history.replaceState(null, '', '#page=' + p);
+        render(p);
+        const listTop = list.getBoundingClientRect().top + window.scrollY;
+        if(window.scrollY > listTop - 40) window.scrollTo({ top: listTop - 80, behavior: 'smooth' });
+      });
+
+      window.addEventListener('hashchange', function(){ render(readPage()); });
+      render(readPage());
+    })();
+  </script>
 {% endif %}
