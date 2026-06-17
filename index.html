@@ -861,62 +861,50 @@
 
   /* Mobile */
   /* ═════════════════════════════════════════════════════════════
-     RESPONSIVE — viewport-locked below 1080px. The page itself never
-     scrolls; only the chat log scrolls inside its own container, and
-     the HUD strips above/below the chat scroll horizontally for any
-     overflow.
+     RESPONSIVE — Below 1080px we collapse the side HUDs entirely and
+     give the entire viewport to the chat. Model picker + quick links
+     live behind a hamburger that opens a slide-in drawer.
      ═════════════════════════════════════════════════════════════ */
+  .hamburger { display: none; }
+
   @media (max-width: 1080px) {
     html, body { height: 100%; overflow: hidden; }
-    .topbar { padding: 12px 18px; font-size: 10.5px; }
+    .topbar { padding: 12px 16px; font-size: 10.5px; }
     .topbar-mid { display: none; }
     .controls { display: none; }
     .mode-badge { display: none; }
 
+    /* Hamburger appears on the left of the topbar */
+    .hamburger {
+      display: inline-grid;
+      place-items: center;
+      width: 34px; height: 34px;
+      margin-right: 10px;
+      background: var(--chip-bg);
+      border: 1px solid var(--line);
+      color: var(--paper);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s;
+    }
+    .hamburger:hover { background: var(--chip-hover-bg); border-color: var(--cyan); }
+    .hamburger svg { width: 18px; height: 18px; }
+
     .app {
       position: fixed !important;
       top: 56px; left: 0; right: 0; bottom: 0;
-      padding: 10px;
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 10px;
+      padding: 0 !important;
+      display: block !important;
       overflow: hidden !important;
     }
+    .left-col, .right-col { display: none !important; }
 
-    .left-col, .right-col {
-      flex: 0 0 auto !important;
-      display: flex !important;
-      flex-direction: row !important;
-      flex-wrap: nowrap !important;
-      gap: 8px !important;
-      overflow-x: auto;
-      overflow-y: hidden;
-      scrollbar-width: none;
-      padding: 0 2px 4px;
-      margin: 0;
-    }
-    .left-col::-webkit-scrollbar,
-    .right-col::-webkit-scrollbar { display: none; }
-
-    /* Hide decorative HUDs on small screens; only essentials stay. */
-    .left-col .hud:not([data-mobile="show"]),
-    .right-col .hud:not([data-mobile="show"]) { display: none !important; }
-
-    .left-col .hud,
-    .right-col .hud {
-      flex: 0 0 auto !important;
-      width: clamp(240px, 60vw, 320px) !important;
-      margin: 0 !important;
-      padding: 12px 14px !important;
-      min-width: 0;
-    }
-    .hud-title { font-size: 10px; margin-bottom: 8px; }
-
-    /* Chat fills the rest. Log scrolls inside; page does not. */
     .chat-col {
-      flex: 1 1 0 !important;
-      min-height: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
       display: flex !important;
+      flex-direction: column !important;
+      min-height: 0 !important;
     }
     .chat-shell {
       flex: 1 1 auto !important;
@@ -924,12 +912,15 @@
       height: 100% !important;
       display: flex !important;
       flex-direction: column !important;
+      border-radius: 0 !important;
+      border: 0 !important;
+      box-shadow: none !important;
     }
     .chat-log {
       flex: 1 1 0 !important;
       min-height: 0 !important;
       overflow-y: auto;
-      padding: 18px 18px 8px;
+      padding: 18px 18px 10px;
     }
     .chat-head { font-size: 10.5px; padding: 12px 16px; }
     .chat-head .ping { display: none; }
@@ -939,15 +930,11 @@
     .send-btn { padding: 0 18px; font-size: 12px; }
   }
 
-  /* Phone tightening */
   @media (max-width: 720px) {
-    .topbar { padding: 10px 14px; font-size: 10px; }
+    .topbar { padding: 10px 12px; font-size: 10px; }
     .brand-name { font-size: 12.5px; }
     .brand-hex { width: 26px; height: 26px; font-size: 11px; }
-    .app { top: 50px; padding: 8px; gap: 8px; }
-    .left-col .hud, .right-col .hud {
-      width: clamp(220px, 82vw, 280px) !important;
-    }
+    .app { top: 50px; }
     .chat-log { padding: 14px 14px 6px; }
     .msg { max-width: 95%; }
     .input-prefix { display: none; }
@@ -955,10 +942,77 @@
     .splash-title { font-size: clamp(36px, 11vw, 60px); }
     .splash-sub, .splash-cta { font-size: 10px; letter-spacing: 0.28em; }
   }
-  @media (max-width: 380px) {
-    .left-col .hud, .right-col .hud {
-      width: 88vw !important;
+
+  /* ── Slide-in drawer (mobile / tablet) ─────────────────────── */
+  .drawer-backdrop, .drawer { display: none; }
+
+  @media (max-width: 1080px) {
+    .drawer-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      z-index: 220;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      display: block;
     }
+    body.drawer-open .drawer-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .drawer {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: min(320px, 86vw);
+      z-index: 230;
+      background: var(--bg-1);
+      border-right: 1px solid var(--line);
+      box-shadow: 8px 0 32px rgba(0,0,0,0.5);
+      transform: translateX(-100%);
+      transition: transform 0.28s cubic-bezier(.2,.9,.2,1.05);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 18px 16px 24px;
+    }
+    body.drawer-open .drawer { transform: translateX(0); }
+    .drawer-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .drawer-head-title {
+      font-family: var(--mono);
+      font-size: 10.5px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--cyan);
+    }
+    .drawer-close {
+      background: var(--chip-bg);
+      border: 1px solid var(--line);
+      color: var(--paper);
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: grid; place-items: center;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .drawer-section { display: flex; flex-direction: column; gap: 10px; }
+    .drawer-section-title {
+      font-family: var(--mono);
+      font-size: 9.5px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--paper-mute);
+    }
+    .drawer .topics li { padding: 8px 10px; font-size: 13px; }
+    .drawer .links-row { gap: 8px; }
+    .drawer .link-pill { font-size: 11px; padding: 9px 10px; }
+    .drawer .model-select { font-size: 13px; padding: 10px 32px 10px 12px; }
+    .drawer .model-meta { font-size: 11.5px; }
   }
 </style>
 </head>
@@ -986,6 +1040,11 @@
 <!-- Top bar -->
 <div class="topbar">
   <div class="brand">
+    <button class="hamburger" id="hamburger" aria-label="Open menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M3 6h18M3 12h18M3 18h18"/>
+      </svg>
+    </button>
     <div class="brand-hex">P</div>
     <div class="brand-name">PSS-<b>Ω</b> · Priyanshu Sinha · GenAI Agent</div>
   </div>
@@ -1007,6 +1066,53 @@
     </button>
   </div>
 </div>
+
+<!-- Mobile drawer (visible only on small viewports) -->
+<div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+<aside class="drawer" id="drawer" aria-label="Menu">
+  <div class="drawer-head">
+    <div class="drawer-head-title">Menu</div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close">✕</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Model · LLM Backend</div>
+    <select class="model-select" id="modelSelectMobile" aria-label="Select Ollama Cloud model">
+      <option value="gpt-oss:20b-cloud">gpt-oss · 20B · fastest</option>
+      <option value="gpt-oss:120b-cloud" selected>gpt-oss · 120B · balanced</option>
+      <option value="deepseek-v3.1:671b-cloud">deepseek-v3.1 · 671B · reasoning</option>
+      <option value="qwen3-coder:480b-cloud">qwen3-coder · 480B · code</option>
+    </select>
+    <div class="model-meta" id="modelMetaMobile">Active: <b id="modelActiveMobile">gpt-oss:120b-cloud</b></div>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Memory · Topics</div>
+    <ul class="topics" id="topicsMobile">
+      <li data-q="Tell me about your work">Current work</li>
+      <li data-q="What do you do at Elastiq?">Role @ Elastiq</li>
+      <li data-q="What are your top skills?">Skills</li>
+      <li data-q="Tell me about your projects">Projects shipped</li>
+      <li data-q="Walk me through your experience">Trajectory</li>
+      <li data-q="What recognition have you received?">Recognition</li>
+      <li data-q="What do you do for fun?">Off the keyboard</li>
+      <li data-q="How can I hire you?">Hire / contact</li>
+      <li data-q="Show me your résumé">Résumé</li>
+    </ul>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Quick Links</div>
+    <div class="links-row">
+      <a class="link-pill" href="mailto:priyanshu.sinha@elastiq.ai">Email</a>
+      <a class="link-pill" href="resume.html">Résumé</a>
+      <a class="link-pill" href="https://elastiq.ai" target="_blank" rel="noopener">Elastiq</a>
+      <a class="link-pill" href="https://topmate.io/priyanshu_shekhar_sinha" target="_blank" rel="noopener">Topmate</a>
+      <a class="link-pill" href="/newsletter/">Journal</a>
+      <a class="link-pill" href="index-classic.html" style="flex: 1 0 100%;">▸ Classic portfolio</a>
+    </div>
+  </div>
+</aside>
 
 <!-- Main grid -->
 <main class="app">
@@ -1417,6 +1523,21 @@ FORMATTING (strict):
 - First person ("I") or third person ("he") — pick one and stay consistent within a reply.
 - Use a short <ul> with <li>s for lists of >3 items.`;
 
+// ── Drawer (mobile / tablet menu) ────────────────
+(function setupDrawer() {
+  const open = () => document.body.classList.add('drawer-open');
+  const close = () => document.body.classList.remove('drawer-open');
+  const hamburger = document.getElementById('hamburger');
+  const closeBtn = document.getElementById('drawerClose');
+  const backdrop = document.getElementById('drawerBackdrop');
+  if (hamburger) hamburger.addEventListener('click', open);
+  if (closeBtn) closeBtn.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('drawer-open')) close();
+  });
+})();
+
 // ── Theme toggle (light / dark) ──────────────────
 (function setupTheme() {
   const saved = localStorage.getItem('pss.theme');
@@ -1435,7 +1556,9 @@ FORMATTING (strict):
 
 // ── Model picker + mode badge ────────────────────
 const modelSelect = document.getElementById('modelSelect');
+const modelSelectMobile = document.getElementById('modelSelectMobile');
 const modelActive = document.getElementById('modelActive');
+const modelActiveMobile = document.getElementById('modelActiveMobile');
 const modeBadge = document.getElementById('modeBadge');
 
 function refreshModeBadge() {
@@ -1446,7 +1569,8 @@ function refreshModeBadge() {
     modeBadge.classList.add('scripted');
     modeBadge.innerHTML = `<b>SCRIPTED</b> · ${KB.length} KB chunks · set CONFIG.workerUrl to enable LLM`;
   }
-  modelActive.textContent = CONFIG.model;
+  if (modelActive) modelActive.textContent = CONFIG.model;
+  if (modelActiveMobile) modelActiveMobile.textContent = CONFIG.model;
 }
 
 // Restore persisted model choice
@@ -1459,11 +1583,13 @@ if (savedModel && [...modelSelect.options].some(o => o.value === savedModel)) {
 }
 refreshModeBadge();
 
-modelSelect.addEventListener('change', () => {
-  CONFIG.model = modelSelect.value;
+function applyModelChange(value, source) {
+  CONFIG.model = value;
   localStorage.setItem('pss.model', CONFIG.model);
+  // Sync the other picker
+  if (modelSelect && modelSelect.value !== value) modelSelect.value = value;
+  if (modelSelectMobile && modelSelectMobile.value !== value) modelSelectMobile.value = value;
   refreshModeBadge();
-  // System-style notice in the chat so the user sees the switch
   const div = document.createElement('div');
   div.className = 'msg agent';
   div.style.maxWidth = '100%';
@@ -1471,6 +1597,17 @@ modelSelect.addEventListener('change', () => {
     <div class="msg-body" style="font-family: var(--mono); font-size: 12.5px; color: var(--paper-mute);">▸ Model switched to <b style="color: var(--paper);">${CONFIG.model}</b>. Next reply will use this model.</div>`;
   chatlog.appendChild(div);
   chatlog.scrollTop = chatlog.scrollHeight;
+}
+
+modelSelect.addEventListener('change', () => applyModelChange(modelSelect.value, 'desktop'));
+if (modelSelectMobile) {
+  modelSelectMobile.value = CONFIG.model;
+  modelSelectMobile.addEventListener('change', () => applyModelChange(modelSelectMobile.value, 'mobile'));
+}
+
+// Topic shortcuts inside the drawer should also close it after firing.
+document.querySelectorAll('#topicsMobile li[data-q], .drawer .link-pill').forEach(el => {
+  el.addEventListener('click', () => document.body.classList.remove('drawer-open'));
 });
 
 // ── Splash dismissal ─────────────────────────────
