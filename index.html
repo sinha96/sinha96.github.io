@@ -603,7 +603,12 @@
   .now-playing {
     display: flex; align-items: center; gap: 10px;
     margin-top: 6px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.18s;
   }
+  .now-playing:hover { background: var(--chip-bg); }
   .now-bars {
     display: flex; align-items: end; gap: 2px;
     height: 16px;
@@ -628,8 +633,38 @@
     font-size: 11.5px;
     color: var(--paper-mute);
     line-height: 1.4;
+    flex: 1;
   }
   .np-text b { color: var(--paper); font-weight: 500; }
+
+  .np-toggle {
+    background: none;
+    border: 0;
+    color: var(--cyan);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 6px;
+    transition: transform 0.2s;
+  }
+  .now-playing.is-open .np-toggle { transform: rotate(90deg); }
+  .np-embed {
+    margin-top: 8px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--input-bg);
+    border: 1px solid var(--line);
+    max-height: 0;
+    transition: max-height 0.32s ease;
+  }
+  .now-playing.is-open + .np-embed { max-height: 100px; }
+  .np-embed iframe {
+    width: 100%;
+    height: 80px;
+    border: 0;
+    display: block;
+    color-scheme: normal;
+  }
 
   .links-row {
     display: flex; gap: 8px; flex-wrap: wrap;
@@ -1209,7 +1244,7 @@
     <div class="stat-row ok"><span>Mood</span><b>FOCUSED</b></div>
     <div class="stat-row"><span>Last commit</span><b id="lastCommitMobile">2h ago</b></div>
     <div class="stat-row"><span>Coffee</span><b style="color:var(--amber);">2 cups</b></div>
-    <div class="now-playing">
+    <div class="now-playing" data-np-trigger title="Tap to play">
       <div class="now-bars">
         <span style="height:8px;"></span>
         <span style="height:14px;"></span>
@@ -1218,6 +1253,10 @@
         <span style="height:10px;"></span>
       </div>
       <div class="np-text"><b>Khruangbin</b> — A LA SALA</div>
+      <button class="np-toggle" type="button" aria-label="Play / pause embedded track">▸</button>
+    </div>
+    <div class="np-embed" data-np-embed>
+      <iframe loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
 </aside>
@@ -1350,7 +1389,7 @@
       <div class="stat-row ok"><span>Mood</span><b>FOCUSED</b></div>
       <div class="stat-row"><span>Last commit</span><b id="lastCommit">2h ago</b></div>
       <div class="stat-row"><span>Coffee</span><b style="color:var(--amber);">2 cups</b></div>
-      <div class="now-playing">
+      <div class="now-playing" data-np-trigger title="Click to play">
         <div class="now-bars">
           <span style="height:8px;"></span>
           <span style="height:14px;"></span>
@@ -1359,6 +1398,10 @@
           <span style="height:10px;"></span>
         </div>
         <div class="np-text"><b>Khruangbin</b> — A LA SALA</div>
+        <button class="np-toggle" type="button" aria-label="Play / pause embedded track">▸</button>
+      </div>
+      <div class="np-embed" data-np-embed>
+        <iframe loading="lazy" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
     </section>
   </aside>
@@ -1630,6 +1673,41 @@ FORMATTING (strict):
 - Concise. Land the answer, then stop.
 - First person ("I") or third person ("he") — pick one and stay consistent within a reply.
 - Use a short <ul> with <li>s for lists of >3 items.`;
+
+// ── Now Playing · Spotify embed ─────────────────
+//
+// Swap NOW_PLAYING_EMBED below for whatever you want on rotation.
+// To find the right URL:
+//   1. Open the track or album on https://open.spotify.com
+//   2. Click the ⋯ menu → Share → Copy Spotify URI / Copy link
+//   3. Replace the album/track ID in the URL pattern below
+// Examples:
+//   Album:  https://open.spotify.com/embed/album/<id>?utm_source=generator&theme=0
+//   Track:  https://open.spotify.com/embed/track/<id>?utm_source=generator&theme=0
+//   Playlist: https://open.spotify.com/embed/playlist/<id>?utm_source=generator&theme=0
+// (theme=0 = dark, theme=1 = light)
+const NOW_PLAYING_EMBED =
+  'https://open.spotify.com/embed/album/7iYJDmJRG3pWN1ROW0CXTH?utm_source=generator&theme=0';
+// ^^ PLACEHOLDER — replace with your real Khruangbin "A LA SALA" album link
+//    (or any other album/track/playlist).
+
+(function setupNowPlaying() {
+  document.querySelectorAll('[data-np-trigger]').forEach(trigger => {
+    const embedEl = trigger.parentElement.querySelector('[data-np-embed]');
+    if (!embedEl) return;
+    const iframe = embedEl.querySelector('iframe');
+    let loaded = false;
+    trigger.addEventListener('click', (e) => {
+      // Don't double-toggle when the inner button itself is clicked.
+      e.stopPropagation();
+      if (!loaded) {
+        iframe.src = NOW_PLAYING_EMBED;
+        loaded = true;
+      }
+      trigger.classList.toggle('is-open');
+    });
+  });
+})();
 
 // ── Drawer (mobile / tablet menu) ────────────────
 (function setupDrawer() {
