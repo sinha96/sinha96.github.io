@@ -663,6 +663,11 @@
   .source-chip .src-score {
     color: var(--paper-faint);
   }
+  .source-chip .src-arrow {
+    color: var(--magenta);
+    margin-left: 2px;
+  }
+  a.source-chip { text-decoration: none; }
   .source-preview {
     margin-top: 8px;
     padding: 10px 12px;
@@ -859,6 +864,7 @@
         <a class="link-pill" href="resume.html">Résumé</a>
         <a class="link-pill" href="https://elastiq.ai" target="_blank" rel="noopener">Elastiq</a>
         <a class="link-pill" href="https://topmate.io/priyanshu_shekhar_sinha" target="_blank" rel="noopener">Topmate</a>
+        <a class="link-pill" href="/newsletter/">Journal</a>
         <a class="link-pill" href="index-classic.html" style="flex: 1 0 100%;">▸ Classic portfolio</a>
       </div>
     </section>
@@ -1108,6 +1114,13 @@ const KB = [
   { id: 'music', section: 'Off-keyboard', title: 'Now playing',
     text: `Rolling playlist while working — mostly low-vocals, mostly low-tempo: Khruangbin (A LA SALA), Floating Points (Crush), Bonobo (Fragments), Tycho (Weather), Nils Frahm (All Melody).` },
 
+  // ─── Journal pointer ───────────────────────────────────────
+  // Per-post chunks are appended at boot from /posts-kb.json (Jekyll-generated).
+  // This static chunk just teaches the agent that the journal exists.
+  { id: 'journal-index', section: 'Journal', title: 'Latent — the journal',
+    text: `Priyanshu publishes a journal called Latent at /newsletter/. Short essays and takes on AI news — model releases, framework launches, industry shifts. Each post has its own URL and the agent has the title, date, tags, and excerpt of every entry as separate chunks below.`,
+    url: '/newsletter/' },
+
   // ─── Contact ────────────────────────────────────────────────
   { id: 'contact', section: 'Contact', title: 'How to reach him',
     text: `Best way to reach Priyanshu is email: priyanshu.sinha@elastiq.ai. He reads everything and replies to most messages. For paid calls and mentorship he is on Topmate at topmate.io/priyanshu_shekhar_sinha. Résumé at resume.html (web) and resume.pdf. Location: Bangalore, IN. Role: Tech Lead, GenAI at Elastiq AI.` },
@@ -1221,17 +1234,44 @@ function tok(s) {
     .filter(w => w && w.length > 1 && !STOP.has(w));
 }
 
-// Build inverted index + per-chunk lengths
-const DOC_TOKENS = KB.map(c => tok(c.title + ' ' + c.text + ' ' + c.section));
-const AVG_LEN = DOC_TOKENS.reduce((s, t) => s + t.length, 0) / DOC_TOKENS.length;
-const N_DOCS = KB.length;
+// Build inverted index + per-chunk lengths (re-runnable when KB extends)
+let DOC_TOKENS = [], AVG_LEN = 0, N_DOCS = 0;
 const DF = Object.create(null);
-DOC_TOKENS.forEach(tokens => {
-  const seen = new Set(tokens);
-  for (const w of seen) DF[w] = (DF[w] || 0) + 1;
-});
 const IDF = Object.create(null);
-for (const w in DF) IDF[w] = Math.log(1 + (N_DOCS - DF[w] + 0.5) / (DF[w] + 0.5));
+
+function rebuildIndex() {
+  DOC_TOKENS = KB.map(c => tok((c.title || '') + ' ' + (c.text || '') + ' ' + (c.section || '') + ' ' + (Array.isArray(c.tags) ? c.tags.join(' ') : '')));
+  N_DOCS = KB.length;
+  AVG_LEN = DOC_TOKENS.reduce((s, t) => s + t.length, 0) / Math.max(1, N_DOCS);
+  for (const k in DF) delete DF[k];
+  DOC_TOKENS.forEach(tokens => {
+    const seen = new Set(tokens);
+    for (const w of seen) DF[w] = (DF[w] || 0) + 1;
+  });
+  for (const k in IDF) delete IDF[k];
+  for (const w in DF) IDF[w] = Math.log(1 + (N_DOCS - DF[w] + 0.5) / (DF[w] + 0.5));
+}
+rebuildIndex();
+
+// Pull blog posts from Jekyll-generated /posts-kb.json so the agent can
+// answer questions about anything published in _posts/.
+fetch('posts-kb.json').then(r => r.ok ? r.json() : null).then(posts => {
+  if (!Array.isArray(posts) || !posts.length) return;
+  for (const p of posts) {
+    KB.push({
+      id: 'post-' + p.id,
+      section: 'Journal',
+      title: p.title,
+      text: p.text,
+      url: p.url,
+      tags: p.tags,
+      date: p.date,
+    });
+  }
+  rebuildIndex();
+  // Reflect in the mode badge so the count is honest
+  if (typeof refreshModeBadge === 'function') refreshModeBadge();
+}).catch(() => { /* posts-kb.json absent in local dev — agent still works */ });
 
 function bm25Score(queryTokens, docIdx) {
   const docTokens = DOC_TOKENS[docIdx];
@@ -1696,14 +1736,21 @@ function attachSources(node, sources) {
   preview.className = 'source-preview';
   sources.forEach((s, i) => {
     const k = s.chunk;
-    const chip = document.createElement('button');
+    const chip = document.createElement(k.url ? 'a' : 'button');
     chip.className = 'source-chip';
-    chip.innerHTML = `<span class="src-section">${k.section}</span> · ${k.title} <span class="src-score">${s.score.toFixed(2)}</span>`;
-    chip.addEventListener('click', () => {
-      preview.innerHTML = `<div class="src-title">${k.section} · ${k.title}</div>${escapeHtml(k.text)}`;
-      preview.classList.add('show');
-      chatlog.scrollTop = chatlog.scrollHeight;
-    });
+    const linkArrow = k.url ? ' <span class="src-arrow">↗</span>' : '';
+    chip.innerHTML = `<span class="src-section">${k.section}</span> · ${k.title} <span class="src-score">${s.score.toFixed(2)}</span>${linkArrow}`;
+    if (k.url) {
+      chip.href = k.url;
+      chip.target = '_blank';
+      chip.rel = 'noopener';
+    } else {
+      chip.addEventListener('click', () => {
+        preview.innerHTML = `<div class="src-title">${k.section} · ${k.title}</div>${escapeHtml(k.text)}`;
+        preview.classList.add('show');
+        chatlog.scrollTop = chatlog.scrollHeight;
+      });
+    }
     wrap.appendChild(chip);
   });
   body.appendChild(wrap);
