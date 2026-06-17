@@ -718,7 +718,8 @@
     color: var(--bg-0);
   }
 
-  /* Model picker */
+  /* Model picker — custom dropdown to avoid native popup being clipped
+     by the right column's overflow:auto scroll context. */
   .model-row {
     display: flex; align-items: center; gap: 8px;
     margin-top: 6px;
@@ -738,16 +739,62 @@
     cursor: pointer;
     outline: 0;
     transition: border-color 0.18s, box-shadow 0.18s;
-    background-image: linear-gradient(45deg, transparent 50%, var(--cyan) 50%), linear-gradient(135deg, var(--cyan) 50%, transparent 50%);
-    background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%;
-    background-size: 5px 5px, 5px 5px;
-    background-repeat: no-repeat;
+    position: relative;
+    text-align: left;
+    display: flex; align-items: center; justify-content: flex-start;
+    line-height: 1.2;
+    width: 100%;
   }
-  .model-select:focus {
+  .model-select::after {
+    content: '▾';
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--cyan);
+    font-size: 10px;
+    pointer-events: none;
+  }
+  .model-select:hover { border-color: var(--cyan); }
+  .model-select:focus,
+  .model-select.is-open {
     border-color: var(--cyan);
-    box-shadow: 0 0 0 1px rgba(56, 214, 255, 0.35), 0 0 18px rgba(56, 214, 255, 0.18);
+    box-shadow: 0 0 0 1px var(--chip-bg);
   }
-  .model-select option { background: var(--bg-1); color: var(--paper); }
+  /* Floating option list — fixed-positioned so it escapes the column's
+     overflow context. JS sets the inline top/left/width on open. */
+  .model-popover {
+    position: fixed;
+    z-index: 300;
+    display: none;
+    background: var(--surface-2);
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    overflow: hidden;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+  }
+  .model-popover.is-open { display: block; }
+  .model-popover button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--paper);
+    cursor: pointer;
+    transition: background 0.12s, color 0.12s;
+  }
+  .model-popover button:hover { background: var(--chip-hover-bg); color: var(--cyan); }
+  .model-popover button.is-selected {
+    background: var(--chip-bg);
+    color: var(--cyan);
+  }
+  .model-popover button + button { border-top: 1px solid var(--line); }
   .model-meta {
     font-family: var(--mono);
     font-size: 10.5px;
@@ -1133,6 +1180,9 @@
 <body>
 
 <!-- Mode badge -->
+<!-- Shared model picker popover (fixed-positioned overlay) -->
+<div class="model-popover" id="modelPopover" role="listbox" aria-label="Ollama Cloud model"></div>
+
 <div class="grid"></div>
 <div class="scanlines"></div>
 <div class="grain"></div>
@@ -1190,12 +1240,10 @@
 
   <div class="drawer-section">
     <div class="drawer-section-title">Model · LLM Backend</div>
-    <select class="model-select" id="modelSelectMobile" aria-label="Select Ollama Cloud model">
-      <option value="gpt-oss:20b-cloud">gpt-oss · 20B · fastest</option>
-      <option value="gpt-oss:120b-cloud" selected>gpt-oss · 120B · balanced</option>
-      <option value="deepseek-v3.1:671b-cloud">deepseek-v3.1 · 671B · reasoning</option>
-      <option value="qwen3-coder:480b-cloud">qwen3-coder · 480B · code</option>
-    </select>
+    <button class="model-select" id="modelSelectMobile" type="button"
+            aria-haspopup="listbox" aria-label="Select Ollama Cloud model">
+      gpt-oss · 120B · balanced
+    </button>
     <div class="model-meta" id="modelMetaMobile">Active: <b id="modelActiveMobile">gpt-oss:120b-cloud</b></div>
   </div>
 
@@ -1374,13 +1422,11 @@
       <div class="hud-title">Model · LLM Backend</div>
       <div class="model-row">
         <!-- Live Ollama Cloud catalogue: https://ollama.com/search?c=cloud
-             Add or remove <option> lines to track what's currently live. -->
-        <select class="model-select" id="modelSelect" aria-label="Select Ollama Cloud model">
-          <option value="gpt-oss:20b-cloud">gpt-oss · 20B · fastest</option>
-          <option value="gpt-oss:120b-cloud" selected>gpt-oss · 120B · balanced</option>
-          <option value="deepseek-v3.1:671b-cloud">deepseek-v3.1 · 671B · reasoning</option>
-          <option value="qwen3-coder:480b-cloud">qwen3-coder · 480B · code</option>
-        </select>
+             Add / remove <button> rows in MODEL_OPTIONS (JS) to track it. -->
+        <button class="model-select" id="modelSelect" type="button"
+                aria-haspopup="listbox" aria-label="Select Ollama Cloud model">
+          gpt-oss · 120B · balanced
+        </button>
       </div>
       <div class="model-meta" id="modelMeta">
         Routed via <b>Cloudflare Worker</b> → Ollama Cloud.<br>
@@ -1796,22 +1842,27 @@ function refreshModeBadge() {
   if (modelActiveMobile) modelActiveMobile.textContent = CONFIG.model;
 }
 
-// Restore persisted model choice
+// Restore persisted model choice (must be a known option)
 const savedModel = localStorage.getItem('pss.model');
-if (savedModel && [...modelSelect.options].some(o => o.value === savedModel)) {
+const KNOWN_MODELS = ['gpt-oss:20b-cloud','gpt-oss:120b-cloud','deepseek-v3.1:671b-cloud','qwen3-coder:480b-cloud'];
+if (savedModel && KNOWN_MODELS.includes(savedModel)) {
   CONFIG.model = savedModel;
-  modelSelect.value = savedModel;
-} else {
-  modelSelect.value = CONFIG.model;
 }
 refreshModeBadge();
 
-function applyModelChange(value, source) {
+const MODEL_OPTIONS = [
+  { value: 'gpt-oss:20b-cloud',          label: 'gpt-oss · 20B · fastest' },
+  { value: 'gpt-oss:120b-cloud',         label: 'gpt-oss · 120B · balanced' },
+  { value: 'deepseek-v3.1:671b-cloud',   label: 'deepseek-v3.1 · 671B · reasoning' },
+  { value: 'qwen3-coder:480b-cloud',     label: 'qwen3-coder · 480B · code' },
+];
+const labelFor = (v) => (MODEL_OPTIONS.find(o => o.value === v) || {}).label || v;
+
+function applyModelChange(value) {
   CONFIG.model = value;
   localStorage.setItem('pss.model', CONFIG.model);
-  // Sync the other picker
-  if (modelSelect && modelSelect.value !== value) modelSelect.value = value;
-  if (modelSelectMobile && modelSelectMobile.value !== value) modelSelectMobile.value = value;
+  if (modelSelect) modelSelect.textContent = labelFor(value);
+  if (modelSelectMobile) modelSelectMobile.textContent = labelFor(value);
   refreshModeBadge();
   const div = document.createElement('div');
   div.className = 'msg agent';
@@ -1822,11 +1873,76 @@ function applyModelChange(value, source) {
   chatlog.scrollTop = chatlog.scrollHeight;
 }
 
-modelSelect.addEventListener('change', () => applyModelChange(modelSelect.value, 'desktop'));
-if (modelSelectMobile) {
-  modelSelectMobile.value = CONFIG.model;
-  modelSelectMobile.addEventListener('change', () => applyModelChange(modelSelectMobile.value, 'mobile'));
-}
+// Reflect saved model on initial render
+if (modelSelect) modelSelect.textContent = labelFor(CONFIG.model);
+if (modelSelectMobile) modelSelectMobile.textContent = labelFor(CONFIG.model);
+
+// ── Custom dropdown (fixed-positioned popover) ──────────
+(function setupModelDropdown() {
+  const popover = document.getElementById('modelPopover');
+  if (!popover) return;
+
+  // Build option buttons once.
+  popover.innerHTML = MODEL_OPTIONS.map(o =>
+    `<button type="button" role="option" data-value="${o.value}">${o.label}</button>`
+  ).join('');
+
+  let openTrigger = null;
+  const close = () => {
+    popover.classList.remove('is-open');
+    if (openTrigger) openTrigger.classList.remove('is-open');
+    openTrigger = null;
+  };
+  const open = (trigger) => {
+    openTrigger = trigger;
+    trigger.classList.add('is-open');
+    const r = trigger.getBoundingClientRect();
+    popover.style.left = r.left + 'px';
+    popover.style.top = (r.bottom + 6) + 'px';
+    popover.style.width = r.width + 'px';
+    // Mark currently selected
+    popover.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('is-selected', b.dataset.value === CONFIG.model);
+    });
+    popover.classList.add('is-open');
+    // If we'd overflow the bottom of the viewport, flip above.
+    const pr = popover.getBoundingClientRect();
+    if (pr.bottom > window.innerHeight - 8) {
+      popover.style.top = (r.top - pr.height - 6) + 'px';
+    }
+  };
+
+  popover.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-value]');
+    if (!btn) return;
+    applyModelChange(btn.dataset.value);
+    close();
+  });
+
+  function attachTrigger(el) {
+    if (!el) return;
+    el.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (openTrigger === el) { close(); return; }
+      close();
+      open(el);
+    });
+  }
+  attachTrigger(modelSelect);
+  attachTrigger(modelSelectMobile);
+
+  document.addEventListener('click', (e) => {
+    if (!openTrigger) return;
+    if (popover.contains(e.target)) return;
+    if (openTrigger.contains(e.target)) return;
+    close();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && openTrigger) { e.preventDefault(); close(); }
+  });
+  window.addEventListener('resize', close);
+  window.addEventListener('scroll', close, true);
+})();
 
 // Topic shortcuts inside the drawer should also close it after firing.
 document.querySelectorAll('#topicsMobile li[data-q], .drawer .link-pill').forEach(el => {
