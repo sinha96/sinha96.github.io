@@ -12,43 +12,48 @@
 
 <style>
   :root {
-    --bg-0:    #03060d;
-    --bg-1:    #07101e;
-    --bg-2:    #0c1a30;
-    --line:    rgba(120, 200, 255, 0.16);
-    --line-2:  rgba(120, 200, 255, 0.32);
-    --paper:   #e6f3ff;
-    --paper-mute: rgba(230, 243, 255, 0.55);
-    --paper-faint: rgba(230, 243, 255, 0.22);
-    --cyan:    #38d6ff;
-    --cyan-2:  #1ea8e0;
-    --magenta: #ff4ad1;
-    --amber:   #ffb15a;
-    --green:   #5af1a1;
-    --red:     #ff5a6b;
+    /* Refined warm-dark — single calm teal accent, no neon. */
+    --bg-0:    #0d0d10;
+    --bg-1:    #15151a;
+    --bg-2:    #1f1f25;
+    --line:    rgba(236, 232, 223, 0.09);
+    --line-2:  rgba(236, 232, 223, 0.20);
+    --paper:   #ece8df;
+    --paper-mute: rgba(236, 232, 223, 0.62);
+    --paper-faint: rgba(236, 232, 223, 0.32);
+    --cyan:    #5ae0c9;
+    --cyan-2:  #2eb5a3;
+    --magenta: #e89856;
+    --amber:   #f5b65a;
+    --green:   #6ed59b;
+    --red:     #e35b6e;
     --display: 'Space Grotesk', system-ui, sans-serif;
     --mono:    'JetBrains Mono', monospace;
-    /* Surfaces used across components (overridden in light theme) */
-    --surface-1: rgba(7, 16, 30, 0.72);
-    --surface-1b:rgba(7, 16, 30, 0.40);
-    --surface-2: rgba(7, 16, 30, 0.85);
-    --surface-3: rgba(7, 16, 30, 0.55);
-    --surface-4: rgba(7, 16, 30, 0.30);
-    --input-bg:  rgba(3, 6, 13, 0.7);
-    --chip-bg:   var(--chip-bg);
-    --chip-hover-bg: var(--chip-hover-bg);
-    --code-bg:   var(--bar-bg);
-    --bar-bg:    var(--bar-bg);
-    --bg-tint-1: var(--bar-bg);
-    --bg-tint-2: rgba(255, 74, 209, 0.08);
-    --grid-line: var(--grid-line);
-    --halftone:  rgba(255, 255, 255, 0.018);
-    --vignette-strength: 0.65;
+    --surface-1: rgba(31, 31, 37, 0.85);
+    --surface-1b:rgba(31, 31, 37, 0.55);
+    --surface-2: rgba(21, 21, 26, 0.92);
+    --surface-3: rgba(31, 31, 37, 0.70);
+    --surface-4: rgba(31, 31, 37, 0.45);
+    --input-bg:  rgba(13, 13, 16, 0.85);
+    --chip-bg:   rgba(90, 224, 201, 0.10);
+    --chip-hover-bg: rgba(90, 224, 201, 0.22);
+    --code-bg:   rgba(90, 224, 201, 0.12);
+    --bar-bg:    rgba(236, 232, 223, 0.08);
+    --bg-tint-1: rgba(90, 224, 201, 0.08);
+    --bg-tint-2: rgba(232, 152, 86, 0.07);
+    --grid-line: rgba(236, 232, 223, 0.04);
+    --halftone:  rgba(255, 255, 255, 0.014);
+    --vignette-strength: 0.55;
     --shadow-strong: 0 12px 60px rgba(0, 0, 0, 0.5);
     --shadow-panel:  -30px 0 60px rgba(0, 0, 0, 0.55);
     --shadow-toast:  0 12px 28px rgba(0, 0, 0, 0.55), 0 2px 0 rgba(0, 0, 0, 0.4);
     --panel-bg:      linear-gradient(180deg, #f5ede1 0%, #ebe1d0 100%);
-    --panel-ink:     #0a0e18;
+    --panel-ink:     #15151a;
+    /* Reading sizes — bumped for legibility on desktop and mobile alike. */
+    --fs-msg:   16px;
+    --fs-input: 15.5px;
+    --fs-hud:   12.5px;
+    --fs-chip:  12px;
   }
 
   /* ── LIGHT THEME ──────────────────────────────── */
@@ -61,9 +66,9 @@
     --paper:   #1a1814;
     --paper-mute: rgba(26, 24, 20, 0.65);
     --paper-faint: rgba(26, 24, 20, 0.35);
-    --cyan:    #006a8d;
-    --cyan-2:  #00547a;
-    --magenta: #b22075;
+    --cyan:    #006c70;
+    --cyan-2:  #00565a;
+    --magenta: #b6541d;
     --amber:   #a76311;
     --green:   #2a8c4c;
     --red:     #c43340;
@@ -384,7 +389,7 @@
     margin-bottom: 5px;
   }
   .msg-body {
-    font-size: 14.5px;
+    font-size: var(--fs-msg);
     line-height: 1.65;
     color: var(--paper);
   }
@@ -540,7 +545,7 @@
     padding: 14px 0;
     color: var(--paper);
     font-family: var(--mono);
-    font-size: 14px;
+    font-size: var(--fs-input);
     letter-spacing: 0.02em;
   }
   .input-wrap input::placeholder { color: var(--paper-faint); }
@@ -855,94 +860,105 @@
   }
 
   /* Mobile */
+  /* ═════════════════════════════════════════════════════════════
+     RESPONSIVE — viewport-locked below 1080px. The page itself never
+     scrolls; only the chat log scrolls inside its own container, and
+     the HUD strips above/below the chat scroll horizontally for any
+     overflow.
+     ═════════════════════════════════════════════════════════════ */
   @media (max-width: 1080px) {
-    .app {
-      grid-template-columns: 1fr;
-      grid-template-rows: auto 1fr auto;
-      padding: 70px 14px 14px;
-      gap: 14px;
-      overflow-y: auto;
-    }
-    .left-col, .right-col { flex-direction: row; flex-wrap: wrap; gap: 12px; }
-    .left-col .hud, .right-col .hud { flex: 1 1 calc(50% - 6px); }
-  }
-  @media (max-width: 720px) {
-    /* Lock the app to the viewport: topbar (fixed) at top, a single
-       column below it with a horizontal hud strip + the chat. The chat
-       log scrolls inside its own container — not the page. */
     html, body { height: 100%; overflow: hidden; }
+    .topbar { padding: 12px 18px; font-size: 10.5px; }
     .topbar-mid { display: none; }
-    .topbar { padding: 10px 14px; font-size: 10px; }
-    .brand-name { font-size: 11.5px; }
-    .topbar-right { gap: 8px; }
     .controls { display: none; }
+    .mode-badge { display: none; }
+
     .app {
-      position: fixed;
-      top: 52px; left: 0; right: 0; bottom: 0;
-      padding: 8px 10px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      overflow: hidden;
+      position: fixed !important;
+      top: 56px; left: 0; right: 0; bottom: 0;
+      padding: 10px;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px;
+      overflow: hidden !important;
     }
-    /* Hide decorative cards on mobile, keep the essentials (model
-       picker, topic shortcuts, quick links). */
-    .left-col .hud:not([data-mobile="show"]),
-    .right-col .hud:not([data-mobile="show"]) { display: none; }
+
     .left-col, .right-col {
-      flex: 0 0 auto;
-      display: flex; flex-direction: row;
-      gap: 8px;
+      flex: 0 0 auto !important;
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: nowrap !important;
+      gap: 8px !important;
       overflow-x: auto;
+      overflow-y: hidden;
       scrollbar-width: none;
-      padding-bottom: 2px;
+      padding: 0 2px 4px;
+      margin: 0;
     }
-    .left-col::-webkit-scrollbar, .right-col::-webkit-scrollbar { display: none; }
-    .left-col .hud, .right-col .hud {
-      flex: 1 0 auto;
-      min-width: 220px;
-      max-width: 78vw;
-      padding: 10px 12px;
+    .left-col::-webkit-scrollbar,
+    .right-col::-webkit-scrollbar { display: none; }
+
+    /* Hide decorative HUDs on small screens; only essentials stay. */
+    .left-col .hud:not([data-mobile="show"]),
+    .right-col .hud:not([data-mobile="show"]) { display: none !important; }
+
+    .left-col .hud,
+    .right-col .hud {
+      flex: 0 0 auto !important;
+      width: clamp(240px, 60vw, 320px) !important;
+      margin: 0 !important;
+      padding: 12px 14px !important;
+      min-width: 0;
     }
-    .left-col .hud .hud-title, .right-col .hud .hud-title {
-      font-size: 9px; margin-bottom: 6px;
-    }
-    .topics li { padding: 5px 8px; font-size: 11px; }
-    .topics { gap: 2px; }
-    .model-select { font-size: 11px; padding: 7px 28px 7px 10px; }
-    .model-meta { font-size: 10px; margin-top: 6px; }
-    .links-row { gap: 6px; }
-    .link-pill { font-size: 9.5px; padding: 7px 8px; letter-spacing: 0.12em; }
-    /* Chat fills the remaining height; log scrolls inside */
+    .hud-title { font-size: 10px; margin-bottom: 8px; }
+
+    /* Chat fills the rest. Log scrolls inside; page does not. */
     .chat-col {
-      flex: 1 1 0;
-      min-height: 0;
-      display: flex;
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      display: flex !important;
     }
     .chat-shell {
-      flex: 1 1 auto;
-      min-height: 0;
-      height: 100%;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      display: flex !important;
+      flex-direction: column !important;
     }
-    .chat-log { flex: 1 1 0; min-height: 0; padding: 14px 14px 6px; }
-    .chat-head { font-size: 9px; padding: 9px 14px; }
+    .chat-log {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
+      overflow-y: auto;
+      padding: 18px 18px 8px;
+    }
+    .chat-head { font-size: 10.5px; padding: 12px 16px; }
     .chat-head .ping { display: none; }
     .msg { max-width: 92%; }
-    .msg-body { font-size: 13.5px; }
-    .chip { font-size: 10.5px; padding: 5px 10px; }
-    .chips { padding: 6px 12px 0; gap: 6px; }
-    .input-bar { padding: 8px 10px 10px; gap: 8px; }
+    .chips { padding: 8px 14px 0; gap: 8px; }
+    .input-bar { padding: 10px 12px 12px; gap: 10px; }
+    .send-btn { padding: 0 18px; font-size: 12px; }
+  }
+
+  /* Phone tightening */
+  @media (max-width: 720px) {
+    .topbar { padding: 10px 14px; font-size: 10px; }
+    .brand-name { font-size: 12.5px; }
+    .brand-hex { width: 26px; height: 26px; font-size: 11px; }
+    .app { top: 50px; padding: 8px; gap: 8px; }
+    .left-col .hud, .right-col .hud {
+      width: clamp(220px, 82vw, 280px) !important;
+    }
+    .chat-log { padding: 14px 14px 6px; }
+    .msg { max-width: 95%; }
     .input-prefix { display: none; }
-    .input-wrap input { font-size: 14px; padding: 10px 0; }
-    .send-btn { padding: 0 14px; font-size: 11px; letter-spacing: 0.16em; }
-    .mode-badge { display: none; }
-    .splash-title { font-size: 44px; }
+    .chip { font-size: 11.5px; padding: 6px 10px; }
+    .splash-title { font-size: clamp(36px, 11vw, 60px); }
     .splash-sub, .splash-cta { font-size: 10px; letter-spacing: 0.28em; }
   }
   @media (max-width: 380px) {
-    .left-col .hud, .right-col .hud { min-width: 180px; max-width: 86vw; }
-    .msg-body { font-size: 13px; }
-    .chip { font-size: 10px; padding: 4px 8px; }
+    .left-col .hud, .right-col .hud {
+      width: 88vw !important;
+    }
   }
 </style>
 </head>
@@ -1029,7 +1045,7 @@
       </ul>
     </section>
 
-    <section class="hud" data-mobile="show" style="flex: 1; display: flex; flex-direction: column;">
+    <section class="hud quick-links" data-mobile="show">
       <div class="hud-title">Quick Links</div>
       <div class="links-row">
         <a class="link-pill" href="mailto:priyanshu.sinha@elastiq.ai">Email</a>
@@ -1079,8 +1095,10 @@
     <section class="hud" data-mobile="show">
       <div class="hud-title">Model · LLM Backend</div>
       <div class="model-row">
+        <!-- Live Ollama Cloud catalogue: https://ollama.com/search?c=cloud
+             Add or remove <option> lines to track what's currently live. -->
         <select class="model-select" id="modelSelect" aria-label="Select Ollama Cloud model">
-          <option value="gpt-oss:20b-cloud">gpt-oss · 20B  · fastest</option>
+          <option value="gpt-oss:20b-cloud">gpt-oss · 20B · fastest</option>
           <option value="gpt-oss:120b-cloud" selected>gpt-oss · 120B · balanced</option>
           <option value="deepseek-v3.1:671b-cloud">deepseek-v3.1 · 671B · reasoning</option>
           <option value="qwen3-coder:480b-cloud">qwen3-coder · 480B · code</option>
