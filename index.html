@@ -28,6 +28,65 @@
     --red:     #ff5a6b;
     --display: 'Space Grotesk', system-ui, sans-serif;
     --mono:    'JetBrains Mono', monospace;
+    /* Surfaces used across components (overridden in light theme) */
+    --surface-1: rgba(7, 16, 30, 0.72);
+    --surface-1b:rgba(7, 16, 30, 0.40);
+    --surface-2: rgba(7, 16, 30, 0.85);
+    --surface-3: rgba(7, 16, 30, 0.55);
+    --surface-4: rgba(7, 16, 30, 0.30);
+    --input-bg:  rgba(3, 6, 13, 0.7);
+    --chip-bg:   var(--chip-bg);
+    --chip-hover-bg: var(--chip-hover-bg);
+    --code-bg:   var(--bar-bg);
+    --bar-bg:    var(--bar-bg);
+    --bg-tint-1: var(--bar-bg);
+    --bg-tint-2: rgba(255, 74, 209, 0.08);
+    --grid-line: var(--grid-line);
+    --halftone:  rgba(255, 255, 255, 0.018);
+    --vignette-strength: 0.65;
+    --shadow-strong: 0 12px 60px rgba(0, 0, 0, 0.5);
+    --shadow-panel:  -30px 0 60px rgba(0, 0, 0, 0.55);
+    --shadow-toast:  0 12px 28px rgba(0, 0, 0, 0.55), 0 2px 0 rgba(0, 0, 0, 0.4);
+    --panel-bg:      linear-gradient(180deg, #f5ede1 0%, #ebe1d0 100%);
+    --panel-ink:     #0a0e18;
+  }
+
+  /* ── LIGHT THEME ──────────────────────────────── */
+  [data-theme="light"] {
+    --bg-0:    #f4ecdc;
+    --bg-1:    #ebe1ce;
+    --bg-2:    #e0d5be;
+    --line:    rgba(20, 20, 30, 0.12);
+    --line-2:  rgba(20, 20, 30, 0.26);
+    --paper:   #1a1814;
+    --paper-mute: rgba(26, 24, 20, 0.65);
+    --paper-faint: rgba(26, 24, 20, 0.35);
+    --cyan:    #006a8d;
+    --cyan-2:  #00547a;
+    --magenta: #b22075;
+    --amber:   #a76311;
+    --green:   #2a8c4c;
+    --red:     #c43340;
+    --surface-1: rgba(255, 252, 244, 0.85);
+    --surface-1b:rgba(255, 252, 244, 0.55);
+    --surface-2: rgba(255, 252, 244, 0.92);
+    --surface-3: rgba(255, 252, 244, 0.78);
+    --surface-4: rgba(255, 252, 244, 0.55);
+    --input-bg:  rgba(255, 252, 244, 0.85);
+    --chip-bg:   rgba(0, 106, 141, 0.08);
+    --chip-hover-bg: rgba(0, 106, 141, 0.18);
+    --code-bg:   rgba(0, 106, 141, 0.10);
+    --bar-bg:    rgba(0, 106, 141, 0.12);
+    --bg-tint-1: rgba(0, 106, 141, 0.08);
+    --bg-tint-2: rgba(178, 32, 117, 0.07);
+    --grid-line: rgba(20, 20, 30, 0.06);
+    --halftone:  rgba(0, 0, 0, 0.025);
+    --vignette-strength: 0.18;
+    --shadow-strong: 0 12px 40px rgba(60, 40, 20, 0.18);
+    --shadow-panel:  -30px 0 60px rgba(60, 40, 20, 0.22);
+    --shadow-toast:  0 10px 24px rgba(60, 40, 20, 0.18);
+    --panel-bg:      linear-gradient(180deg, #ffffff 0%, #f7eedc 100%);
+    --panel-ink:     #1a1814;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -38,10 +97,11 @@
     font-family: var(--display);
     color: var(--paper);
     background:
-      radial-gradient(1200px 800px at 18% 12%, rgba(56, 214, 255, 0.10), transparent 60%),
-      radial-gradient(1000px 700px at 82% 88%, rgba(255, 74, 209, 0.08), transparent 60%),
+      radial-gradient(1200px 800px at 18% 12%, var(--bg-tint-1), transparent 60%),
+      radial-gradient(1000px 700px at 82% 88%, var(--bg-tint-2), transparent 60%),
       linear-gradient(180deg, var(--bg-1), var(--bg-0));
     -webkit-font-smoothing: antialiased;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   /* ── Atmosphere layers ───────────────────────── */
@@ -52,14 +112,14 @@
   }
   .grid {
     background-image:
-      linear-gradient(rgba(120, 200, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(120, 200, 255, 0.04) 1px, transparent 1px);
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 56px 56px;
     mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 90%);
     -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 90%);
   }
   .scanlines {
-    background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(255,255,255,0.018) 2px 3px);
+    background: repeating-linear-gradient(to bottom, transparent 0 2px, var(--halftone) 2px 3px);
     mix-blend-mode: overlay;
   }
   .grain {
@@ -68,7 +128,7 @@
     mix-blend-mode: overlay;
   }
   .vignette {
-    background: radial-gradient(ellipse 90% 75% at 50% 50%, transparent 55%, rgba(0,0,0,0.65) 100%);
+    background: radial-gradient(ellipse 90% 75% at 50% 50%, transparent 55%, rgba(0,0,0,var(--vignette-strength)) 100%);
   }
   /* Floating particles (CSS-only) */
   .particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
@@ -98,7 +158,7 @@
     text-transform: uppercase;
     color: var(--paper-mute);
     border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, rgba(7, 16, 30, 0.85), rgba(7, 16, 30, 0.55));
+    background: linear-gradient(180deg, var(--surface-2), var(--surface-3));
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
   }
@@ -146,7 +206,7 @@
 
   /* ── HUD panels ──────────────────────────────── */
   .hud {
-    background: linear-gradient(180deg, rgba(7, 16, 30, 0.72), rgba(7, 16, 30, 0.4));
+    background: linear-gradient(180deg, var(--surface-1), var(--surface-1b));
     border: 1px solid var(--line);
     border-radius: 6px;
     padding: 18px 18px 16px;
@@ -157,7 +217,7 @@
   }
   .hud::before {
     content: ''; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(56, 214, 255, 0.08), transparent);
+    background: linear-gradient(90deg, transparent, var(--chip-bg), transparent);
     transform: translateX(-100%);
     animation: sweep 6s ease-in-out infinite;
   }
@@ -248,7 +308,7 @@
     transition: transform 0.18s;
   }
   .topics li:hover {
-    background: rgba(56, 214, 255, 0.10);
+    background: var(--bar-bg);
     color: var(--paper);
   }
   .topics li:hover::before { transform: translateX(3px); opacity: 1; }
@@ -263,7 +323,7 @@
     position: relative;
     flex: 1;
     display: flex; flex-direction: column;
-    background: linear-gradient(180deg, rgba(7, 16, 30, 0.55), rgba(7, 16, 30, 0.30));
+    background: linear-gradient(180deg, var(--surface-3), var(--surface-4));
     border: 1px solid var(--line-2);
     border-radius: 8px;
     overflow: hidden;
@@ -350,7 +410,7 @@
   .msg-body a { color: var(--magenta); border-bottom: 1px solid currentColor; }
   .msg-body code {
     font-family: var(--mono);
-    background: rgba(56, 214, 255, 0.10);
+    background: var(--bar-bg);
     color: var(--cyan);
     padding: 1px 6px; border-radius: 3px;
     font-size: 0.85em;
@@ -387,7 +447,7 @@
   .typing {
     display: inline-flex; align-items: center; gap: 4px;
     padding: 6px 10px;
-    background: rgba(56, 214, 255, 0.08);
+    background: var(--chip-bg);
     border: 1px solid rgba(56, 214, 255, 0.2);
     border-radius: 4px;
   }
@@ -424,7 +484,7 @@
   }
   .chip {
     padding: 6px 12px;
-    background: rgba(56, 214, 255, 0.08);
+    background: var(--chip-bg);
     border: 1px solid var(--line);
     color: var(--paper-mute);
     border-radius: 999px;
@@ -436,7 +496,7 @@
     white-space: nowrap;
   }
   .chip:hover {
-    background: rgba(56, 214, 255, 0.22);
+    background: var(--chip-hover-bg);
     color: var(--paper);
     border-color: var(--cyan);
     transform: translateY(-1px);
@@ -454,7 +514,7 @@
     flex: 1;
     position: relative;
     display: flex; align-items: center;
-    background: rgba(3, 6, 13, 0.7);
+    background: var(--input-bg);
     border: 1px solid var(--line-2);
     border-radius: 4px;
     padding: 0 14px;
@@ -519,7 +579,7 @@
   .bar {
     flex: 1;
     height: 5px;
-    background: rgba(56, 214, 255, 0.10);
+    background: var(--bar-bg);
     border-radius: 2px;
     overflow: hidden;
     margin: 0 12px;
@@ -596,7 +656,7 @@
     flex: 1;
     appearance: none;
     -webkit-appearance: none;
-    background: rgba(3, 6, 13, 0.7);
+    background: var(--input-bg);
     border: 1px solid var(--line-2);
     color: var(--paper);
     padding: 9px 32px 9px 12px;
@@ -643,7 +703,7 @@
   .source-chip {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 3px 9px;
-    background: rgba(56, 214, 255, 0.08);
+    background: var(--chip-bg);
     border: 1px solid var(--line);
     border-radius: 3px;
     font-family: var(--mono);
@@ -709,6 +769,34 @@
   }
   .mode-badge b { color: var(--cyan); }
   .mode-badge.scripted b { color: var(--amber); }
+
+  /* Topbar status group + theme toggle */
+  .topbar-right {
+    display: inline-flex; align-items: center; gap: 14px;
+  }
+  .theme-toggle {
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+    color: var(--paper);
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: inline-grid; place-items: center;
+    cursor: pointer;
+    transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.18s;
+    pointer-events: auto;
+  }
+  .theme-toggle:hover {
+    background: var(--chip-hover-bg);
+    border-color: var(--cyan);
+    color: var(--cyan);
+    transform: rotate(20deg);
+  }
+  .theme-toggle svg { width: 16px; height: 16px; }
+  /* Show sun in dark mode (click to switch to light), moon in light mode */
+  .theme-toggle .icon-sun  { display: inline; }
+  .theme-toggle .icon-moon { display: none; }
+  [data-theme="light"] .theme-toggle .icon-sun  { display: none; }
+  [data-theme="light"] .theme-toggle .icon-moon { display: inline; }
 
   /* Splash */
   .splash {
@@ -779,42 +867,82 @@
     .left-col .hud, .right-col .hud { flex: 1 1 calc(50% - 6px); }
   }
   @media (max-width: 720px) {
+    /* Lock the app to the viewport: topbar (fixed) at top, a single
+       column below it with a horizontal hud strip + the chat. The chat
+       log scrolls inside its own container — not the page. */
+    html, body { height: 100%; overflow: hidden; }
     .topbar-mid { display: none; }
-    .app { padding: 64px 10px 10px; gap: 10px; }
-    /* Hide decorative cards on mobile, keep the essentials so model
-       picker, topic shortcuts, and quick links remain accessible. */
+    .topbar { padding: 10px 14px; font-size: 10px; }
+    .brand-name { font-size: 11.5px; }
+    .topbar-right { gap: 8px; }
+    .controls { display: none; }
+    .app {
+      position: fixed;
+      top: 52px; left: 0; right: 0; bottom: 0;
+      padding: 8px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      overflow: hidden;
+    }
+    /* Hide decorative cards on mobile, keep the essentials (model
+       picker, topic shortcuts, quick links). */
     .left-col .hud:not([data-mobile="show"]),
     .right-col .hud:not([data-mobile="show"]) { display: none; }
     .left-col, .right-col {
+      flex: 0 0 auto;
       display: flex; flex-direction: row;
-      gap: 8px; flex-wrap: nowrap;
+      gap: 8px;
       overflow-x: auto;
       scrollbar-width: none;
-      padding-bottom: 4px;
+      padding-bottom: 2px;
     }
     .left-col::-webkit-scrollbar, .right-col::-webkit-scrollbar { display: none; }
     .left-col .hud, .right-col .hud {
       flex: 1 0 auto;
       min-width: 220px;
-      padding: 12px;
+      max-width: 78vw;
+      padding: 10px 12px;
     }
     .left-col .hud .hud-title, .right-col .hud .hud-title {
-      font-size: 9px;
-      margin-bottom: 6px;
+      font-size: 9px; margin-bottom: 6px;
     }
-    .topics li { padding: 6px 8px; font-size: 11px; }
+    .topics li { padding: 5px 8px; font-size: 11px; }
+    .topics { gap: 2px; }
     .model-select { font-size: 11px; padding: 7px 28px 7px 10px; }
     .model-meta { font-size: 10px; margin-top: 6px; }
     .links-row { gap: 6px; }
     .link-pill { font-size: 9.5px; padding: 7px 8px; letter-spacing: 0.12em; }
-    .panel { width: 100%; }
-    .mode-badge { font-size: 8.5px; padding: 3px 8px; right: 8px; bottom: 8px; letter-spacing: 0.18em; }
-    .chat-head { font-size: 9px; padding: 10px 14px; }
+    /* Chat fills the remaining height; log scrolls inside */
+    .chat-col {
+      flex: 1 1 0;
+      min-height: 0;
+      display: flex;
+    }
+    .chat-shell {
+      flex: 1 1 auto;
+      min-height: 0;
+      height: 100%;
+    }
+    .chat-log { flex: 1 1 0; min-height: 0; padding: 14px 14px 6px; }
+    .chat-head { font-size: 9px; padding: 9px 14px; }
+    .chat-head .ping { display: none; }
+    .msg { max-width: 92%; }
     .msg-body { font-size: 13.5px; }
     .chip { font-size: 10.5px; padding: 5px 10px; }
+    .chips { padding: 6px 12px 0; gap: 6px; }
+    .input-bar { padding: 8px 10px 10px; gap: 8px; }
     .input-prefix { display: none; }
-    .input-wrap input { font-size: 13px; padding: 11px 0; }
+    .input-wrap input { font-size: 14px; padding: 10px 0; }
     .send-btn { padding: 0 14px; font-size: 11px; letter-spacing: 0.16em; }
+    .mode-badge { display: none; }
+    .splash-title { font-size: 44px; }
+    .splash-sub, .splash-cta { font-size: 10px; letter-spacing: 0.28em; }
+  }
+  @media (max-width: 380px) {
+    .left-col .hud, .right-col .hud { min-width: 180px; max-width: 86vw; }
+    .msg-body { font-size: 13px; }
+    .chip { font-size: 10px; padding: 4px 8px; }
   }
 </style>
 </head>
@@ -850,7 +978,18 @@
     <span>Lon <b>77.59°E</b></span>
     <span>Bangalore · <b id="clock">— : —</b></span>
   </div>
-  <div class="topbar-status">ONLINE · v1.0</div>
+  <div class="topbar-right">
+    <span class="topbar-status">ONLINE · v1.0</span>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+      </svg>
+    </button>
+  </div>
 </div>
 
 <!-- Main grid -->
@@ -1245,6 +1384,22 @@ FORMATTING (strict):
 - Concise. Land the answer, then stop.
 - First person ("I") or third person ("he") — pick one and stay consistent within a reply.
 - Use a short <ul> with <li>s for lists of >3 items.`;
+
+// ── Theme toggle (light / dark) ──────────────────
+(function setupTheme() {
+  const saved = localStorage.getItem('pss.theme');
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  const initial = saved || (prefersLight ? 'light' : 'dark');
+  if (initial === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  btn.addEventListener('click', () => {
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+    if (isLight) document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', 'light');
+    localStorage.setItem('pss.theme', isLight ? 'dark' : 'light');
+  });
+})();
 
 // ── Model picker + mode badge ────────────────────
 const modelSelect = document.getElementById('modelSelect');
