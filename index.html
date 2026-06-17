@@ -1196,18 +1196,22 @@ const KB = [
 // Small system prompt — kept short because retrieval injects the real facts.
 const SYSTEM_PROMPT = `You are priyanshu.agent — a conversational portfolio agent for Priyanshu Shekhar Sinha, Technical Lead for GenAI at Elastiq AI (Bangalore).
 
-GROUNDING RULES (absolute):
+GROUNDING RULES (absolute, but see the greeting exception below):
 1. Answer ONLY using facts present in the CONTEXT chunks supplied with each user message. The CONTEXT is the only source of truth.
 2. If the CONTEXT does not contain a clear answer to the actual question, you MUST say so plainly. Example: "I don't have that in my notes about him." Then suggest 2-3 related topics drawn from the CONTEXT.
 3. NEVER reuse an unrelated CONTEXT chunk as the answer. If the user asks about education but only skills chunks were retrieved, say you don't have education details — do not list skills as a substitute answer.
 4. NEVER invent employers, project names, dates, numbers, schools, links, or quotes. No guessing.
 5. If the user message contains "[low-confidence retrieval]", treat that as a strong signal that nothing relevant was found and lean into the "I don't have that" path.
 
-STYLE:
+GREETING EXCEPTION:
+- If the user message is a bare greeting ("hi", "hello", "hey", "yo", "good morning", "namaste", etc.) with no question attached, do NOT apply rules 2 or 5. Greet back briefly in one short sentence and invite them to ask about Priyanshu's work, skills, projects, experience, education, or contact. Example: "Hey — I'm priyanshu.agent, ask me about his work, skills, or how to reach him."
+
+FORMATTING (strict):
+- Emit HTML only. Allowed tags: <b>, <i>, <ul>, <li>, <a href="...">, <br>. Wrap paragraphs in <p> if you use them.
+- Do NOT emit markdown. No **bold**, no _italic_, no \`code\`, no "- bullet" lines, no [text](url) links. Convert to the HTML equivalents instead.
 - Concise. Land the answer, then stop.
 - First person ("I") or third person ("he") — pick one and stay consistent within a reply.
-- Use short bulleted lists for >3 items. Inline HTML <b> for emphasis is fine; the UI renders HTML.
-- Do not greet ("Hi! / Sure!"); just answer.`;
+- Use a short <ul> with <li>s for lists of >3 items.`;
 
 // ── Model picker + mode badge ────────────────────
 const modelSelect = document.getElementById('modelSelect');
@@ -1879,21 +1883,71 @@ async function streamLLMReply(node, messages, sources) {
   }
 }
 
-// Light markdown-ish to HTML (bold, lists, line breaks). The model is asked
-// to emit inline <b> already; we just turn newlines into <br>, bullets into
-// a real list, and preserve any HTML it emitted.
+// Render assistant output as HTML — preserves any HTML the model emits and
+// converts the markdown the model sometimes emits anyway (**bold**, *italic*,
+// `code`, [text](url), - bullets, ### headings).
 function renderInline(text) {
-  // Split on double-newline into blocks
+  // Inline markdown → HTML. Runs on raw text (the model may emit either
+  // markdown or HTML; we convert markdown to HTML and leave HTML untouched).
+  const inline = (s) => {
+    // Bold (**...** or __...__) — non-greedy
+    s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<b>$1</b>');
+    s = s.replace(/__([^_\n]+?)__/g, '<b>$1</b>');
+    // Italic (*...*) — avoid matching the leading bullet "* "
+    s = s.replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\*)/g, '$1<i>$2</i>');
+    // Inline code
+    s = s.replace(/`([^`\n]+?)`/g, '<code>$1</code>');
+    // Markdown links [text](url)
+    s = s.replace(/\[([^\]]+)\]\((https?:[^)\s]+|mailto:[^)\s]+|\/[^)\s]*)\)/g,
+                  '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return s;
+  };
+
+  // Split on blank lines into blocks, then handle bullets / paragraphs inside.
   const blocks = text.split(/\n{2,}/);
-  return blocks.map(block => {
-    const lines = block.split('\n');
-    // detect bulleted block
-    if (lines.every(l => /^\s*[-*•]\s+/.test(l))) {
-      const items = lines.map(l => l.replace(/^\s*[-*•]\s+/, '').trim()).filter(Boolean);
-      return '<ul>' + items.map(i => `<li><span>${i}</span></li>`).join('') + '</ul>';
+  const out = [];
+  for (const block of blocks) {
+    const lines = block.split('\n').map(l => l.replace(/\s+$/, ''));
+    const result = [];
+    let buf = [];      // accumulating non-list lines
+    let bullets = [];  // accumulating list items
+
+    const flushBuf = () => {
+      if (!buf.length) return;
+      const joined = buf.join('<br>');
+      // headings get <b>; otherwise plain <p>
+      if (/^#{1,6}\s+/.test(buf[0])) {
+        result.push(`<p><b>${inline(buf[0].replace(/^#{1,6}\s+/, ''))}</b></p>`);
+        if (buf.length > 1) {
+          result.push(`<p>${inline(buf.slice(1).join('<br>'))}</p>`);
+        }
+      } else {
+        result.push(`<p>${inline(joined)}</p>`);
+      }
+      buf = [];
+    };
+    const flushList = () => {
+      if (!bullets.length) return;
+      result.push('<ul>' + bullets.map(b => `<li><span>${inline(b)}</span></li>`).join('') + '</ul>');
+      bullets = [];
+    };
+
+    for (const line of lines) {
+      if (/^\s*[-*•]\s+/.test(line)) {
+        flushBuf();
+        bullets.push(line.replace(/^\s*[-*•]\s+/, '').trim());
+      } else if (line.trim() === '') {
+        // shouldn't normally happen inside a block but be safe
+        flushBuf(); flushList();
+      } else {
+        flushList();
+        buf.push(line);
+      }
     }
-    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
-  }).join('');
+    flushBuf(); flushList();
+    out.push(result.join(''));
+  }
+  return out.join('');
 }
 
 async function sendQuery(text) {
