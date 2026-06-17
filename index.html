@@ -1507,7 +1507,11 @@ setInterval(() => {
 // ════════════════════════════════════════════════════════════
 //  RAG · BM25 RETRIEVAL OVER THE KNOWLEDGE BASE
 // ════════════════════════════════════════════════════════════
-const STOP = new Set(['the','a','an','and','or','of','to','for','in','on','at','by','with','is','are','was','were','be','been','being','it','its','this','that','these','those','as','from','his','he','she','they','i','you','we','my','your','our','their','do','does','did','have','has','had','will','would','can','could','should','about','what','who','why','how','where','when','tell','me','give','show','any','some','more']);
+// Stop words for BM25. Important: we keep the interrogatives (who/what/
+// where/when/why/how) IN the token stream because chunk titles and bodies
+// use them ("Who he is", "How he got here") and dropping them turns
+// natural questions like "who are you" into empty queries.
+const STOP = new Set(['the','a','an','and','or','of','to','for','in','on','at','by','with','is','are','was','were','be','been','being','it','its','this','that','these','those','as','from','his','her','hers','he','she','they','them','i','me','you','your','we','our','my','their','do','does','did','have','has','had','will','would','can','could','should','about','any','some','more','tell','show','give','ask','say','describe','explain','please','yourself','him','himself']);
 
 function tok(s) {
   return s.toLowerCase()
@@ -2194,6 +2198,29 @@ const GREETING_REPLY = {
   text: `Hey — I'm <b>priyanshu.agent</b>, the portfolio agent for Priyanshu Sinha. Ask me about his work at Elastiq, projects he's shipped, skills, experience, education, or how to reach him.`,
 };
 
+// Persona / identity questions short-circuit too — they're meta about the
+// agent itself, not about Priyanshu. Catches "who are you", "what are you",
+// "what's your name", "introduce yourself", "tell me about yourself" etc.
+const PERSONA_PATTERNS = [
+  /\bwho\s+are\s+(you|u)\b/i,
+  /\bwhat\s+are\s+you\b/i,
+  /\bwhat'?s?\s+your\s+name\b/i,
+  /\bwho\s+am\s+i\s+(talking|chatting|speaking)\s+(to|with)\b/i,
+  /\bintroduce\s+yourself\b/i,
+  /\btell\s+me\s+about\s+yourself\b/i,
+  /\bdescribe\s+yourself\b/i,
+  /\babout\s+yourself\b/i,
+  /\bwhat\s+is\s+this\b/i,
+];
+function isPersonaQuestion(s) {
+  const q = s.toLowerCase().trim();
+  if (!q || q.length > 80) return false;
+  return PERSONA_PATTERNS.some(p => p.test(q));
+}
+const PERSONA_REPLY = {
+  text: `I'm <b>priyanshu.agent</b> — a conversational, RAG-grounded stand-in for <b>Priyanshu Shekhar Sinha</b>, Technical Lead for GenAI at Elastiq AI (Bangalore). I retrieve from a small knowledge base built from his real bio, projects, experience, skills, and journal posts, then pass the matches to an Ollama Cloud model to compose the reply. Ask me about his current work, projects, skills, experience, education, recognition, opinions on RAG/agents, or how to reach him.`,
+};
+
 async function sendQuery(text) {
   text = text.trim();
   if (!text) return;
@@ -2207,6 +2234,13 @@ async function sendQuery(text) {
   if (isGreeting(text)) {
     await streamReply(node, GREETING_REPLY);
     history.push({ role: 'assistant', content: GREETING_REPLY.text });
+    return;
+  }
+
+  // ── Short-circuit identity / persona questions ──
+  if (isPersonaQuestion(text)) {
+    await streamReply(node, PERSONA_REPLY);
+    history.push({ role: 'assistant', content: PERSONA_REPLY.text });
     return;
   }
 
