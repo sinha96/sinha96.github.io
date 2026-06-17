@@ -200,13 +200,17 @@
   /* ── Main grid: left HUD · chat · right HUD ──── */
   .app {
     position: relative;
-    height: 100%;
+    height: 100vh;
+    max-height: 100vh;
     width: 100%;
     z-index: 10;
     display: grid;
     grid-template-columns: 280px 1fr 300px;
+    grid-template-rows: 1fr;
     gap: 22px;
     padding: 78px 28px 24px;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   /* ── HUD panels ──────────────────────────────── */
@@ -246,7 +250,31 @@
   .hud + .hud { margin-top: 18px; }
 
   /* Left HUD */
-  .left-col { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  .left-col, .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 0;
+    max-height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;       /* room for the scrollbar so cards aren't clipped */
+    scrollbar-width: thin;
+    scrollbar-color: var(--chip-hover-bg) transparent;
+  }
+  .left-col::-webkit-scrollbar,
+  .right-col::-webkit-scrollbar { width: 6px; }
+  .left-col::-webkit-scrollbar-track,
+  .right-col::-webkit-scrollbar-track { background: transparent; }
+  .left-col::-webkit-scrollbar-thumb,
+  .right-col::-webkit-scrollbar-thumb {
+    background: var(--chip-bg);
+    border-radius: 3px;
+  }
+  .left-col::-webkit-scrollbar-thumb:hover,
+  .right-col::-webkit-scrollbar-thumb:hover { background: var(--chip-hover-bg); }
+  /* Each HUD card shouldn't shrink — keeps content readable inside a scrolling column. */
+  .left-col > .hud, .right-col > .hud { flex: 0 0 auto; }
   .identity { display: flex; align-items: center; gap: 14px; }
   .identity-avatar {
     width: 56px; height: 56px; border-radius: 6px;
@@ -571,7 +599,7 @@
   .send-btn:active { transform: translateY(1px); }
 
   /* Right HUD column */
-  .right-col { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  /* .right-col styling consolidated with .left-col above. */
 
   .stat-row {
     display: flex; justify-content: space-between; align-items: center;
@@ -821,25 +849,20 @@
   }
 
   /* Mode badge */
+  /* Mode badge lives inline in the topbar — no more floating overlap. */
   .mode-badge {
-    position: fixed;
-    bottom: 14px; right: 16px;
+    display: inline-flex; align-items: center;
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 10.5px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--paper-mute);
-    padding: 6px 12px;
-    background: var(--surface-1);
+    padding: 4px 10px;
+    background: var(--chip-bg);
     border: 1px solid var(--line);
     border-radius: 4px;
-    z-index: 95;
-    pointer-events: none;
-    backdrop-filter: blur(8px) saturate(140%);
-    -webkit-backdrop-filter: blur(8px) saturate(140%);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25);
   }
-  .mode-badge b { color: var(--cyan); }
+  .mode-badge b { color: var(--cyan); font-weight: 600; }
   .mode-badge.scripted b { color: var(--amber); }
 
   /* Topbar status group + theme toggle */
@@ -1110,8 +1133,6 @@
 <body>
 
 <!-- Mode badge -->
-<div class="mode-badge" id="modeBadge"><b>SCRIPTED</b> · awaiting Worker URL</div>
-
 <div class="grid"></div>
 <div class="scanlines"></div>
 <div class="grain"></div>
@@ -1145,7 +1166,8 @@
     <span>Bangalore · <b id="clock">— : —</b></span>
   </div>
   <div class="topbar-right">
-    <span class="topbar-status">ONLINE · v1.0</span>
+    <span class="topbar-status">ONLINE</span>
+    <span class="mode-badge" id="modeBadge"><b>SCRIPTED</b> · awaiting Worker URL</span>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark theme" title="Toggle theme">
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
         <circle cx="12" cy="12" r="4"/>
