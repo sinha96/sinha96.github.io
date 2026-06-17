@@ -27,7 +27,9 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 
 // Cap on free-form input size so a bad actor can't DOS the upstream.
-const MAX_BODY_BYTES = 16 * 1024;
+// 128KB comfortably fits the system prompt + 20 retrieved chunks + chat
+// history + a pasted job description or two.
+const MAX_BODY_BYTES = 128 * 1024;
 
 // Per-IP rate limit (sliding window in memory — best-effort,
 // resets on Worker cold start; good enough for a portfolio).

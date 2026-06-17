@@ -1499,7 +1499,7 @@ const CONFIG = {
   workerUrl: 'https://ollama-proxy.pripy.workers.dev',
   model: 'gpt-oss:120b-cloud',
   // Retrieval — how many KB chunks to send to the LLM per query.
-  topK: 20,
+  topK: 10,
   // Conversation memory cap
   maxTurns: 12,
 };
@@ -1734,6 +1734,14 @@ GROUNDING RULES (absolute, but see the greeting exception below):
    - "When did he graduate B.Tech?" → "2018, B.E. in Electrical and Electronics from SMVIT (Sir M. Visvesvaraya Institute of Technology), Bangalore." NOT "2018."
    - "Has he worked with LLaMA?" → "Yes — fine-tuned LLaMA 3.1 70B via QLoRA to 85% accuracy at Elastiq." NOT "Yes, he has used LLaMA."
    - "What was his LSTM model's accuracy?" → "R² of 0.9012." NOT "It was very accurate."
+
+JOB-FIT EVALUATIONS:
+- When the user pastes a job description, job posting, or asks about Priyanshu's suitability / fit / match for a specific role, treat it as a legitimate question. Do NOT refuse on the grounds that "the JD isn't in CONTEXT" — the JD is in the user message itself, and the CONTEXT carries the candidate facts you need.
+- Structure the answer as a brief fit assessment:
+  • Open with a one-line verdict (strong fit / partial fit / not a fit, with the headline reason).
+  • List the JD's most concrete requirements (years, languages, frameworks, domains, scale, leadership scope) and for each one cite the matching CONTEXT fact, or call out an honest gap when missing.
+  • Close with practical notes if relevant — notice period, location, availability, salary refusal — all from CONTEXT.
+- Be honest about gaps. Do not inflate. If the JD asks for something Priyanshu doesn't have in CONTEXT, say so plainly. The point is to help the user decide, not to oversell.
 
 GREETING EXCEPTION:
 - If the user message is a bare greeting ("hi", "hello", "hey", "yo", "good morning", "namaste", etc.) with no question attached, do NOT apply rules 2 or 5. Greet back briefly in one short sentence and invite them to ask about Priyanshu's work, skills, projects, experience, education, or contact. Example: "Hey — I'm priyanshu.agent, ask me about his work, skills, or how to reach him."
@@ -2149,7 +2157,11 @@ function buildMessages(userQuery, contextChunks) {
   const weak = !contextChunks.length || topScore < WEAK_SCORE;
   const flag = weak ? '\n[low-confidence retrieval — nothing strongly relevant was found in the knowledge base]' : '';
 
-  const recent = history.slice(-CONFIG.maxTurns * 2);
+  // For unusually long inputs (e.g. pasted JDs), shrink chat history so
+  // we stay well below the Worker's body cap and don't waste tokens on
+  // older small-talk turns.
+  const historyTurns = userQuery.length > 1500 ? 2 : CONFIG.maxTurns;
+  const recent = history.slice(-historyTurns * 2);
   return [
     { role: 'system', content: SYSTEM_PROMPT },
     ...recent,
