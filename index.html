@@ -1968,6 +1968,25 @@ function renderInline(text) {
   return out.join('');
 }
 
+// Detect bare greetings so we can answer locally — skipping retrieval + LLM
+// keeps greetings instant, free, and never silently broken when a model is down.
+const GREETING_WORDS = ['hi','hii','hiii','hello','hey','heya','heyy','yo','sup','hola','namaste','salaam','salam','greetings','howdy'];
+const GREETING_PHRASES = ['good morning','good afternoon','good evening','good day'];
+function isGreeting(s) {
+  const q = s.toLowerCase().replace(/[!.?,]+$/g, '').trim();
+  if (!q || q.length > 30) return false;
+  if (GREETING_WORDS.includes(q)) return true;
+  if (GREETING_PHRASES.some(p => q === p)) return true;
+  // "hi there", "hello bot", "hey priyanshu"
+  const head = q.split(/\s+/)[0];
+  if (GREETING_WORDS.includes(head) && q.split(/\s+/).length <= 3) return true;
+  return false;
+}
+
+const GREETING_REPLY = {
+  text: `Hey — I'm <b>priyanshu.agent</b>, the portfolio agent for Priyanshu Sinha. Ask me about his work at Elastiq, projects he's shipped, skills, experience, education, or how to reach him.`,
+};
+
 async function sendQuery(text) {
   text = text.trim();
   if (!text) return;
@@ -1976,6 +1995,13 @@ async function sendQuery(text) {
 
   const node = addAgentTyping();
   await new Promise(r => setTimeout(r, 300));
+
+  // ── Short-circuit greetings ─────────────────────
+  if (isGreeting(text)) {
+    await streamReply(node, GREETING_REPLY);
+    history.push({ role: 'assistant', content: GREETING_REPLY.text });
+    return;
+  }
 
   // ── Retrieve from KB regardless of LLM availability ──
   const sources = retrieve(text);
