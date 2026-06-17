@@ -1108,6 +1108,17 @@ const KB = [
   { id: 'rec-dl-nlp', section: 'Recognition', title: 'DeepLearning.AI specializations',
     text: `Deep Learning Specialization (2018) and NLP Specialization (2021) from DeepLearning.AI on Coursera — multi-course coverage of DNNs, CNNs, sequence models, attention, and the foundations of modern NLP.` },
 
+  // ─── Education ──────────────────────────────────────────────
+  { id: 'edu-btech', section: 'Education', title: 'B.E. — Electrical & Electronics (SMVIT)',
+    text: `Priyanshu holds a Bachelor of Engineering in Electrical and Electronics from Sir M. Visvesvaraya Institute of Technology (SMVIT) in Bangalore, 2014 to 2018. He also served as Student Placement Coordinator at SMVIT from April 2016 to September 2017.`,
+    tags: ['education', 'btech', 'b.tech', 'bachelor', 'undergrad', 'electrical', 'electronics', 'smvit', 'visvesvaraya', 'bangalore', 'engineering'] },
+  { id: 'edu-pg', section: 'Education', title: 'PG · Data Science Engineering (Great Lakes)',
+    text: `Priyanshu completed a Post Graduate Program in Data Science Engineering at Great Lakes Institute of Management in 2019. That program bridged him from electrical engineering into the data-science career he has now.`,
+    tags: ['education', 'pg', 'post graduate', 'masters', 'data science', 'great lakes'] },
+  { id: 'edu-coursera', section: 'Education', title: 'Coursera coursework',
+    text: `Continuous-learning track on Coursera: Python — Data Structures (University of Michigan, 2018), Programming for Everybody (University of Michigan), Deep Learning Specialization (DeepLearning.AI, 2018), and NLP Specialization (DeepLearning.AI, 2021).`,
+    tags: ['education', 'coursera', 'university of michigan', 'python', 'self-study'] },
+
   // ─── Hobbies / personal ─────────────────────────────────────
   { id: 'hobbies', section: 'Off-keyboard', title: 'Hobbies',
     text: `Outside work he likes long drives (the longer the better), badminton (weekly), hiking on weekends when he can, slow experimental cooking, and documentaries on history, food, and design.` },
@@ -1129,11 +1140,16 @@ const KB = [
 // Small system prompt — kept short because retrieval injects the real facts.
 const SYSTEM_PROMPT = `You are priyanshu.agent — a conversational portfolio agent for Priyanshu Shekhar Sinha, Technical Lead for GenAI at Elastiq AI (Bangalore).
 
-You answer questions about Priyanshu's work, skills, projects, experience, and how to reach him. You MUST ground every answer in the CONTEXT chunks provided with each user message. Do not invent employers, project names, dates, numbers, links, or quotes. If the context does not cover the question, say so plainly and suggest a related topic the user could ask about.
+GROUNDING RULES (absolute):
+1. Answer ONLY using facts present in the CONTEXT chunks supplied with each user message. The CONTEXT is the only source of truth.
+2. If the CONTEXT does not contain a clear answer to the actual question, you MUST say so plainly. Example: "I don't have that in my notes about him." Then suggest 2-3 related topics drawn from the CONTEXT.
+3. NEVER reuse an unrelated CONTEXT chunk as the answer. If the user asks about education but only skills chunks were retrieved, say you don't have education details — do not list skills as a substitute answer.
+4. NEVER invent employers, project names, dates, numbers, schools, links, or quotes. No guessing.
+5. If the user message contains "[low-confidence retrieval]", treat that as a strong signal that nothing relevant was found and lean into the "I don't have that" path.
 
-Style:
+STYLE:
 - Concise. Land the answer, then stop.
-- First person ("I") or third person ("he") are both fine — pick one and stay consistent within a reply.
+- First person ("I") or third person ("he") — pick one and stay consistent within a reply.
 - Use short bulleted lists for >3 items. Inline HTML <b> for emphasis is fine; the UI renders HTML.
 - Do not greet ("Hi! / Sure!"); just answer.`;
 
@@ -1337,22 +1353,30 @@ async function* streamLLM(messages, signal) {
 // History maintained across turns (just role/content pairs)
 const history = [];
 
+// Weak-retrieval threshold: if the best BM25 score is below this, the user
+// message gets tagged so the model knows nothing strongly relevant was found.
+const WEAK_SCORE = 1.8;
+
 function buildMessages(userQuery, contextChunks) {
   const ctxBlock = contextChunks.map((c, i) => {
     const k = c.chunk;
-    return `[#${i + 1} · ${k.section} · ${k.title}]\n${k.text}`;
+    return `[#${i + 1} · ${k.section} · ${k.title}  (bm25=${c.score.toFixed(2)})]\n${k.text}`;
   }).join('\n\n');
+
+  const topScore = contextChunks.length ? contextChunks[0].score : 0;
+  const weak = !contextChunks.length || topScore < WEAK_SCORE;
+  const flag = weak ? '\n[low-confidence retrieval — nothing strongly relevant was found in the knowledge base]' : '';
 
   const recent = history.slice(-CONFIG.maxTurns * 2);
   return [
     { role: 'system', content: SYSTEM_PROMPT },
     ...recent,
     { role: 'user', content:
-`CONTEXT (use only these chunks to answer; cite none of them inline — the UI displays sources separately):
+`CONTEXT (the only source of truth; do not cite inline, the UI shows sources separately):
 
-${ctxBlock || '(no relevant context found in knowledge base)'}
+${ctxBlock || '(no relevant context found in the knowledge base)'}
 
-USER QUESTION:
+USER QUESTION:${flag}
 ${userQuery}` }
   ];
 }
