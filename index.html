@@ -1134,7 +1134,48 @@ const KB = [
 
   // ─── Contact ────────────────────────────────────────────────
   { id: 'contact', section: 'Contact', title: 'How to reach him',
-    text: `Best way to reach Priyanshu is email: priyanshu.sinha@elastiq.ai. He reads everything and replies to most messages. For paid calls and mentorship he is on Topmate at topmate.io/priyanshu_shekhar_sinha. Résumé at resume.html (web) and resume.pdf. Location: Bangalore, IN. Role: Tech Lead, GenAI at Elastiq AI.` },
+    text: `Best way to reach Priyanshu is email: priyanshu.sinha@elastiq.ai (work) or priyanshu1996@hotmail.com (personal). He reads everything and replies to most messages. For paid calls and mentorship he is on Topmate at topmate.io/priyanshu_shekhar_sinha. Phone: +91 7349575896. Résumé at resume.html (web) and resume.pdf. Location: Bangalore, IN. Role: Tech Lead, GenAI at Elastiq AI.` },
+
+  // ─── Social / professional links ───────────────────────────
+  { id: 'links-social', section: 'Links', title: 'GitHub, LinkedIn, Topmate',
+    text: `Find Priyanshu online: GitHub at github.com/sinha96, LinkedIn at linkedin.com/in/pripy, Topmate (paid calls) at topmate.io/priyanshu_shekhar_sinha. Personal site lives at sinha96.github.io.`,
+    url: 'https://github.com/sinha96',
+    tags: ['github', 'linkedin', 'topmate', 'social', 'links', 'profile', 'handle'] },
+  { id: 'links-availability', section: 'Status', title: 'Open to collaboration',
+    text: `Current status: open to collaboration. Priyanshu actively takes calls about hard retrieval problems, half-formed agentic ideas, and platforms that need grown-up engineering plumbing. Not actively job-hunting, but interesting roles get a reply.`,
+    tags: ['hire', 'availability', 'open', 'collaboration', 'status', 'taking calls'] },
+
+  // ─── Services / engagement types ───────────────────────────
+  { id: 'services-rag', section: 'Services', title: 'Service · Enterprise RAG',
+    text: `Service offered: architect end-to-end enterprise RAG platforms. Multi-source ingestion across Drive / GCS / S3 / Azure Blob / Slack, hybrid search (BM25 + kNN), cross-encoder re-ranking, and document-level ACL synchronisation across clouds.`,
+    tags: ['service', 'rag', 'hire', 'consulting', 'engagement', 'opensearch', 'acl'] },
+  { id: 'services-agents', section: 'Services', title: 'Service · Agentic AI',
+    text: `Service offered: design and ship AI agents for Text2SQL, document processing, and custom enterprise workflows — including evaluating emerging protocols like MCP for connectors.`,
+    tags: ['service', 'agents', 'agentic', 'mcp', 'text2sql', 'consulting'] },
+  { id: 'services-finetune', section: 'Services', title: 'Service · LLM Fine-tuning',
+    text: `Service offered: domain-specific tuning with QLoRA / LoRA / SFT / RLHF on open-source models such as LLaMA 3.1 70B, plus custom datasets and context-aware chunking strategies.`,
+    tags: ['service', 'finetune', 'fine-tuning', 'qlora', 'lora', 'sft', 'rlhf', 'llama'] },
+  { id: 'services-mleng', section: 'Services', title: 'Service · ML Engineering & Microservices',
+    text: `Service offered: build ML/DL microservices, host on GCP or AWS, instrumented with MLOps, observability, and the unglamorous infrastructure that makes the magic dependable.`,
+    tags: ['service', 'mlops', 'engineering', 'microservices', 'gcp', 'aws', 'observability'] },
+  { id: 'services-analytics', section: 'Services', title: 'Service · Analytics & Visualisation',
+    text: `Service offered: develop analytic platforms and intuitive dashboards using Streamlit, Power BI, and Tableau — for the flavour of analysis a problem requires.`,
+    tags: ['service', 'analytics', 'dashboard', 'streamlit', 'power bi', 'tableau', 'visualisation'] },
+  { id: 'services-mentor', section: 'Services', title: 'Service · Mentorship',
+    text: `Service offered: mentor freshers and working professionals transitioning into the data and AI world — project guidance, interview prep, and career paths. Book via Topmate.`,
+    tags: ['service', 'mentor', 'mentorship', 'career', 'topmate', 'coaching'] },
+
+  // ─── PoseNet demo (live in the repo) ───────────────────────
+  { id: 'demo-posenet', section: 'Demos', title: 'PoseNet pose-estimation demo',
+    text: `Priyanshu maintains a small live PoseNet demo on the portfolio — real-time pose estimation in the browser using TensorFlow.js. Live at /posenet.html.`,
+    url: '/posenet.html',
+    tags: ['demo', 'posenet', 'tensorflow.js', 'pose estimation', 'side project', 'interactive'] },
+
+  // ─── Selected Work overview ────────────────────────────────
+  { id: 'work-overview', section: 'Work', title: 'Selected Work archive',
+    text: `Beyond the chunks above, the classic portfolio at /index-classic.html has a Selected Work section with 26 cards spanning industrial projects (Elastiq RAG, Discover, Text2SQL, GraphRAG, Acuity dashboards, TMC A/B framework, LSTM forecaster) and writing. Visitors who want the visual gallery can follow the Classic Portfolio link in the sidebar.`,
+    url: 'index-classic.html',
+    tags: ['work', 'portfolio', 'projects', 'gallery', 'selected', 'overview'] },
 ];
 
 // Small system prompt — kept short because retrieval injects the real facts.
