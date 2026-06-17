@@ -1674,36 +1674,48 @@ FORMATTING (strict):
 - First person ("I") or third person ("he") — pick one and stay consistent within a reply.
 - Use a short <ul> with <li>s for lists of >3 items.`;
 
-// ── Now Playing · Spotify embed ─────────────────
+// ── Now Playing · Spotify integration ───────────
 //
-// Swap NOW_PLAYING_EMBED below for whatever you want on rotation.
-// To find the right URL:
-//   1. Open the track or album on https://open.spotify.com
-//   2. Click the ⋯ menu → Share → Copy Spotify URI / Copy link
-//   3. Replace the album/track ID in the URL pattern below
-// Examples:
-//   Album:  https://open.spotify.com/embed/album/<id>?utm_source=generator&theme=0
-//   Track:  https://open.spotify.com/embed/track/<id>?utm_source=generator&theme=0
-//   Playlist: https://open.spotify.com/embed/playlist/<id>?utm_source=generator&theme=0
-// (theme=0 = dark, theme=1 = light)
-const NOW_PLAYING_EMBED =
-  'https://open.spotify.com/embed/album/7iYJDmJRG3pWN1ROW0CXTH?utm_source=generator&theme=0';
-// ^^ PLACEHOLDER — replace with your real Khruangbin "A LA SALA" album link
-//    (or any other album/track/playlist).
+// NOW_PLAYING_URL can be one of two things:
+//
+//   (a) A Spotify embed URL — clicking the Now Playing row expands an
+//       inline player iframe (80px) below it. Format:
+//         https://open.spotify.com/embed/album/<id>?utm_source=generator&theme=0
+//         https://open.spotify.com/embed/track/<id>?utm_source=generator&theme=0
+//         https://open.spotify.com/embed/playlist/<id>?utm_source=generator&theme=0
+//
+//   (b) Any other URL — clicking opens it in a new tab. The default
+//       below is a Spotify search URL so the widget works out of the
+//       box. To get a real embed: open the album/track on
+//       https://open.spotify.com, click ⋯ → Share → Copy link, then
+//       insert "/embed" after "spotify.com" and paste here.
+const NOW_PLAYING_URL = 'https://open.spotify.com/search/Khruangbin%20A%20LA%20SALA';
 
 (function setupNowPlaying() {
+  const isEmbed = /\/embed\//.test(NOW_PLAYING_URL);
   document.querySelectorAll('[data-np-trigger]').forEach(trigger => {
     const embedEl = trigger.parentElement.querySelector('[data-np-embed]');
     if (!embedEl) return;
     const iframe = embedEl.querySelector('iframe');
+
+    if (!isEmbed) {
+      // Hide the embed shell entirely when we're going to open externally.
+      embedEl.style.display = 'none';
+      trigger.setAttribute('title', 'Open in Spotify');
+      const toggle = trigger.querySelector('.np-toggle');
+      if (toggle) toggle.textContent = '↗';
+      trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        window.open(NOW_PLAYING_URL, '_blank', 'noopener');
+      });
+      return;
+    }
+
+    // Embed mode: lazy-load the iframe on first click, toggle open/closed.
     let loaded = false;
     trigger.addEventListener('click', (e) => {
-      // Don't double-toggle when the inner button itself is clicked.
       e.stopPropagation();
-      if (!loaded) {
-        iframe.src = NOW_PLAYING_EMBED;
-        loaded = true;
-      }
+      if (!loaded) { iframe.src = NOW_PLAYING_URL; loaded = true; }
       trigger.classList.toggle('is-open');
     });
   });
