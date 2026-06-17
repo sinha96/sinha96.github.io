@@ -779,9 +779,42 @@
     .left-col .hud, .right-col .hud { flex: 1 1 calc(50% - 6px); }
   }
   @media (max-width: 720px) {
-    .left-col, .right-col { display: none; }
     .topbar-mid { display: none; }
-    .app { padding: 64px 10px 10px; }
+    .app { padding: 64px 10px 10px; gap: 10px; }
+    /* Hide decorative cards on mobile, keep the essentials so model
+       picker, topic shortcuts, and quick links remain accessible. */
+    .left-col .hud:not([data-mobile="show"]),
+    .right-col .hud:not([data-mobile="show"]) { display: none; }
+    .left-col, .right-col {
+      display: flex; flex-direction: row;
+      gap: 8px; flex-wrap: nowrap;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 4px;
+    }
+    .left-col::-webkit-scrollbar, .right-col::-webkit-scrollbar { display: none; }
+    .left-col .hud, .right-col .hud {
+      flex: 1 0 auto;
+      min-width: 220px;
+      padding: 12px;
+    }
+    .left-col .hud .hud-title, .right-col .hud .hud-title {
+      font-size: 9px;
+      margin-bottom: 6px;
+    }
+    .topics li { padding: 6px 8px; font-size: 11px; }
+    .model-select { font-size: 11px; padding: 7px 28px 7px 10px; }
+    .model-meta { font-size: 10px; margin-top: 6px; }
+    .links-row { gap: 6px; }
+    .link-pill { font-size: 9.5px; padding: 7px 8px; letter-spacing: 0.12em; }
+    .panel { width: 100%; }
+    .mode-badge { font-size: 8.5px; padding: 3px 8px; right: 8px; bottom: 8px; letter-spacing: 0.18em; }
+    .chat-head { font-size: 9px; padding: 10px 14px; }
+    .msg-body { font-size: 13.5px; }
+    .chip { font-size: 10.5px; padding: 5px 10px; }
+    .input-prefix { display: none; }
+    .input-wrap input { font-size: 13px; padding: 11px 0; }
+    .send-btn { padding: 0 14px; font-size: 11px; letter-spacing: 0.16em; }
   }
 </style>
 </head>
@@ -842,7 +875,7 @@
       </div>
     </section>
 
-    <section class="hud">
+    <section class="hud" data-mobile="show">
       <div class="hud-title">Memory · Topics</div>
       <ul class="topics" id="topics">
         <li data-q="Tell me about your work">Current work</li>
@@ -857,7 +890,7 @@
       </ul>
     </section>
 
-    <section class="hud" style="flex: 1; display: flex; flex-direction: column;">
+    <section class="hud" data-mobile="show" style="flex: 1; display: flex; flex-direction: column;">
       <div class="hud-title">Quick Links</div>
       <div class="links-row">
         <a class="link-pill" href="mailto:priyanshu.sinha@elastiq.ai">Email</a>
@@ -904,7 +937,7 @@
 
   <!-- ─── Right column: live HUD ─── -->
   <aside class="right-col">
-    <section class="hud">
+    <section class="hud" data-mobile="show">
       <div class="hud-title">Model · LLM Backend</div>
       <div class="model-row">
         <select class="model-select" id="modelSelect" aria-label="Select Ollama Cloud model">
@@ -980,8 +1013,8 @@ const CONFIG = {
   // Leaving it empty keeps the portfolio in scripted-fallback mode.
   workerUrl: 'https://ollama-proxy.pripy.workers.dev',
   model: 'gpt-oss:120b-cloud',
-  // Retrieval
-  topK: 5,
+  // Retrieval — how many KB chunks to send to the LLM per query.
+  topK: 20,
   // Conversation memory cap
   maxTurns: 12,
 };
@@ -1201,6 +1234,7 @@ GROUNDING RULES (absolute, but see the greeting exception below):
 3. NEVER reuse an unrelated CONTEXT chunk as the answer. If the user asks about education but only skills chunks were retrieved, say you don't have education details — do not list skills as a substitute answer.
 4. NEVER invent employers, project names, dates, numbers, schools, links, or quotes. No guessing.
 5. If the user message contains "[low-confidence retrieval]", treat that as a strong signal that nothing relevant was found and lean into the "I don't have that" path.
+6. PRESERVE specifics. When the CONTEXT names a degree, a school, a date range, a percentage, an accuracy number, a model size, a year, a programme name, a job title, or any other concrete detail relevant to the question, include it verbatim in the answer. "He studied at SMVIT" is wrong if the CONTEXT also says "Electrical and Electronics, 2014–2018"; the right answer names the degree and the years.
 
 GREETING EXCEPTION:
 - If the user message is a bare greeting ("hi", "hello", "hey", "yo", "good morning", "namaste", etc.) with no question attached, do NOT apply rules 2 or 5. Greet back briefly in one short sentence and invite them to ask about Priyanshu's work, skills, projects, experience, education, or contact. Example: "Hey — I'm priyanshu.agent, ask me about his work, skills, or how to reach him."
