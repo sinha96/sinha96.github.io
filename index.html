@@ -1304,6 +1304,17 @@ const KB = [
   { id: 'edu-pg', section: 'Education', title: 'PG · Data Science Engineering (Great Lakes)',
     text: `Priyanshu completed a Post Graduate Program in Data Science Engineering at Great Lakes Institute of Management in 2019. That program bridged him from electrical engineering into the data-science career he has now.`,
     tags: ['education', 'pg', 'post graduate', 'masters', 'data science', 'great lakes'] },
+  // ─── HR · spoken languages, citizenship, achievement summary ─
+  { id: 'lang-spoken', section: 'HR', title: 'Languages spoken',
+    text: `Priyanshu is fluent in English (working language) and Hindi (native).`,
+    tags: ['languages', 'speaks', 'english', 'hindi', 'native', 'fluent', 'multilingual', 'communication'] },
+  { id: 'work-auth', section: 'HR', title: 'Work authorisation & citizenship',
+    text: `Priyanshu is an Indian citizen, based in Bangalore. No visa or work authorisation is needed for roles in India. International roles would require sponsorship.`,
+    tags: ['citizenship', 'visa', 'work authorisation', 'work permit', 'indian', 'india', 'sponsorship', 'relocate'] },
+  { id: 'achievements-top', section: 'HR', title: 'Headline career achievements',
+    text: `Top metrics across his career, useful when asked about biggest achievements: (1) Fine-tuned LLaMA 3.1 70B via QLoRA at Elastiq — 85% accuracy on target task. (2) LSTM customer-return forecaster at TheMathCompany — R² of 0.9012. (3) Investment-firm analysis dashboard at Acuity — 87% reduction in client analysis time. (4) Sales anomaly + seasonality pipeline at TheMathCompany — +$125K revenue for the client in Q1. (5) Recruitment Smart automation — analytics report from 7 days to 15 minutes, a 99% improvement. (6) First enterprise client onboarded for Elastiq's Text2SQL solution.`,
+    tags: ['achievement', 'achievements', 'best work', 'biggest', 'proud', 'metric', 'metrics', 'impact', 'numbers', 'why hire', 'highlight', 'wins'] },
+
   { id: 'edu-coursera', section: 'Education', title: 'Coursera coursework',
     text: `Continuous-learning track on Coursera: Python — Data Structures (University of Michigan, 2018), Programming for Everybody (University of Michigan), Deep Learning Specialization (DeepLearning.AI, 2018), and NLP Specialization (DeepLearning.AI, 2021).`,
     tags: ['education', 'coursera', 'university of michigan', 'python', 'self-study'] },
@@ -1391,7 +1402,10 @@ GROUNDING RULES (absolute, but see the greeting exception below):
 3. NEVER reuse an unrelated CONTEXT chunk as the answer. If the user asks about education but only skills chunks were retrieved, say you don't have education details — do not list skills as a substitute answer.
 4. NEVER invent employers, project names, dates, numbers, schools, links, or quotes. No guessing.
 5. If the user message contains "[low-confidence retrieval]", treat that as a strong signal that nothing relevant was found and lean into the "I don't have that" path.
-6. PRESERVE specifics. When the CONTEXT names a degree, a school, a date range, a percentage, an accuracy number, a model size, a year, a programme name, a job title, or any other concrete detail relevant to the question, include it verbatim in the answer. "He studied at SMVIT" is wrong if the CONTEXT also says "Electrical and Electronics, 2014–2018"; the right answer names the degree and the years.
+6. PRESERVE specifics. When the CONTEXT names a degree, a school, a date range, a percentage, an accuracy number, a model size, a year, a programme name, a job title, or any other concrete detail relevant to the question, include it verbatim in the answer. A one-word answer like "2018" is almost never enough — pair the year with the school and the degree/branch. Examples:
+   - "When did he graduate B.Tech?" → "2018, B.E. in Electrical and Electronics from SMVIT (Sir M. Visvesvaraya Institute of Technology), Bangalore." NOT "2018."
+   - "Has he worked with LLaMA?" → "Yes — fine-tuned LLaMA 3.1 70B via QLoRA to 85% accuracy at Elastiq." NOT "Yes, he has used LLaMA."
+   - "What was his LSTM model's accuracy?" → "R² of 0.9012." NOT "It was very accurate."
 
 GREETING EXCEPTION:
 - If the user message is a bare greeting ("hi", "hello", "hey", "yo", "good morning", "namaste", etc.) with no question attached, do NOT apply rules 2 or 5. Greet back briefly in one short sentence and invite them to ask about Priyanshu's work, skills, projects, experience, education, or contact. Example: "Hey — I'm priyanshu.agent, ask me about his work, skills, or how to reach him."
