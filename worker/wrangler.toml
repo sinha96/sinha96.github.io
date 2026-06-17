@@ -1,0 +1,5 @@
+name = "ollama-proxy"
+main = "ollama-proxy.js"
+compatibility_date = "2025-06-01"
+
+# Secret set via `wrangler secret put OLLAMA_API_KEY` (don't paste it here).
