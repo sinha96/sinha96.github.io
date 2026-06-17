@@ -2424,6 +2424,16 @@ function renderInline(text) {
     return s;
   };
 
+  // If the model already emitted block-level HTML (<p>, <ul>, <li>, etc.),
+  // trust it and just apply inline markdown conversion. The previous behaviour
+  // split every line and injected <br> between adjacent HTML tags, which
+  // produced visible gaps between every <li>.
+  if (/<(?:p|ul|ol|li|h[1-6]|blockquote|div|table)\b/i.test(text)) {
+    // Strip newlines that sit purely between block tags to keep the DOM clean.
+    let clean = text.replace(/>\s*\n\s*</g, '><');
+    return inline(clean);
+  }
+
   const lines = text.split('\n').map(l => l.replace(/\s+$/, ''));
   const isBullet = l => /^\s*[-*•]\s+/.test(l);
   const stripBullet = l => l.replace(/^\s*[-*•]\s+/, '').trim();
