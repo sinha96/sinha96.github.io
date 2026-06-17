@@ -663,6 +663,11 @@
   .source-chip .src-score {
     color: var(--paper-faint);
   }
+  .source-chip .src-arrow {
+    color: var(--magenta);
+    margin-left: 2px;
+  }
+  a.source-chip { text-decoration: none; }
   .source-preview {
     margin-top: 8px;
     padding: 10px 12px;
@@ -859,6 +864,7 @@
         <a class="link-pill" href="resume.html">Résumé</a>
         <a class="link-pill" href="https://elastiq.ai" target="_blank" rel="noopener">Elastiq</a>
         <a class="link-pill" href="https://topmate.io/priyanshu_shekhar_sinha" target="_blank" rel="noopener">Topmate</a>
+        <a class="link-pill" href="/newsletter/">Journal</a>
         <a class="link-pill" href="index-classic.html" style="flex: 1 0 100%;">▸ Classic portfolio</a>
       </div>
     </section>
@@ -1102,25 +1108,104 @@ const KB = [
   { id: 'rec-dl-nlp', section: 'Recognition', title: 'DeepLearning.AI specializations',
     text: `Deep Learning Specialization (2018) and NLP Specialization (2021) from DeepLearning.AI on Coursera — multi-course coverage of DNNs, CNNs, sequence models, attention, and the foundations of modern NLP.` },
 
+  // ─── Education ──────────────────────────────────────────────
+  { id: 'edu-btech', section: 'Education', title: 'B.E. — Electrical & Electronics (SMVIT)',
+    text: `Priyanshu holds a Bachelor of Engineering in Electrical and Electronics from Sir M. Visvesvaraya Institute of Technology (SMVIT) in Bangalore, 2014 to 2018. He also served as Student Placement Coordinator at SMVIT from April 2016 to September 2017.`,
+    tags: ['education', 'btech', 'b.tech', 'bachelor', 'undergrad', 'electrical', 'electronics', 'smvit', 'visvesvaraya', 'bangalore', 'engineering'] },
+  { id: 'edu-pg', section: 'Education', title: 'PG · Data Science Engineering (Great Lakes)',
+    text: `Priyanshu completed a Post Graduate Program in Data Science Engineering at Great Lakes Institute of Management in 2019. That program bridged him from electrical engineering into the data-science career he has now.`,
+    tags: ['education', 'pg', 'post graduate', 'masters', 'data science', 'great lakes'] },
+  { id: 'edu-coursera', section: 'Education', title: 'Coursera coursework',
+    text: `Continuous-learning track on Coursera: Python — Data Structures (University of Michigan, 2018), Programming for Everybody (University of Michigan), Deep Learning Specialization (DeepLearning.AI, 2018), and NLP Specialization (DeepLearning.AI, 2021).`,
+    tags: ['education', 'coursera', 'university of michigan', 'python', 'self-study'] },
+
   // ─── Hobbies / personal ─────────────────────────────────────
   { id: 'hobbies', section: 'Off-keyboard', title: 'Hobbies',
     text: `Outside work he likes long drives (the longer the better), badminton (weekly), hiking on weekends when he can, slow experimental cooking, and documentaries on history, food, and design.` },
   { id: 'music', section: 'Off-keyboard', title: 'Now playing',
     text: `Rolling playlist while working — mostly low-vocals, mostly low-tempo: Khruangbin (A LA SALA), Floating Points (Crush), Bonobo (Fragments), Tycho (Weather), Nils Frahm (All Melody).` },
 
+  // ─── Journal pointer ───────────────────────────────────────
+  // Per-post chunks are appended at boot from /posts-kb.json (Jekyll-generated).
+  // This static chunk just teaches the agent that the journal exists.
+  { id: 'journal-index', section: 'Journal', title: 'Latent — the journal',
+    text: `Priyanshu publishes a journal called Latent at /newsletter/. Short essays and takes on AI news — model releases, framework launches, industry shifts. Each post has its own URL and the agent has the title, date, tags, and excerpt of every entry as separate chunks below.`,
+    url: '/newsletter/' },
+
   // ─── Contact ────────────────────────────────────────────────
   { id: 'contact', section: 'Contact', title: 'How to reach him',
-    text: `Best way to reach Priyanshu is email: priyanshu.sinha@elastiq.ai. He reads everything and replies to most messages. For paid calls and mentorship he is on Topmate at topmate.io/priyanshu_shekhar_sinha. Résumé at resume.html (web) and resume.pdf. Location: Bangalore, IN. Role: Tech Lead, GenAI at Elastiq AI.` },
+    text: `Best way to reach Priyanshu is email: priyanshu.sinha@elastiq.ai (work) or priyanshu1996@hotmail.com (personal). He reads everything and replies to most messages. For paid calls and mentorship he is on Topmate at topmate.io/priyanshu_shekhar_sinha. Phone: +91 7349575896. Résumé at resume.html (web) and resume.pdf. Location: Bangalore, IN. Role: Tech Lead, GenAI at Elastiq AI.` },
+
+  // ─── Social / professional links ───────────────────────────
+  { id: 'links-social', section: 'Links', title: 'GitHub, LinkedIn, Topmate',
+    text: `Find Priyanshu online: GitHub at github.com/sinha96, LinkedIn at linkedin.com/in/pripy, Topmate (paid calls) at topmate.io/priyanshu_shekhar_sinha. Personal site lives at sinha96.github.io.`,
+    url: 'https://github.com/sinha96',
+    tags: ['github', 'linkedin', 'topmate', 'social', 'links', 'profile', 'handle'] },
+  { id: 'links-availability', section: 'Status', title: 'Open to collaboration',
+    text: `Current status: open to collaboration. Priyanshu actively takes calls about hard retrieval problems, half-formed agentic ideas, and platforms that need grown-up engineering plumbing. Not actively job-hunting, but interesting roles get a reply.`,
+    tags: ['hire', 'availability', 'open', 'collaboration', 'status', 'taking calls'] },
+
+  // ─── Services / engagement types ───────────────────────────
+  { id: 'services-rag', section: 'Services', title: 'Service · Enterprise RAG',
+    text: `Service offered: architect end-to-end enterprise RAG platforms. Multi-source ingestion across Drive / GCS / S3 / Azure Blob / Slack, hybrid search (BM25 + kNN), cross-encoder re-ranking, and document-level ACL synchronisation across clouds.`,
+    tags: ['service', 'rag', 'hire', 'consulting', 'engagement', 'opensearch', 'acl'] },
+  { id: 'services-agents', section: 'Services', title: 'Service · Agentic AI',
+    text: `Service offered: design and ship AI agents for Text2SQL, document processing, and custom enterprise workflows — including evaluating emerging protocols like MCP for connectors.`,
+    tags: ['service', 'agents', 'agentic', 'mcp', 'text2sql', 'consulting'] },
+  { id: 'services-finetune', section: 'Services', title: 'Service · LLM Fine-tuning',
+    text: `Service offered: domain-specific tuning with QLoRA / LoRA / SFT / RLHF on open-source models such as LLaMA 3.1 70B, plus custom datasets and context-aware chunking strategies.`,
+    tags: ['service', 'finetune', 'fine-tuning', 'qlora', 'lora', 'sft', 'rlhf', 'llama'] },
+  { id: 'services-mleng', section: 'Services', title: 'Service · ML Engineering & Microservices',
+    text: `Service offered: build ML/DL microservices, host on GCP or AWS, instrumented with MLOps, observability, and the unglamorous infrastructure that makes the magic dependable.`,
+    tags: ['service', 'mlops', 'engineering', 'microservices', 'gcp', 'aws', 'observability'] },
+  { id: 'services-analytics', section: 'Services', title: 'Service · Analytics & Visualisation',
+    text: `Service offered: develop analytic platforms and intuitive dashboards using Streamlit, Power BI, and Tableau — for the flavour of analysis a problem requires.`,
+    tags: ['service', 'analytics', 'dashboard', 'streamlit', 'power bi', 'tableau', 'visualisation'] },
+  { id: 'services-mentor', section: 'Services', title: 'Service · Mentorship',
+    text: `Service offered: mentor freshers and working professionals transitioning into the data and AI world — project guidance, interview prep, and career paths. Book via Topmate.`,
+    tags: ['service', 'mentor', 'mentorship', 'career', 'topmate', 'coaching'] },
+
+  // ─── PoseNet demo (live in the repo) ───────────────────────
+  { id: 'demo-posenet', section: 'Demos', title: 'PoseNet pose-estimation demo',
+    text: `Priyanshu maintains a small live PoseNet demo on the portfolio — real-time pose estimation in the browser using TensorFlow.js. Live at /posenet.html.`,
+    url: '/posenet.html',
+    tags: ['demo', 'posenet', 'tensorflow.js', 'pose estimation', 'side project', 'interactive'] },
+
+  // ─── Notice period / availability ──────────────────────────
+  { id: 'availability-notice', section: 'Status', title: 'Notice period',
+    text: `Priyanshu is not currently on a notice period. His standard notice at Elastiq AI is two months. He is not actively job-hunting but will reply to interesting roles, especially ones around enterprise retrieval, agentic systems, or platform engineering for AI.`,
+    tags: ['notice period', 'availability', 'hire', 'when can you start', 'start date', 'two months'] },
+
+  // ─── Tools / daily dev setup ───────────────────────────────
+  { id: 'tools-setup', section: 'Setup', title: 'Daily tools',
+    text: `Daily setup is a standard agentic-AI engineering stack: Claude Code as the primary AI coding partner, VS Code as the editor, Python as the working language, OpenSearch as the retrieval workhorse, Docker for everything that needs to be reproducible. The unglamorous stuff (terminals, git, fast feedback loops) gets prioritised over chasing new tools for their own sake.`,
+    tags: ['tools', 'setup', 'editor', 'claude code', 'vs code', 'visual studio code', 'python', 'opensearch', 'docker', 'dev environment', 'stack'] },
+
+  // ─── Career origin story ───────────────────────────────────
+  { id: 'origin-story', section: 'About', title: 'How he got here',
+    text: `The arc looks like a pivot but feels like a line. He started in electrical engineering at SMVIT because the math was the part he liked, and somewhere between transformers and transfer functions it became clear the interesting work had moved up a layer. In 2019 he bet on the Great Lakes PG program in Data Science Engineering — the same year modern NLP started behaving less like research and more like infrastructure. At Sumyag he learned how to build pipelines that survive production: 500+ features per document, ensembling 10+ sources for entity classification. At Recruitment Smart he learned that automation which ships beats automation which is clever — turning a 7-day analytics report into a 15-minute job. At TheMathCompany he learned that an analysis is only as good as the team it convinces: A/B frameworks for pharma, anomaly pipelines that earned a client +$125K in a quarter, an LSTM forecaster he is still a little smug about (R² 0.9012). At Acuity he built end-to-end RAG over financial reports before RAG had a logo. At Elastiq it stopped being a side concern and became the work — fine-tune LLaMA, build Text2SQL from scratch, integrate GraphRAG, then step up to architect the platform itself. Different industries, one craft: turning messy signals into systems people can trust at 3 a.m.`,
+    tags: ['origin story', 'why', 'journey', 'pivot', 'career arc', 'how did you', 'background', 'history'] },
+
+  // ─── Selected Work overview ────────────────────────────────
+  { id: 'work-overview', section: 'Work', title: 'Selected Work archive',
+    text: `Beyond the chunks above, the classic portfolio at /index-classic.html has a Selected Work section with 26 cards spanning industrial projects (Elastiq RAG, Discover, Text2SQL, GraphRAG, Acuity dashboards, TMC A/B framework, LSTM forecaster) and writing. Visitors who want the visual gallery can follow the Classic Portfolio link in the sidebar.`,
+    url: 'index-classic.html',
+    tags: ['work', 'portfolio', 'projects', 'gallery', 'selected', 'overview'] },
 ];
 
 // Small system prompt — kept short because retrieval injects the real facts.
 const SYSTEM_PROMPT = `You are priyanshu.agent — a conversational portfolio agent for Priyanshu Shekhar Sinha, Technical Lead for GenAI at Elastiq AI (Bangalore).
 
-You answer questions about Priyanshu's work, skills, projects, experience, and how to reach him. You MUST ground every answer in the CONTEXT chunks provided with each user message. Do not invent employers, project names, dates, numbers, links, or quotes. If the context does not cover the question, say so plainly and suggest a related topic the user could ask about.
+GROUNDING RULES (absolute):
+1. Answer ONLY using facts present in the CONTEXT chunks supplied with each user message. The CONTEXT is the only source of truth.
+2. If the CONTEXT does not contain a clear answer to the actual question, you MUST say so plainly. Example: "I don't have that in my notes about him." Then suggest 2-3 related topics drawn from the CONTEXT.
+3. NEVER reuse an unrelated CONTEXT chunk as the answer. If the user asks about education but only skills chunks were retrieved, say you don't have education details — do not list skills as a substitute answer.
+4. NEVER invent employers, project names, dates, numbers, schools, links, or quotes. No guessing.
+5. If the user message contains "[low-confidence retrieval]", treat that as a strong signal that nothing relevant was found and lean into the "I don't have that" path.
 
-Style:
+STYLE:
 - Concise. Land the answer, then stop.
-- First person ("I") or third person ("he") are both fine — pick one and stay consistent within a reply.
+- First person ("I") or third person ("he") — pick one and stay consistent within a reply.
 - Use short bulleted lists for >3 items. Inline HTML <b> for emphasis is fine; the UI renders HTML.
 - Do not greet ("Hi! / Sure!"); just answer.`;
 
@@ -1221,17 +1306,44 @@ function tok(s) {
     .filter(w => w && w.length > 1 && !STOP.has(w));
 }
 
-// Build inverted index + per-chunk lengths
-const DOC_TOKENS = KB.map(c => tok(c.title + ' ' + c.text + ' ' + c.section));
-const AVG_LEN = DOC_TOKENS.reduce((s, t) => s + t.length, 0) / DOC_TOKENS.length;
-const N_DOCS = KB.length;
+// Build inverted index + per-chunk lengths (re-runnable when KB extends)
+let DOC_TOKENS = [], AVG_LEN = 0, N_DOCS = 0;
 const DF = Object.create(null);
-DOC_TOKENS.forEach(tokens => {
-  const seen = new Set(tokens);
-  for (const w of seen) DF[w] = (DF[w] || 0) + 1;
-});
 const IDF = Object.create(null);
-for (const w in DF) IDF[w] = Math.log(1 + (N_DOCS - DF[w] + 0.5) / (DF[w] + 0.5));
+
+function rebuildIndex() {
+  DOC_TOKENS = KB.map(c => tok((c.title || '') + ' ' + (c.text || '') + ' ' + (c.section || '') + ' ' + (Array.isArray(c.tags) ? c.tags.join(' ') : '')));
+  N_DOCS = KB.length;
+  AVG_LEN = DOC_TOKENS.reduce((s, t) => s + t.length, 0) / Math.max(1, N_DOCS);
+  for (const k in DF) delete DF[k];
+  DOC_TOKENS.forEach(tokens => {
+    const seen = new Set(tokens);
+    for (const w of seen) DF[w] = (DF[w] || 0) + 1;
+  });
+  for (const k in IDF) delete IDF[k];
+  for (const w in DF) IDF[w] = Math.log(1 + (N_DOCS - DF[w] + 0.5) / (DF[w] + 0.5));
+}
+rebuildIndex();
+
+// Pull blog posts from Jekyll-generated /posts-kb.json so the agent can
+// answer questions about anything published in _posts/.
+fetch('posts-kb.json').then(r => r.ok ? r.json() : null).then(posts => {
+  if (!Array.isArray(posts) || !posts.length) return;
+  for (const p of posts) {
+    KB.push({
+      id: 'post-' + p.id,
+      section: 'Journal',
+      title: p.title,
+      text: p.text,
+      url: p.url,
+      tags: p.tags,
+      date: p.date,
+    });
+  }
+  rebuildIndex();
+  // Reflect in the mode badge so the count is honest
+  if (typeof refreshModeBadge === 'function') refreshModeBadge();
+}).catch(() => { /* posts-kb.json absent in local dev — agent still works */ });
 
 function bm25Score(queryTokens, docIdx) {
   const docTokens = DOC_TOKENS[docIdx];
@@ -1297,22 +1409,30 @@ async function* streamLLM(messages, signal) {
 // History maintained across turns (just role/content pairs)
 const history = [];
 
+// Weak-retrieval threshold: if the best BM25 score is below this, the user
+// message gets tagged so the model knows nothing strongly relevant was found.
+const WEAK_SCORE = 1.8;
+
 function buildMessages(userQuery, contextChunks) {
   const ctxBlock = contextChunks.map((c, i) => {
     const k = c.chunk;
-    return `[#${i + 1} · ${k.section} · ${k.title}]\n${k.text}`;
+    return `[#${i + 1} · ${k.section} · ${k.title}  (bm25=${c.score.toFixed(2)})]\n${k.text}`;
   }).join('\n\n');
+
+  const topScore = contextChunks.length ? contextChunks[0].score : 0;
+  const weak = !contextChunks.length || topScore < WEAK_SCORE;
+  const flag = weak ? '\n[low-confidence retrieval — nothing strongly relevant was found in the knowledge base]' : '';
 
   const recent = history.slice(-CONFIG.maxTurns * 2);
   return [
     { role: 'system', content: SYSTEM_PROMPT },
     ...recent,
     { role: 'user', content:
-`CONTEXT (use only these chunks to answer; cite none of them inline — the UI displays sources separately):
+`CONTEXT (the only source of truth; do not cite inline, the UI shows sources separately):
 
-${ctxBlock || '(no relevant context found in knowledge base)'}
+${ctxBlock || '(no relevant context found in the knowledge base)'}
 
-USER QUESTION:
+USER QUESTION:${flag}
 ${userQuery}` }
   ];
 }
@@ -1696,14 +1816,21 @@ function attachSources(node, sources) {
   preview.className = 'source-preview';
   sources.forEach((s, i) => {
     const k = s.chunk;
-    const chip = document.createElement('button');
+    const chip = document.createElement(k.url ? 'a' : 'button');
     chip.className = 'source-chip';
-    chip.innerHTML = `<span class="src-section">${k.section}</span> · ${k.title} <span class="src-score">${s.score.toFixed(2)}</span>`;
-    chip.addEventListener('click', () => {
-      preview.innerHTML = `<div class="src-title">${k.section} · ${k.title}</div>${escapeHtml(k.text)}`;
-      preview.classList.add('show');
-      chatlog.scrollTop = chatlog.scrollHeight;
-    });
+    const linkArrow = k.url ? ' <span class="src-arrow">↗</span>' : '';
+    chip.innerHTML = `<span class="src-section">${k.section}</span> · ${k.title} <span class="src-score">${s.score.toFixed(2)}</span>${linkArrow}`;
+    if (k.url) {
+      chip.href = k.url;
+      chip.target = '_blank';
+      chip.rel = 'noopener';
+    } else {
+      chip.addEventListener('click', () => {
+        preview.innerHTML = `<div class="src-title">${k.section} · ${k.title}</div>${escapeHtml(k.text)}`;
+        preview.classList.add('show');
+        chatlog.scrollTop = chatlog.scrollHeight;
+      });
+    }
     wrap.appendChild(chip);
   });
   body.appendChild(wrap);
