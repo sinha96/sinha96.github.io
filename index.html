@@ -869,12 +869,18 @@
 
   @media (max-width: 1080px) {
     html, body { height: 100%; overflow: hidden; }
-    .topbar { padding: 12px 16px; font-size: 10.5px; }
+
+    /* Topbar gets a fixed min-height so .app's top offset matches. */
+    .topbar {
+      padding: 0 16px;
+      min-height: 56px;
+      box-sizing: border-box;
+      font-size: 10.5px;
+    }
     .topbar-mid { display: none; }
     .controls { display: none; }
     .mode-badge { display: none; }
 
-    /* Hamburger appears on the left of the topbar */
     .hamburger {
       display: inline-grid;
       place-items: center;
@@ -890,43 +896,50 @@
     .hamburger:hover { background: var(--chip-hover-bg); border-color: var(--cyan); }
     .hamburger svg { width: 18px; height: 18px; }
 
+    /* .app is a flex column locked to the area below the topbar.
+       The chat-shell absorbs all remaining height; the input bar stays
+       anchored at the bottom. */
     .app {
       position: fixed !important;
       top: 56px; left: 0; right: 0; bottom: 0;
       padding: 0 !important;
-      display: block !important;
+      margin: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
       overflow: hidden !important;
     }
     .left-col, .right-col { display: none !important; }
 
     .chat-col {
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
       width: 100% !important;
-      height: 100% !important;
       display: flex !important;
       flex-direction: column !important;
-      min-height: 0 !important;
     }
     .chat-shell {
-      flex: 1 1 auto !important;
+      flex: 1 1 0 !important;
       min-height: 0 !important;
-      height: 100% !important;
       display: flex !important;
       flex-direction: column !important;
       border-radius: 0 !important;
       border: 0 !important;
       box-shadow: none !important;
+      height: auto !important;
     }
+    /* .chat-head, .chips, .input-bar use their natural flex-basis sizes;
+       only .chat-log grows to fill remaining space. */
+    .chat-head { flex: 0 0 auto !important; font-size: 10.5px; padding: 12px 16px; }
+    .chat-head .ping { display: none; }
     .chat-log {
       flex: 1 1 0 !important;
       min-height: 0 !important;
       overflow-y: auto;
       padding: 18px 18px 10px;
     }
-    .chat-head { font-size: 10.5px; padding: 12px 16px; }
-    .chat-head .ping { display: none; }
+    .chips     { flex: 0 0 auto !important; padding: 8px 14px 0; gap: 8px; }
+    .input-bar { flex: 0 0 auto !important; padding: 10px 12px 12px; gap: 10px; }
     .msg { max-width: 92%; }
-    .chips { padding: 8px 14px 0; gap: 8px; }
-    .input-bar { padding: 10px 12px 12px; gap: 10px; }
     .send-btn { padding: 0 18px; font-size: 12px; }
   }
 
@@ -1110,6 +1123,61 @@
       <a class="link-pill" href="https://topmate.io/priyanshu_shekhar_sinha" target="_blank" rel="noopener">Topmate</a>
       <a class="link-pill" href="/newsletter/">Journal</a>
       <a class="link-pill" href="index-classic.html" style="flex: 1 0 100%;">▸ Classic portfolio</a>
+    </div>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Operator</div>
+    <div class="identity">
+      <div class="identity-avatar">PS</div>
+      <div>
+        <div class="identity-name">Priyanshu Sinha</div>
+        <div class="identity-role">Tech Lead · GenAI</div>
+      </div>
+    </div>
+    <div class="identity-meta">
+      <div>At <b>Elastiq AI</b></div>
+      <div>Years <b>7+</b></div>
+      <div>Cert <b>GCP Pro MLE</b></div>
+      <div>Status <span class="ok">● TAKING CALLS</span></div>
+    </div>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Current Mission</div>
+    <div style="font-family: var(--display); font-size: 16px; font-weight: 500; line-height: 1.25;">
+      Enterprise RAG · <span style="color:var(--cyan);">Elastiq</span>
+    </div>
+    <div style="font-family: var(--mono); font-size: 11.5px; color: var(--paper-mute); line-height: 1.55;">
+      Multi-source ingestion · hybrid retrieval · cross-encoder re-rank · doc-level ACL.
+    </div>
+    <div class="stat-row"><span>Phase</span><span class="bar"><span style="width: 72%;"></span></span><b>v0.8</b></div>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Skills · Live Telemetry</div>
+    <div class="stat-row"><span>RAG</span><span class="bar"><span style="width: 96%;"></span></span><b>S+</b></div>
+    <div class="stat-row"><span>Agentic AI</span><span class="bar"><span style="width: 88%;"></span></span><b>S</b></div>
+    <div class="stat-row"><span>GCP MLE</span><span class="bar"><span style="width: 92%;"></span></span><b>S</b></div>
+    <div class="stat-row"><span>OpenSearch</span><span class="bar"><span style="width: 95%;"></span></span><b>S+</b></div>
+    <div class="stat-row"><span>PyTorch</span><span class="bar"><span style="width: 90%;"></span></span><b>S</b></div>
+    <div class="stat-row"><span>Leadership</span><span class="bar"><span style="width: 92%;"></span></span><b>S</b></div>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-section-title">Ambient</div>
+    <div class="stat-row ok"><span>Mood</span><b>FOCUSED</b></div>
+    <div class="stat-row"><span>Last commit</span><b id="lastCommitMobile">2h ago</b></div>
+    <div class="stat-row"><span>Coffee</span><b style="color:var(--amber);">2 cups</b></div>
+    <div class="now-playing">
+      <div class="now-bars">
+        <span style="height:8px;"></span>
+        <span style="height:14px;"></span>
+        <span style="height:6px;"></span>
+        <span style="height:12px;"></span>
+        <span style="height:10px;"></span>
+      </div>
+      <div class="np-text"><b>Khruangbin</b> — A LA SALA</div>
     </div>
   </div>
 </aside>
@@ -1627,8 +1695,13 @@ updateClock(); setInterval(updateClock, 30000);
 
 // Random "last commit" tick
 const lc = document.getElementById('lastCommit');
+const lcm = document.getElementById('lastCommitMobile');
 const commitMoments = ['12m ago', '2h ago', 'just now', '46m ago', '4h ago', '1d ago'];
-setInterval(() => { lc.textContent = commitMoments[Math.floor(Math.random()*commitMoments.length)]; }, 9000);
+setInterval(() => {
+  const v = commitMoments[Math.floor(Math.random()*commitMoments.length)];
+  if (lc)  lc.textContent  = v;
+  if (lcm) lcm.textContent = v;
+}, 9000);
 
 // Random ping
 const ping = document.getElementById('ping');
