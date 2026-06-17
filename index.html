@@ -393,13 +393,15 @@
     line-height: 1.65;
     color: var(--paper);
   }
-  .msg-body p + p { margin-top: 10px; }
+  .msg-body p + p { margin-top: 8px; }
+  .msg-body p + ul, .msg-body ul + p { margin-top: 6px; }
+  .msg-body ul + ul { margin-top: 2px; }
   .msg-body ul {
     list-style: none;
-    margin-top: 8px;
+    margin: 4px 0;
   }
   .msg-body li {
-    padding: 4px 0;
+    padding: 2px 0;
     display: flex; gap: 10px;
     font-family: var(--mono);
     font-size: 12.5px;
@@ -410,6 +412,7 @@
     color: var(--cyan);
     font-size: 9px;
     margin-top: 7px;
+    flex-shrink: 0;
   }
   .msg-body b { color: var(--cyan); font-weight: 500; }
   .msg-body a { color: var(--magenta); border-bottom: 1px solid currentColor; }
@@ -691,23 +694,47 @@
   }
   .model-meta b { color: var(--paper); font-weight: 500; }
 
-  /* Source chips under each agent message */
-  .sources {
-    margin-top: 10px;
-    display: flex; gap: 6px; flex-wrap: wrap;
-    align-items: center;
-  }
-  .sources-label {
+  /* Source citations — collapsed by default, expand on click. */
+  .sources { margin-top: 10px; }
+  .sources-header {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--chip-bg);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 5px 12px;
     font-family: var(--mono);
-    font-size: 9.5px;
-    letter-spacing: 0.25em;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    color: var(--paper-faint);
-    margin-right: 4px;
+    color: var(--paper-mute);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
+  .sources-header:hover {
+    background: var(--chip-hover-bg);
+    color: var(--paper);
+    border-color: var(--cyan);
+  }
+  .sources-header .toggle-icon {
+    display: inline-block;
+    transition: transform 0.18s;
+    color: var(--cyan);
+  }
+  .sources.is-open .sources-header .toggle-icon {
+    transform: rotate(90deg);
+  }
+  .sources-list {
+    display: none;
+    margin-top: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .sources.is-open .sources-list { display: flex; }
+
   .source-chip {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 3px 9px;
+    padding: 4px 10px;
     background: var(--chip-bg);
     border: 1px solid var(--line);
     border-radius: 3px;
@@ -715,11 +742,12 @@
     font-size: 10.5px;
     color: var(--paper-mute);
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
   }
   .source-chip:hover {
-    background: rgba(56, 214, 255, 0.2);
+    background: var(--chip-hover-bg);
     color: var(--paper);
+    border-color: var(--cyan);
   }
   .source-chip .src-section {
     color: var(--cyan);
@@ -733,10 +761,11 @@
     margin-left: 2px;
   }
   a.source-chip { text-decoration: none; }
+
   .source-preview {
     margin-top: 8px;
-    padding: 10px 12px;
-    background: rgba(3, 6, 13, 0.55);
+    padding: 12px 14px;
+    background: var(--input-bg);
     border: 1px solid var(--line);
     border-left: 2px solid var(--cyan);
     border-radius: 3px;
@@ -750,7 +779,7 @@
   .source-preview .src-title {
     color: var(--cyan);
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     font-size: 10px;
@@ -2271,19 +2300,34 @@ function tokenize(html) {
   return out;
 }
 
-// Render source chips under an agent message
+// Render source chips under an agent message — collapsed by default so
+// long citation lists don't drown out the answer. Click the header to
+// expand.
 function attachSources(node, sources) {
   if (!sources || !sources.length) return;
   const body = node.querySelector('.msg-body');
+
   const wrap = document.createElement('div');
   wrap.className = 'sources';
-  wrap.innerHTML = `<span class="sources-label">▸ Sources</span>`;
+
+  const header = document.createElement('button');
+  header.className = 'sources-header';
+  header.type = 'button';
+  header.innerHTML = `<span class="toggle-icon">▸</span> Sources · ${sources.length}`;
+  wrap.appendChild(header);
+
+  const list = document.createElement('div');
+  list.className = 'sources-list';
+  wrap.appendChild(list);
+
   const preview = document.createElement('div');
   preview.className = 'source-preview';
-  sources.forEach((s, i) => {
+
+  sources.forEach((s) => {
     const k = s.chunk;
     const chip = document.createElement(k.url ? 'a' : 'button');
     chip.className = 'source-chip';
+    if (!k.url) chip.type = 'button';
     const linkArrow = k.url ? ' <span class="src-arrow">↗</span>' : '';
     chip.innerHTML = `<span class="src-section">${k.section}</span> · ${k.title} <span class="src-score">${s.score.toFixed(2)}</span>${linkArrow}`;
     if (k.url) {
@@ -2297,8 +2341,18 @@ function attachSources(node, sources) {
         chatlog.scrollTop = chatlog.scrollHeight;
       });
     }
-    wrap.appendChild(chip);
+    list.appendChild(chip);
   });
+
+  // Expand by default only when there's a small handful — anything beyond
+  // a few sources collapses to keep the chat readable.
+  if (sources.length <= 3) wrap.classList.add('is-open');
+
+  header.addEventListener('click', () => {
+    wrap.classList.toggle('is-open');
+    chatlog.scrollTop = chatlog.scrollHeight;
+  });
+
   body.appendChild(wrap);
   body.appendChild(preview);
 }
@@ -2347,69 +2401,67 @@ async function streamLLMReply(node, messages, sources) {
   }
 }
 
-// Render assistant output as HTML — preserves any HTML the model emits and
-// converts the markdown the model sometimes emits anyway (**bold**, *italic*,
-// `code`, [text](url), - bullets, ### headings).
+// Render assistant output as HTML. Handles HTML the model emits as well as
+// the markdown it sometimes emits anyway (**bold**, *italic*, `code`,
+// [text](url), - bullets, ### headings). Crucially: consecutive bullets
+// separated by blank lines are merged into a single <ul> so the chat
+// doesn't sprout big vertical gaps between every list item.
 function renderInline(text) {
-  // Inline markdown → HTML. Runs on raw text (the model may emit either
-  // markdown or HTML; we convert markdown to HTML and leave HTML untouched).
+  // Normalise whitespace first.
+  text = text.replace(/\r\n/g, '\n');
+  text = text.replace(/[ \t]+\n/g, '\n');     // strip trailing spaces
+  text = text.replace(/\n{3,}/g, '\n\n');     // collapse 3+ newlines to 2
+  text = text.trim();
+
+  // Inline markdown → HTML.
   const inline = (s) => {
-    // Bold (**...** or __...__) — non-greedy
     s = s.replace(/\*\*([^*\n]+?)\*\*/g, '<b>$1</b>');
     s = s.replace(/__([^_\n]+?)__/g, '<b>$1</b>');
-    // Italic (*...*) — avoid matching the leading bullet "* "
     s = s.replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\*)/g, '$1<i>$2</i>');
-    // Inline code
     s = s.replace(/`([^`\n]+?)`/g, '<code>$1</code>');
-    // Markdown links [text](url)
     s = s.replace(/\[([^\]]+)\]\((https?:[^)\s]+|mailto:[^)\s]+|\/[^)\s]*)\)/g,
                   '<a href="$2" target="_blank" rel="noopener">$1</a>');
     return s;
   };
 
-  // Split on blank lines into blocks, then handle bullets / paragraphs inside.
-  const blocks = text.split(/\n{2,}/);
+  const lines = text.split('\n').map(l => l.replace(/\s+$/, ''));
+  const isBullet = l => /^\s*[-*•]\s+/.test(l);
+  const stripBullet = l => l.replace(/^\s*[-*•]\s+/, '').trim();
+
   const out = [];
-  for (const block of blocks) {
-    const lines = block.split('\n').map(l => l.replace(/\s+$/, ''));
-    const result = [];
-    let buf = [];      // accumulating non-list lines
-    let bullets = [];  // accumulating list items
-
-    const flushBuf = () => {
-      if (!buf.length) return;
-      const joined = buf.join('<br>');
-      // headings get <b>; otherwise plain <p>
-      if (/^#{1,6}\s+/.test(buf[0])) {
-        result.push(`<p><b>${inline(buf[0].replace(/^#{1,6}\s+/, ''))}</b></p>`);
-        if (buf.length > 1) {
-          result.push(`<p>${inline(buf.slice(1).join('<br>'))}</p>`);
-        }
-      } else {
-        result.push(`<p>${inline(joined)}</p>`);
+  let i = 0;
+  while (i < lines.length) {
+    if (isBullet(lines[i])) {
+      // Collect a run of bullets, allowing blank lines between them.
+      const items = [];
+      while (i < lines.length) {
+        if (isBullet(lines[i])) {
+          items.push(stripBullet(lines[i]));
+          i++;
+        } else if (lines[i].trim() === '') {
+          // Peek ahead: if next non-blank line is also a bullet, keep going.
+          let j = i + 1;
+          while (j < lines.length && lines[j].trim() === '') j++;
+          if (j < lines.length && isBullet(lines[j])) { i = j; continue; }
+          break;
+        } else break;
       }
-      buf = [];
-    };
-    const flushList = () => {
-      if (!bullets.length) return;
-      result.push('<ul>' + bullets.map(b => `<li><span>${inline(b)}</span></li>`).join('') + '</ul>');
-      bullets = [];
-    };
-
-    for (const line of lines) {
-      if (/^\s*[-*•]\s+/.test(line)) {
-        flushBuf();
-        bullets.push(line.replace(/^\s*[-*•]\s+/, '').trim());
-      } else if (line.trim() === '') {
-        // shouldn't normally happen inside a block but be safe
-        flushBuf(); flushList();
+      out.push('<ul>' + items.map(it => `<li><span>${inline(it)}</span></li>`).join('') + '</ul>');
+    } else if (lines[i].trim() === '') {
+      i++;
+    } else {
+      // Paragraph: collect consecutive non-blank non-bullet lines.
+      const paraLines = [];
+      while (i < lines.length && lines[i].trim() !== '' && !isBullet(lines[i])) {
+        paraLines.push(lines[i]);
+        i++;
+      }
+      if (paraLines.length === 1 && /^#{1,6}\s+/.test(paraLines[0])) {
+        out.push(`<p><b>${inline(paraLines[0].replace(/^#{1,6}\s+/, ''))}</b></p>`);
       } else {
-        flushList();
-        buf.push(line);
+        out.push(`<p>${inline(paraLines.join('<br>'))}</p>`);
       }
     }
-    flushBuf(); flushList();
-    out.push(result.join(''));
   }
   return out.join('');
 }
@@ -2456,6 +2508,32 @@ const PERSONA_REPLY = {
   text: `I'm <b>priyanshu.agent</b> — a conversational, RAG-grounded stand-in for <b>Priyanshu Shekhar Sinha</b>, Technical Lead for GenAI at Elastiq AI (Bangalore). I retrieve from a small knowledge base built from his real bio, projects, experience, skills, and journal posts, then pass the matches to an Ollama Cloud model to compose the reply. Ask me about his current work, projects, skills, experience, education, recognition, opinions on RAG/agents, or how to reach him.`,
 };
 
+// "Surprise me" → hand-written hiring pitch. Bypasses retrieval and LLM
+// entirely so the answer is always punchy and never trips the "I don't
+// have that" path on an unusual query.
+function isSurpriseMe(s) {
+  const q = s.toLowerCase().trim().replace(/[!.?]+$/, '');
+  return q === 'surprise me' || q === 'surprise' || q === 'pitch me' ||
+         q === 'pitch' || q === 'sell yourself' || q === 'why hire you' ||
+         /\bsurprise\s+me\b/.test(q);
+}
+const SURPRISE_REPLY = {
+  text: `Here's the pitch — hire <b>Priyanshu</b> if you want someone who:`,
+  list: [
+    `Has shipped <b>7+ years of production AI</b>, not just demos.`,
+    `Is currently architecting Elastiq's <b>enterprise RAG platform</b> — multi-source ingestion, hybrid BM25 + dense retrieval, cross-encoder re-rank, document-level ACL synced across clouds.`,
+    `Fine-tuned <b>LLaMA 3.1 70B</b> via QLoRA to <b>85% accuracy</b> on the target task.`,
+    `Shipped an LSTM customer-return forecaster at <b>R² 0.9012</b>.`,
+    `Cut a client's analytics report from <b>7 days to 15 minutes</b> — a 99% reduction.`,
+    `Led a sales-anomaly pipeline that earned a client <b>+$125K in Q1</b>.`,
+    `Holds an active <b>GCP Professional Machine Learning Engineer</b> certification.`,
+    `Has led 5- and 7-person teams; currently mentors a cross-functional GenAI team at Elastiq.`,
+    `Codes daily with Claude Code, VS Code, Python, OpenSearch, Docker.`,
+    `Believes hybrid search beats either side alone, evals are the product, and the right model is the one your infra can serve at 3 a.m.`,
+  ],
+  after: `He's not actively job-hunting but reads every email. Reach him at <a href="mailto:priyanshu.sinha@elastiq.ai">priyanshu.sinha@elastiq.ai</a>, book a call on <a href="https://topmate.io/priyanshu_shekhar_sinha" target="_blank" rel="noopener">Topmate</a>, or open the <a href="resume.html">résumé</a>.`,
+};
+
 async function sendQuery(text) {
   text = text.trim();
   if (!text) return;
@@ -2476,6 +2554,13 @@ async function sendQuery(text) {
   if (isPersonaQuestion(text)) {
     await streamReply(node, PERSONA_REPLY);
     history.push({ role: 'assistant', content: PERSONA_REPLY.text });
+    return;
+  }
+
+  // ── Short-circuit "surprise me" → hand-written hiring pitch ──
+  if (isSurpriseMe(text)) {
+    await streamReply(node, SURPRISE_REPLY);
+    history.push({ role: 'assistant', content: SURPRISE_REPLY.text });
     return;
   }
 
