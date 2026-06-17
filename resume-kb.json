@@ -1,0 +1,72 @@
+[
+  {
+    "id": "resume-header-0",
+    "section": "Résumé",
+    "title": "Header",
+    "text": "AVAILABLE RESUME · 2026\nPriyanshu Shekhar Sinha\nTECHNICAL LEAD, GENAI AI/ML Engineer architecting enterprise RAG at Elastiq AI.\nBangalore, India · priyanshu1996@hotmail.com · +91 7349575896 · linkedin.com/in/pripy ·\ngithub.com/sinha96 · sinha96.github.io",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-summary-0",
+    "section": "Résumé",
+    "title": "Summary",
+    "text": "AI/ML Engineer with seven plus years shipping production-grade systems. Currently leading the design and development of an enterprise\nRAG platform at Elastiq AI — multi-source ingestion, hybrid retrieval, cross-encoder re-ranking, and document-level access control\nsynchronized across cloud providers. Google Cloud Professional Machine Learning Engineer.",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-experience-0",
+    "section": "Résumé",
+    "title": "Experience · part 1",
+    "text": "Technical Lead — GenAI Jan 2025 — Present\nElastiq AI · Bangalore, India\nLead the design and development of an enterprise RAG platform spanning ingestion, retrieval, ranking, and access control across cloud providers. Senior Software Engineer Sep 2024 — Jan 2025\nElastiq AI · Bangalore, India\nFoundational AI engineering on Discover — Elastiq's flagship product — covering fine-tuning, retrieval, and agent design. Senior Data Scientist May 2023 — Aug 2024\nAcuity Knowledge Partners · Bangalore, India\nSenior Data Scientist at a research, analytics, and technology partner to the financial services sector — asset managers, investment banks, private equity,\nhedge funds, and consulting firms.",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-experience-1",
+    "section": "Résumé",
+    "title": "Experience · part 2",
+    "text": "Associate, Data Scientist Dec 2021 — Apr 2023\nTheMathCompany · Bangalore, India\nArchitecting scalable distributed-database solutions via Citus DB research and implementation for enterprise-scale workloads.•\nMentoring cross-functional team on robust data pipelines, complex LLM fine-tuning challenges, and enterprise deployment\nstrategies. •\nCollaborating with senior leadership on strategic product development and onboarded the first enterprise client for the Text2SQL\nsolution. •\nEvaluating emerging protocols like MCP for enterprise connectors.•\nFine-tuned LLaMA 3.1 70B via advanced QLoRA and LoRA techniques, reaching 85% target accuracy.•\nBuilt the foundational Text2SQL framework from scratch and shipped AI agents for natural-language to SQL plus unstructured file\nprocessing.",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-experience-2",
+    "section": "Résumé",
+    "title": "Experience · part 3",
+    "text": "•\nIntegrated multiple Graph DB backends offering Classic RAG, Cypher-based RAG, and GraphRAG — extending Discover with\nstructural retrieval. •\nEngineered custom datasets and context-aware chunking algorithms for unstructured-document RAG performance.•\nDeveloped a versatile analysis dashboard for an investment firm enabling KPI monitoring and analysis experiments — 87%\nreduction in client analysis time. •\nBuilt a web dashboard integrated with an ESG data engine for a top-tier investment firm, shaping their investment-strategy\ndecisions. •\nShipped an end-to-end RAG system for parsing financial reports.•\nLed a 5-person team shipping a flexible A/B Testing Framework for a leading pharmaceutical client to measure promotion\nsuccess against revenue lift.",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-experience-3",
+    "section": "Résumé",
+    "title": "Experience · part 4",
+    "text": "•\nCo-led a 7-person team on a sales-anomaly flag pipeline accounting for seasonality — drove customer outreach delivering +$125K\nrevenue in Q1. •\nBuilt an LSTM model forecasting customer return-to-purchase windows for supply and demand balancing — R² 0.9012.•\nData Analyst May 2021 — Dec 2021\nRecruitment Smart Technologies · Ahmedabad, India\nData Scientist Aug 2019 — Apr 2021\nSumyag Data Sciences · Bangalore, India\nData Science Mentor (Freelance) Dec 2020 — May 2023\nIndependent · Topmate\nReduced new-client integration from 10 days to 3 hours (97% improvement). Operational reports from 5 days to 30 minutes;\nopportunity reports from 1 day to 30 minutes. •\nReduced advanced-analytics report generation from 7 days to 15 minutes (99% improvement). Automated Power BI dashboard\nrefreshes.",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-experience-4",
+    "section": "Résumé",
+    "title": "Experience · part 5",
+    "text": "•\nAwarded Star Performer of the Month.•\nDesigned a multi-phase pipeline enriching extracted document data points — generated 500+ features via NLP, data wrangling, and\ntext mining. •\nCo-developed a matrix-multiplication ensemble on the NumPy stack across 10+ unique sources for entity classification, plus\ncustom Bayesian models for word embeddings. •\nShipped end-to-end claims-document pipelines for automobile and healthcare enterprise clients; built a geometric model for\ntabular-entity extraction using asymmetric graphs. •\nMentored college students and working professionals transitioning into data science — career strategy, project review, and mock\ninterviews for analytics and ML roles. •",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-skills-0",
+    "section": "Résumé",
+    "title": "Skills",
+    "text": "LANGUAGES Python, SQL, Cypher\nLLM AND GENAI LLaMA 3.1 70B, QLoRA, LoRA, SFT, RLHF, Classic RAG, GraphRAG, Cypher-RAG, Text2SQL, MCP,\nLangChain, Transformers, Ollama\nSEARCH AND\nRETRIEVAL\nOpenSearch, BM25, kNN, Hybrid Search, Cross-encoder Re-ranking, ChromaDB, Embeddings,\nACL Sync\nMULTI-MODAL Text, PDF, Audio, Video, Speaker Diarization, OCR\nMACHINE\nLEARNING\nPyTorch, TensorFlow, scikit-learn, MLFlow, Pandas, Polars, NumPy, PySpark, NLP, Deep\nLearning, MLOps\nCLOUD Google Cloud Platform, AWS (S3, EKS, ECS, SageMaker, SQS, SES, EC2), GCS, Azure Blob\nDATABASES PostgreSQL, Citus DB, Snowflake, Databricks, Graph DB, ChromaDB\nTOOLING Docker, Apache Airflow, Streamlit, ChainLit, Flask, Plotly, Power BI, Postman, Git,\nGitHub, GitLab\nSOFT SKILLS Communication, Project Management, Team Leadership, Mentorship",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-education-0",
+    "section": "Résumé",
+    "title": "Education",
+    "text": "Post Graduate Program — Data Science Engineering\nGreat Lakes Institute of Management · 2019\nBachelor of Engineering — Electrical and Electronics\nSir M. Visvesvaraya Institute of Technology · 2014–2018",
+    "url": "resume.pdf"
+  },
+  {
+    "id": "resume-certifications-0",
+    "section": "Résumé",
+    "title": "Certifications",
+    "text": "Google Cloud — Professional Machine Learning Engineer\nGoogle Cloud · Active\nNatural Language Processing Specialization\nDeepLearning.AI · Coursera · 2021\nDeep Learning Specialization\nDeepLearning.AI · Coursera · 2018\nPython — Data Structures\nUniversity of Michigan · Coursera · 2018\nSpark and Python for Big Data with PySpark\nCoursera\nProgramming for Everybody\nUniversity of Michigan · Coursera\nAWARDS AND RECOGNITION\nStar Employee of the Month— Elastiq AI · March 2026•\nStar Performer of the Month— Recruitment Smart Technologies · 2021•\nArctic Code Vault Contributor— GitHub Open Source Archive Program•\nPull Shark— GitHub Achievements•",
+    "url": "resume.pdf"
+  }
+]
