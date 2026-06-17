@@ -868,14 +868,28 @@
   .hamburger { display: none; }
 
   @media (max-width: 1080px) {
-    html, body { height: 100%; overflow: hidden; }
+    /* Top-down flexbox layout: body is a flex column, topbar takes
+       natural height, .app fills the rest. No position:fixed juggling
+       for layout (only for overlays). Works identically across all
+       browsers including mobile Safari with its dynamic URL bar. */
+    html { height: 100%; }
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-    /* Topbar gets a fixed min-height so .app's top offset matches. */
     .topbar {
-      padding: 0 16px;
+      position: relative !important;
+      top: auto !important; left: auto !important; right: auto !important;
+      flex: 0 0 auto;
       min-height: 56px;
       box-sizing: border-box;
+      padding: 0 16px;
       font-size: 10.5px;
+      z-index: 80;
     }
     .topbar-mid { display: none; }
     .controls { display: none; }
@@ -896,12 +910,12 @@
     .hamburger:hover { background: var(--chip-hover-bg); border-color: var(--cyan); }
     .hamburger svg { width: 18px; height: 18px; }
 
-    /* .app is a flex column locked to the area below the topbar.
-       The chat-shell absorbs all remaining height; the input bar stays
-       anchored at the bottom. */
     .app {
-      position: fixed !important;
-      top: 56px; left: 0; right: 0; bottom: 0;
+      position: relative !important;
+      top: auto !important; left: auto !important;
+      right: auto !important; bottom: auto !important;
+      flex: 1 1 0 !important;
+      min-height: 0 !important;
       padding: 0 !important;
       margin: 0 !important;
       display: flex !important;
@@ -920,15 +934,13 @@
     .chat-shell {
       flex: 1 1 0 !important;
       min-height: 0 !important;
+      height: auto !important;
       display: flex !important;
       flex-direction: column !important;
       border-radius: 0 !important;
       border: 0 !important;
       box-shadow: none !important;
-      height: auto !important;
     }
-    /* .chat-head, .chips, .input-bar use their natural flex-basis sizes;
-       only .chat-log grows to fill remaining space. */
     .chat-head { flex: 0 0 auto !important; font-size: 10.5px; padding: 12px 16px; }
     .chat-head .ping { display: none; }
     .chat-log {
@@ -944,10 +956,9 @@
   }
 
   @media (max-width: 720px) {
-    .topbar { padding: 10px 12px; font-size: 10px; }
+    .topbar { padding: 0 12px; min-height: 52px; font-size: 10px; }
     .brand-name { font-size: 12.5px; }
     .brand-hex { width: 26px; height: 26px; font-size: 11px; }
-    .app { top: 50px; }
     .chat-log { padding: 14px 14px 6px; }
     .msg { max-width: 95%; }
     .input-prefix { display: none; }
