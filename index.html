@@ -3070,12 +3070,19 @@ const TTS = {
 TTS.init();
 
 // Add a per-message speak button to an agent message; optionally auto-play.
+// Reads only the answer text — NOT the appended sources block, source
+// preview, or the speak button itself — since those get rendered inside
+// the same .msg-body container.
 function attachSpeakControl(node, autoplay) {
-  if (!TTS.synth) return;
+  if (!TTS.synth && !CONFIG.workerUrl) return;
   const meta = node.querySelector('.msg-meta');
   const body = node.querySelector('.msg-body');
   if (!meta || !body) return;
-  const text = (body.innerText || body.textContent || '').trim();
+  // Clone the body and strip everything that isn't part of the actual reply.
+  const clone = body.cloneNode(true);
+  clone.querySelectorAll('.sources, .source-preview, .msg-speak, .stream-caret')
+       .forEach(el => el.remove());
+  const text = (clone.innerText || clone.textContent || '').trim();
   if (!text) return;
   const btn = document.createElement('button');
   btn.type = 'button';
