@@ -26,7 +26,24 @@ ships to the browser.
    ```
    Paste the key when prompted.
 
-4. Open `../agent.html`, find `CONFIG.workerUrl`, paste the Worker URL.
+4. (For text-to-speech) Add a Hugging Face token:
+   ```
+   wrangler secret put HF_TOKEN
+   ```
+   Get a free token at https://huggingface.co/settings/tokens — "read" scope
+   is enough. Skip this step if you don't want TTS via the Worker; the
+   browser's `speechSynthesis` is the fallback.
+
+5. Open `../index.html`, find `CONFIG.workerUrl`, paste the Worker URL.
+
+## Routes
+
+- `POST /` (or `/chat`) → proxies to **Ollama Cloud** `/api/chat`, streams
+  NDJSON back to the browser. Powers the chat UI.
+- `POST /tts` → proxies to **Hugging Face Inference** for TTS. Body
+  `{"text": "...", "model": "facebook/mms-tts-eng"}`. Returns audio
+  bytes (`audio/wav` or `audio/flac`). Default model is
+  `facebook/mms-tts-eng`; override by passing `model` in the request.
 
 ## Verify
 
@@ -68,7 +85,8 @@ If Ollama Cloud has moved endpoints, only `UPSTREAM_URL` in
   can call it. Easy to broaden in `ALLOWED_ORIGINS`.
 - **Rate limit** — 20 req/min and 200 req/hour per IP. In-memory, best
   effort; resets on cold start.
-- **Body cap** — 16KB. Prevents pathological prompts.
+- **Body cap** — 128KB for `/chat`, 4KB text limit for `/tts`. Prevents
+  pathological prompts.
 - **Last-20 messages only** — passes through at most the last 20 chat turns.
 
 ## Cost
