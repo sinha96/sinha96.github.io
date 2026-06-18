@@ -138,28 +138,38 @@ async function handleTts(req, env, cors_h) {
   }
 
   const model = payload.model || HF_DEFAULT_TTS_MODEL;
-  const upstreamUrl = `https://api-inference.huggingface.co/models/${model}`;
+  // HF migrated free serverless inference from api-inference.huggingface.co
+  // to the new router. Try the new URL first; if it fails (DNS, 404), fall
+  // back to the legacy endpoint for repos that still serve there.
+  const HF_URLS = [
+    `https://router.huggingface.co/hf-inference/models/${model}`,
+    `https://api-inference.huggingface.co/models/${model}`,
+  ];
 
-  let upstream;
-  try {
-    upstream = await fetch(upstreamUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${env.HF_TOKEN}`,
-        'Content-Type': 'application/json',
-        'Accept': 'audio/wav',
-        // Tell HF to wait through cold starts up to ~60s instead of 503'ing.
-        'x-wait-for-model': 'true',
-      },
-      body: JSON.stringify({ inputs: text }),
-    });
-  } catch (e) {
-    return jsonError('HF fetch failed: ' + e.message, 502, cors_h);
+  let upstream = null;
+  let lastErr = '';
+  for (const url of HF_URLS) {
+    try {
+      const r = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.HF_TOKEN}`,
+          'Content-Type': 'application/json',
+          'Accept': 'audio/wav',
+          'x-wait-for-model': 'true',
+        },
+        body: JSON.stringify({ inputs: text }),
+      });
+      if (r.ok) { upstream = r; break; }
+      // Read once for the diagnostic; the response body can only be read once.
+      lastErr = `${url} → ${r.status} ${await r.text().then(t => t.slice(0, 200)).catch(() => '')}`;
+    } catch (e) {
+      lastErr = `${url} → ${e.message}`;
+    }
   }
 
-  if (!upstream.ok) {
-    const t = await upstream.text();
-    return jsonError(`HF ${upstream.status}: ${t.slice(0, 400)}`, upstream.status, cors_h);
+  if (!upstream) {
+    return jsonError(`HF unreachable. Last: ${lastErr}`, 502, cors_h);
   }
 
   const ct = upstream.headers.get('Content-Type') || 'audio/wav';
