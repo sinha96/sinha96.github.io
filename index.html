@@ -1573,6 +1573,11 @@ const CONFIG = {
   // Leaving it empty keeps the portfolio in scripted-fallback mode.
   workerUrl: 'https://ollama-proxy.pripy.workers.dev',
   model: 'gpt-oss:120b-cloud',
+  // Route TTS through the Worker (Hugging Face Inference). HF's free
+  // serverless endpoint has been flaky in 2026 — leaving this off uses
+  // the browser's built-in speechSynthesis, which always works.
+  // Flip to true once you've confirmed an HF model that's serving.
+  ttsViaWorker: false,
   // Retrieval — how many KB chunks to send to the LLM per query.
   topK: 10,
   // Conversation memory cap
@@ -2964,7 +2969,9 @@ const TTS = {
     if (!text) return;
     this.stop();
     this._markPlaying(btn);
-    if (CONFIG.workerUrl) {
+    // Only hit the Worker for TTS when explicitly opted in — HF's free
+    // inference endpoint is unreliable, and the browser path always works.
+    if (CONFIG.workerUrl && CONFIG.ttsViaWorker) {
       try {
         await this._speakViaWorker(text, btn);
         return;
