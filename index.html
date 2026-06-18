@@ -1573,11 +1573,15 @@ const CONFIG = {
   // Leaving it empty keeps the portfolio in scripted-fallback mode.
   workerUrl: 'https://ollama-proxy.pripy.workers.dev',
   model: 'gpt-oss:120b-cloud',
-  // Route TTS through the Worker (Hugging Face Inference). HF's free
-  // serverless endpoint has been flaky in 2026 — leaving this off uses
-  // the browser's built-in speechSynthesis, which always works.
-  // Flip to true once you've confirmed an HF model that's serving.
-  ttsViaWorker: false,
+  // TTS provider: 'piper' (open-weight, in-browser WASM) | 'worker'
+  // (HF Inference via the Worker) | 'browser' (OS speechSynthesis).
+  // Default 'piper' — first speak triggers a one-time ~25MB voice
+  // download, cached forever after. Falls through to browser TTS on
+  // any failure.
+  ttsProvider: 'piper',
+  // Piper voice. Catalogue: https://huggingface.co/rhasspy/piper-voices
+  // Examples: en_US-amy-medium · en_US-ryan-high · en_GB-alan-medium
+  piperVoice: 'en_US-amy-medium',
   // Retrieval — how many KB chunks to send to the LLM per query.
   topK: 10,
   // Conversation memory cap
@@ -2954,6 +2958,38 @@ document.querySelectorAll('[data-q]').forEach(el => {
 // ══════════════════════════════════════════════════
 //  TEXT-TO-SPEECH (Web Speech API · speak agent replies)
 // ══════════════════════════════════════════════════
+// ── Piper (open-weight in-browser TTS via WASM) ──────────────
+const Piper = {
+  module: null,
+  loadingPromise: null,
+  // First call: dynamic-imports the wrapper from the CDN, then loads the
+  // selected voice ONNX bundle (~25MB). Both get cached by the browser
+  // so subsequent visits are instant.
+  async load() {
+    if (this.module) return this.module;
+    if (this.loadingPromise) return this.loadingPromise;
+    this.loadingPromise = (async () => {
+      try {
+        const tts = await import('https://cdn.jsdelivr.net/npm/@diffusionstudio/vits-web@1.0.3/+esm');
+        this.module = tts;
+        return tts;
+      } catch (err) {
+        this.loadingPromise = null;
+        throw err;
+      }
+    })();
+    return this.loadingPromise;
+  },
+  async speak(text) {
+    const tts = await this.load();
+    const wav = await tts.predict({
+      text,
+      voiceId: CONFIG.piperVoice,
+    });
+    return wav; // Blob
+  },
+};
+
 const TTS = {
   on: localStorage.getItem('pss.tts') === 'on',
   synth: 'speechSynthesis' in window ? window.speechSynthesis : null,
@@ -2969,9 +3005,20 @@ const TTS = {
     if (!text) return;
     this.stop();
     this._markPlaying(btn);
-    // Only hit the Worker for TTS when explicitly opted in — HF's free
-    // inference endpoint is unreliable, and the browser path always works.
-    if (CONFIG.workerUrl && CONFIG.ttsViaWorker) {
+    const provider = CONFIG.ttsProvider || 'browser';
+
+    if (provider === 'piper') {
+      try {
+        if (btn) btn.dataset.label = btn.textContent;
+        if (btn && !Piper.module) btn.textContent = '⌛ LOADING';
+        await this._speakViaPiper(text, btn);
+        if (btn && btn.dataset.label) btn.textContent = btn.dataset.label;
+        return;
+      } catch (err) {
+        console.warn('Piper TTS failed, falling back to browser:', err);
+        if (btn && btn.dataset.label) btn.textContent = btn.dataset.label;
+      }
+    } else if (provider === 'worker' && CONFIG.workerUrl) {
       try {
         await this._speakViaWorker(text, btn);
         return;
@@ -2980,6 +3027,21 @@ const TTS = {
       }
     }
     this._speakViaBrowser(text, btn);
+  },
+
+  async _speakViaPiper(text, btn) {
+    const blob = await Piper.speak(text);
+    const url = URL.createObjectURL(blob);
+    this.audio = new Audio(url);
+    this.audio.onended = () => {
+      this._clearPlaying(btn);
+      URL.revokeObjectURL(url);
+    };
+    this.audio.onerror = () => {
+      this._clearPlaying(btn);
+      URL.revokeObjectURL(url);
+    };
+    await this.audio.play();
   },
 
   async _speakViaWorker(text, btn) {
