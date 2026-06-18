@@ -2954,36 +2954,85 @@ const TTS = {
   synth: 'speechSynthesis' in window ? window.speechSynthesis : null,
   voice: null,
   currentBtn: null,
-  speak(text, btn) {
-    if (!this.synth || !text) return;
+  audio: null,
+  controller: null,
+
+  // Try the Cloudflare Worker (Hugging Face TTS) first; fall back to
+  // the browser's speechSynthesis on any failure (network, 503 cold
+  // start, missing HF_TOKEN, etc.).
+  async speak(text, btn) {
+    if (!text) return;
     this.stop();
-    // Chunk on sentences so long replies don't get cut off mid-flight.
+    this._markPlaying(btn);
+    if (CONFIG.workerUrl) {
+      try {
+        await this._speakViaWorker(text, btn);
+        return;
+      } catch (err) {
+        console.warn('TTS via Worker failed, falling back to browser:', err);
+      }
+    }
+    this._speakViaBrowser(text, btn);
+  },
+
+  async _speakViaWorker(text, btn) {
+    const base = CONFIG.workerUrl.replace(/\/+$/, '');
+    this.controller = new AbortController();
+    const resp = await fetch(base + '/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+      signal: this.controller.signal,
+    });
+    if (!resp.ok) {
+      let info = '';
+      try { info = (await resp.json()).error || ''; } catch {}
+      throw new Error(`TTS ${resp.status}: ${info || resp.statusText}`);
+    }
+    const blob = await resp.blob();
+    const url = URL.createObjectURL(blob);
+    this.audio = new Audio(url);
+    this.audio.onended = () => {
+      this._clearPlaying(btn);
+      URL.revokeObjectURL(url);
+    };
+    this.audio.onerror = () => {
+      this._clearPlaying(btn);
+      URL.revokeObjectURL(url);
+    };
+    await this.audio.play();
+  },
+
+  _speakViaBrowser(text, btn) {
+    if (!this.synth) { this._clearPlaying(btn); return; }
     const chunks = text.match(/[^.!?\n]+[.!?]?["')\]]*\s*/g) || [text];
     chunks.forEach((chunk, i) => {
       const u = new SpeechSynthesisUtterance(chunk.trim());
       if (this.voice) u.voice = this.voice;
       u.rate = 1.02; u.pitch = 1.0;
       if (i === chunks.length - 1) {
-        u.onend = () => {
-          if (btn) btn.classList.remove('is-playing');
-          if (this.currentBtn === btn) this.currentBtn = null;
-        };
+        u.onend = () => this._clearPlaying(btn);
       }
       this.synth.speak(u);
     });
-    if (btn) {
-      btn.classList.add('is-playing');
-      this.currentBtn = btn;
-    }
   },
+
+  _markPlaying(btn) {
+    if (btn) btn.classList.add('is-playing');
+    this.currentBtn = btn;
+  },
+  _clearPlaying(btn) {
+    if (btn) btn.classList.remove('is-playing');
+    if (this.currentBtn === btn) this.currentBtn = null;
+  },
+
   stop() {
-    if (!this.synth) return;
-    this.synth.cancel();
-    if (this.currentBtn) {
-      this.currentBtn.classList.remove('is-playing');
-      this.currentBtn = null;
-    }
+    if (this.synth) this.synth.cancel();
+    if (this.audio) { try { this.audio.pause(); } catch {} this.audio = null; }
+    if (this.controller) { this.controller.abort(); this.controller = null; }
+    if (this.currentBtn) this._clearPlaying(this.currentBtn);
   },
+
   toggle() {
     this.on = !this.on;
     localStorage.setItem('pss.tts', this.on ? 'on' : 'off');
@@ -2994,19 +3043,20 @@ const TTS = {
     }
     if (!this.on) this.stop();
   },
+
   init() {
-    if (!this.synth) return;
-    const pickVoice = () => {
-      const voices = this.synth.getVoices();
-      // Prefer a natural-sounding English voice if available.
-      this.voice =
-        voices.find(v => /en-US/i.test(v.lang) && /natural|neural|google|samantha|jenny|aria/i.test(v.name)) ||
-        voices.find(v => /en-US/i.test(v.lang)) ||
-        voices.find(v => /en/i.test(v.lang)) ||
-        voices[0] || null;
-    };
-    pickVoice();
-    this.synth.addEventListener('voiceschanged', pickVoice);
+    if (this.synth) {
+      const pickVoice = () => {
+        const voices = this.synth.getVoices();
+        this.voice =
+          voices.find(v => /en-US/i.test(v.lang) && /natural|neural|google|samantha|jenny|aria/i.test(v.name)) ||
+          voices.find(v => /en-US/i.test(v.lang)) ||
+          voices.find(v => /en/i.test(v.lang)) ||
+          voices[0] || null;
+      };
+      pickVoice();
+      this.synth.addEventListener('voiceschanged', pickVoice);
+    }
     const btn = document.getElementById('ttsToggle');
     if (btn) {
       btn.addEventListener('click', () => this.toggle());

@@ -1,39 +1,46 @@
 // ════════════════════════════════════════════════════════════
 //  ollama-proxy.js — Cloudflare Worker
 //
-//  Proxies chat requests from sinha96.github.io to Ollama Cloud,
-//  injecting the API key from a Worker secret so the key never
-//  ships to the browser.
+//  Two routes:
+//    POST /         (and /chat) → proxies to Ollama Cloud /api/chat,
+//                                  injecting OLLAMA_API_KEY.
+//    POST /tts                  → proxies to Hugging Face Inference
+//                                  for text-to-speech, injecting
+//                                  HF_TOKEN. Returns audio bytes.
 //
 //  Deploy:
 //    1. cd worker
-//    2. wrangler deploy
-//    3. wrangler secret put OLLAMA_API_KEY   (paste your key)
+//    2. npx wrangler deploy
+//    3. npx wrangler secret put OLLAMA_API_KEY   (paste your key)
+//    4. npx wrangler secret put HF_TOKEN          (free at huggingface.co/settings/tokens)
 //
 //  Once deployed it returns a URL like
 //    https://ollama-proxy.<your-subdomain>.workers.dev
-//  Put that URL in agent.html → CONFIG.workerUrl.
+//  Put that URL in index.html → CONFIG.workerUrl.
 // ════════════════════════════════════════════════════════════
 
-// Verify these against current Ollama Cloud docs — they were
-// accurate as of late 2025 but change occasionally.
-const UPSTREAM_URL = 'https://ollama.com/api/chat';
+const UPSTREAM_OLLAMA  = 'https://ollama.com/api/chat';
 
-// Allow only your site to call this Worker. Add localhost for dev.
+// Default HF TTS model. Override by sending {"model": "<repo/name>"} on
+// the /tts request. Other open-weight options worth trying:
+//   - facebook/mms-tts-eng           (single voice, fast, multilingual)
+//   - espnet/kan-bayashi_ljspeech_vits
+//   - microsoft/speecht5_tts         (needs speaker embeddings)
+const HF_DEFAULT_TTS_MODEL = 'facebook/mms-tts-eng';
+
 const ALLOWED_ORIGINS = new Set([
   'https://sinha96.github.io',
   'http://localhost:4321',
   'http://127.0.0.1:4321',
 ]);
 
-// Cap on free-form input size so a bad actor can't DOS the upstream.
-// 128KB comfortably fits the system prompt + 20 retrieved chunks + chat
-// history + a pasted job description or two.
+// 128KB body cap for /chat (system prompt + context + history + JD).
+// /tts has its own much smaller text cap.
 const MAX_BODY_BYTES = 128 * 1024;
+const MAX_TTS_CHARS  = 4000;
 
-// Per-IP rate limit (sliding window in memory — best-effort,
-// resets on Worker cold start; good enough for a portfolio).
-const RATE = { perMin: 20, perHour: 200 };
+// Per-IP rate limit (in-memory, resets on Worker cold start).
+const RATE = { perMin: 30, perHour: 300 };
 const ipHits = new Map(); // ip -> [timestamps]
 
 function cors(origin) {
@@ -57,6 +64,116 @@ function rateLimited(ip) {
   return false;
 }
 
+function jsonError(msg, status, cors_h) {
+  return new Response(JSON.stringify({ error: msg }), {
+    status, headers: { ...cors_h, 'Content-Type': 'application/json' },
+  });
+}
+
+// ── /chat handler (Ollama Cloud) ────────────────────────────
+async function handleChat(req, env, cors_h) {
+  if (!env.OLLAMA_API_KEY) {
+    return jsonError('Worker not configured: OLLAMA_API_KEY missing', 500, cors_h);
+  }
+
+  const raw = await req.text();
+  if (raw.length > MAX_BODY_BYTES) {
+    return jsonError('Request too large', 413, cors_h);
+  }
+
+  let payload;
+  try { payload = JSON.parse(raw); }
+  catch { return new Response('Bad JSON', { status: 400, headers: cors_h }); }
+
+  const upstreamBody = {
+    model: payload.model || 'gpt-oss:120b-cloud',
+    messages: Array.isArray(payload.messages) ? payload.messages.slice(-20) : [],
+    stream: payload.stream !== false,
+    options: payload.options || { temperature: 0.6, num_predict: 800 },
+  };
+
+  let upstream;
+  try {
+    upstream = await fetch(UPSTREAM_OLLAMA, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.OLLAMA_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(upstreamBody),
+    });
+  } catch (e) {
+    return jsonError('Upstream fetch failed: ' + e.message, 502, cors_h);
+  }
+
+  if (!upstream.ok) {
+    const text = await upstream.text();
+    return jsonError(`Upstream ${upstream.status}: ${text.slice(0, 400)}`, upstream.status, cors_h);
+  }
+
+  return new Response(upstream.body, {
+    status: 200,
+    headers: {
+      ...cors_h,
+      'Content-Type': 'application/x-ndjson; charset=utf-8',
+      'Cache-Control': 'no-store',
+    },
+  });
+}
+
+// ── /tts handler (Hugging Face Inference) ───────────────────
+async function handleTts(req, env, cors_h) {
+  if (!env.HF_TOKEN) {
+    return jsonError('Worker not configured: HF_TOKEN missing. `npx wrangler secret put HF_TOKEN`.', 500, cors_h);
+  }
+
+  let payload;
+  try { payload = await req.json(); }
+  catch { return jsonError('Bad JSON', 400, cors_h); }
+
+  const text = (payload.text || '').trim();
+  if (!text) return jsonError('Missing "text" field', 400, cors_h);
+  if (text.length > MAX_TTS_CHARS) {
+    return jsonError(`Text too long (${text.length} > ${MAX_TTS_CHARS} chars)`, 413, cors_h);
+  }
+
+  const model = payload.model || HF_DEFAULT_TTS_MODEL;
+  const upstreamUrl = `https://api-inference.huggingface.co/models/${model}`;
+
+  let upstream;
+  try {
+    upstream = await fetch(upstreamUrl, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.HF_TOKEN}`,
+        'Content-Type': 'application/json',
+        'Accept': 'audio/wav',
+        // Tell HF to wait through cold starts up to ~60s instead of 503'ing.
+        'x-wait-for-model': 'true',
+      },
+      body: JSON.stringify({ inputs: text }),
+    });
+  } catch (e) {
+    return jsonError('HF fetch failed: ' + e.message, 502, cors_h);
+  }
+
+  if (!upstream.ok) {
+    const t = await upstream.text();
+    return jsonError(`HF ${upstream.status}: ${t.slice(0, 400)}`, upstream.status, cors_h);
+  }
+
+  const ct = upstream.headers.get('Content-Type') || 'audio/wav';
+  return new Response(upstream.body, {
+    status: 200,
+    headers: {
+      ...cors_h,
+      'Content-Type': ct,
+      'Cache-Control': 'no-store',
+    },
+  });
+}
+
+// ── Router ──────────────────────────────────────────────────
 export default {
   async fetch(req, env) {
     const origin = req.headers.get('Origin') || '';
@@ -68,67 +185,16 @@ export default {
     if (req.method !== 'POST') {
       return new Response('Method not allowed', { status: 405, headers: cors_h });
     }
-    if (!env.OLLAMA_API_KEY) {
-      return new Response(JSON.stringify({ error: 'Worker not configured: OLLAMA_API_KEY missing' }),
-        { status: 500, headers: { ...cors_h, 'Content-Type': 'application/json' } });
-    }
 
     const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
     if (rateLimited(ip)) {
-      return new Response(JSON.stringify({ error: 'Rate limited. Try again in a minute.' }),
-        { status: 429, headers: { ...cors_h, 'Content-Type': 'application/json' } });
+      return jsonError('Rate limited. Try again in a minute.', 429, cors_h);
     }
 
-    const raw = await req.text();
-    if (raw.length > MAX_BODY_BYTES) {
-      return new Response(JSON.stringify({ error: 'Request too large' }),
-        { status: 413, headers: { ...cors_h, 'Content-Type': 'application/json' } });
-    }
-
-    let payload;
-    try { payload = JSON.parse(raw); }
-    catch { return new Response('Bad JSON', { status: 400, headers: cors_h }); }
-
-    // Defensive defaults — caller can override model + options.
-    const upstreamBody = {
-      model: payload.model || 'gpt-oss:120b-cloud',
-      messages: Array.isArray(payload.messages) ? payload.messages.slice(-20) : [],
-      stream: payload.stream !== false,
-      options: payload.options || {
-        temperature: 0.6,
-        num_predict: 800,
-      },
-    };
-
-    let upstream;
-    try {
-      upstream = await fetch(UPSTREAM_URL, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${env.OLLAMA_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(upstreamBody),
-      });
-    } catch (e) {
-      return new Response(JSON.stringify({ error: 'Upstream fetch failed: ' + e.message }),
-        { status: 502, headers: { ...cors_h, 'Content-Type': 'application/json' } });
-    }
-
-    if (!upstream.ok) {
-      const text = await upstream.text();
-      return new Response(JSON.stringify({ error: `Upstream ${upstream.status}: ${text.slice(0, 400)}` }),
-        { status: upstream.status, headers: { ...cors_h, 'Content-Type': 'application/json' } });
-    }
-
-    // Stream NDJSON straight through.
-    return new Response(upstream.body, {
-      status: 200,
-      headers: {
-        ...cors_h,
-        'Content-Type': 'application/x-ndjson; charset=utf-8',
-        'Cache-Control': 'no-store',
-      },
-    });
+    const url = new URL(req.url);
+    const path = url.pathname.replace(/\/+$/, '') || '/';
+    if (path === '/tts')  return handleTts(req, env, cors_h);
+    // Everything else (/, /chat) → Ollama chat handler
+    return handleChat(req, env, cors_h);
   },
 };
